@@ -8,8 +8,9 @@ import {
   useMotionValueEvent,
 } from "motion/react";
 import Link from "next/link";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 
 interface NavbarProps {
   children: React.ReactNode;
@@ -65,11 +66,13 @@ export const Navbar = ({ children, className }: NavbarProps) => {
     }
   });
 
+
+
   return (
     <motion.div
       ref={ref}
       // IMPORTANT: Change this to class of `fixed` if you want the navbar to be fixed
-      className={cn("fixed inset-x-0 top-2 z-40 w-full", className)}
+      className={cn("fixed inset-x-0 top-0 z-40 w-full", className)}
     >
       {React.Children.map(children, (child) =>
         React.isValidElement(child)
@@ -230,17 +233,27 @@ export const MobileNavToggle = ({
 };
 
 export const NavbarLogo = () => {
+
+    const {theme}= useTheme();
+  const isDark = theme=== "dark"
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <Link
       href="#"
       className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black"
     >
-      <Image
-        src={"/logo-white.png"}
+     { mounted&&(<Image
+        src={isDark ? "/logo-white.png":"/logo-black.png"}
         alt="logo"
         width={40}
         height={40}
-      />
+      />)}
       <span className="font-medium text-black dark:text-white"></span>
     </Link>
   );

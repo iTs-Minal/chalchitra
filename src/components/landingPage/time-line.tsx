@@ -9,32 +9,35 @@ export function TimelineSection() {
       content: (
         <div>
           <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-          A year that redefined storytelling — *Dune: Part Two* swept audiences into sandstormed destinies, while *Oppenheimer* continued echoing through awards season. The box office saw the rise of fresh faces and the return of long-lost legends.
+          2024 raised the bar with stunning visuals, deeper narratives, and massive box office returns. Sequels expanded beloved universes while original stories held their own. Audiences leaned into emotionally rich content, epic sci-fi adventures, and diverse voices from around the world.
+          </p>
+          <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+          Big-budget blockbusters returned stronger, blending stunning visuals with emotionally resonant storytelling. Sequels expanded on iconic narratives, while filmmakers pushed boundaries with diverse, inclusive storytelling. Audiences embraced immersive experiences—from powerful sci-fi epics to thought-provoking social dramas—both in theaters and on streaming platforms.
           </p>
           <div className="grid grid-cols-2 gap-4">
             <Image
-              src="/dune-2a.jpg"
+              src="/dune-2.jpg"
               alt="startup template"
               width={500}
               height={500}
               className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
             />
             <Image
-              src="/dune-2b.jpg"
+              src="/furiosa.jpg"
               alt="startup template"
               width={500}
               height={500}
               className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
             />
             <Image
-              src="/dune-2c.jpg"
+              src="/civil-war.jpg"
               alt="startup template"
               width={500}
               height={500}
               className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
             />
             <Image
-              src="/dune-2d.jpg"
+              src="/wild-robot.jpg"
               alt="startup template"
               width={500}
               height={500}
@@ -45,40 +48,39 @@ export function TimelineSection() {
       ),
     },
     {
-      title: "Early 2023",
+      title: "2023",
       content: (
         <div>
           <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-          Pink met atomic — *Barbie* and *Oppenheimer* collided in the ultimate double feature. From whimsical plastic dreams to nuclear consequences, cinema proved it could be anything — even everything, everywhere, all at once.
+          2023 was all about unexpected hits and the rise of fresh storytelling. From breakout indie successes to bold biopics and franchise reboots, the year reignited audience excitement in theaters. Streaming also played a huge role, making global cinema more accessible than ever.
           </p>
           <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-            Lorem ipsum is for people who are too lazy to write copy. But we are
-            not. Here are some more example of beautiful designs I built.
+          While legacy franchises continued to draw crowds, it was the original stories, genre-bending thrillers, and emotional indie dramas that truly captured attention. Streaming platforms flourished, bringing global cinema into living rooms and expanding the reach of international films.
           </p>
           <div className="grid grid-cols-2 gap-4">
             <Image
-              src="/oppenheimer-a.jpg"
+              src="/oppenheimer.jpg"
               alt="hero template"
               width={500}
               height={500}
               className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
             />
             <Image
-              src="/barbie-a.jpg"
+              src="/barbie.jpg"
               alt="feature template"
               width={500}
               height={500}
               className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
             />
             <Image
-              src="/oppenbarbie-d.jpg"
+              src="/creator.jpg"
               alt="bento template"
               width={500}
               height={500}
               className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
             />
             <Image
-              src="/oppenheimer-b.jpg"
+              src="/flower-moon.jpg"
               alt="cards template"
               width={500}
               height={500}
@@ -89,62 +91,39 @@ export function TimelineSection() {
       ),
     },
     {
-      title: "Changelog",
+      title: "Most Watched Recently",
       content: (
         <div>
           <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-4">
-          The silver screen never sleeps — here are the latest rollouts and cinematic shakeups:
+          Over these two years, the global audience leaned into stories that offered both scale and heart. Films that explored emotional depth, character growth, and relatable struggles were among the most watched. Meanwhile, high-stakes action, fantasy world-building, and well-known franchises maintained a stronghold in theaters.
           </p>
-          <div className="mb-8">
-            <div className="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-            *Fantastic Four* — A new beginning for Marvel’s first family, but is it *fantastic*?
-            </div>
-            <div className="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-            *Mission: Impossible – Dead Reckoning Part Two* — Tom Cruise pulls off another impossible stunt
-            </div>
-            <div className="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-            *Dune: Part Two* finally arrived — spice levels at max
-            </div>
-            <div className="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-            *Civil War* — A24 went full apocalyptic and people showed up
-            </div>
-            <div className="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-            *Animated excellence: *Nimona* and *Across the Spider-Verse* redefined the genre
-            </div>
-            <div className="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-            *Surprise twist: *Willy Wonka&apos;s origin story* turned out not so sweet
-            </div>
-            <div className="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-            *Godzilla x Kong: The New Empire* — titans united, cities trembled
-            </div>
-            <div className="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-            *The Boy and the Heron* — Miyazaki’s quiet masterpiece made waves
-            </div>
-          </div>
+          <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-4">
+          Animated films continued to dominate family viewing, while international cinema—particularly from South Asia and East Asia—saw a surge in worldwide popularity, bringing new narratives to global attention. Additionally, socially reflective dramas and thought-provoking thrillers gained traction, especially on streaming platforms, indicating a more curious and emotionally invested audience than ever before.
+          </p>
           <div className="grid grid-cols-2 gap-4">
             <Image
-              src="/atsv.jpg"
+              src="/dune-2b.jpg"
               alt="hero template"
               width={500}
               height={500}
               className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
             />
             <Image
-              src="/cw.jpg"
+              src="/sucession.jpg"
               alt="feature template"
               width={500}
               height={500}
               className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
             />
             <Image
-              src="/mi8.jpg"
+              src="/eternal-sunshine.jpg"
               alt="bento template"
               width={500}
               height={500}
               className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
             />
             <Image
-              src="/ff-a.jpg"
+              src="/intersteller.jpg"
               alt="cards template"
               width={500}
               height={500}

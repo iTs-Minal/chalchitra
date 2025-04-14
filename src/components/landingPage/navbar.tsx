@@ -37,7 +37,7 @@ export function NavbarSection() {
         <NavBody>
           <NavbarLogo />
           <NavItems items={navItems} />
-          <div className="flex items-center gap-4">
+          <div className="flex items-center top-1 gap-4">
             <NavbarButton variant="secondary">Login</NavbarButton>
             <NavbarButton variant="primary">Get Started</NavbarButton>
           </div>
