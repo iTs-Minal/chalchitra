@@ -12,46 +12,45 @@ import Link from "next/link";
 export function FeaturesSection() {
   const features = [
     {
-      title: "Track issues effectively",
+      title: "Cinematic Discovery Engine",
       description:
-        "Track and manage your project issues with ease using our intuitive interface.",
+        "Uncover hidden gems and blockbusters alike with our AI-powered discovery engine. Tailored to your taste, mood, and cinematic cravings.",
       skeleton: <SkeletonOne />,
       className:
-        "col-span-1 lg:col-span-4 border-b lg:border-r dark:border-neutral-800",
+        "col-span-1 lg:col-span-4 font-exo border-b lg:border-r dark:border-neutral-800",
     },
     {
-      title: "Capture pictures with AI",
+      title: "Your Personal Film Archive",
       description:
-        "Capture stunning photos effortlessly using our advanced AI technology.",
+        "Craft your own watchlist, log your film journey, and relive your favorites. Like a director’s cut of your movie life.",
       skeleton: <SkeletonTwo />,
-      className: "border-b col-span-1 lg:col-span-2 dark:border-neutral-800",
+      className: "border-b col-span-1 font-exo lg:col-span-2 dark:border-neutral-800",
     },
     {
-      title: "Watch our AI on YouTube",
+      title: "Trailers in the Spotlight",
       description:
-        "Whether its you or Tyler Durden, you can get to know about our product on YouTube",
+        "Step into the world of any film with immersive, high-quality trailers. Spotlighted and ready to roll with a single click.",
       skeleton: <SkeletonThree />,
       className:
-        "col-span-1 lg:col-span-3 lg:border-r  dark:border-neutral-800",
+        "col-span-1 lg:col-span-3 font-exo lg:border-r  dark:border-neutral-800",
     },
     {
-      title: "Deploy in seconds",
+      title: "Cinema Without Borders",
       description:
-        "With our blazing fast, state of the art, cutting edge, we are so back cloud servies (read AWS) - you can deploy your model in seconds.",
+        "Witness what the world is watching. From arthouse indies to international blockbusters — explore global trends on our living movie globe.",
       skeleton: <SkeletonFour />,
-      className: "col-span-1 lg:col-span-3 border-b lg:border-none",
+      className: "col-span-1 lg:col-span-3 font-exo border-b lg:border-none",
     },
   ];
   return (
-    <div className="relative z-20 py-10 lg:py-40 max-w-7xl mx-auto">
-      <div className="px-8">
-        <h4 className="text-3xl lg:text-5xl lg:leading-tight max-w-5xl mx-auto text-center tracking-tight font-medium text-black dark:text-white">
-          Packed with thousands of features
+    <div className="w-100% relative z-20 border-t py-10 lg:py-40 mx-auto bg-neutral-50 dark:bg-neutral-950">
+      <div className="px-4 mt-[-1rem]">
+        <h4 className="text-3xl lg:text-5xl lg:leading-tight max-w-5xl mx-auto text-center tracking-tight font-medium font-kanit text-black dark:text-white">
+        Explore Stories Beyond the Screen
         </h4>
 
-        <p className="text-sm lg:text-base  max-w-2xl  my-4 mx-auto text-neutral-500 text-center font-normal dark:text-neutral-300">
-          From Image generation to video generation, Everything AI has APIs for
-          literally everything. It can even create this website copy for you.
+        <p className="text-sm lg:text-base font-exo max-w-2xl  my-4 mx-auto text-neutral-500 text-center font-normal dark:text-neutral-300">
+        Explore stories that move the world. Chalchitra is your cinematic universe — where films meet feeling, and discovery is just a scene away.
         </p>
       </div>
 
@@ -109,11 +108,11 @@ const FeatureDescription = ({ children }: { children?: React.ReactNode }) => {
 export const SkeletonOne = () => {
   return (
     <div className="relative flex py-8 px-2 gap-10 h-full">
-      <div className="w-full  p-5  mx-auto bg-white dark:bg-neutral-900 shadow-2xl group h-full">
+      <div className="w-full  p-5  mx-auto bg-white dark:bg-neutral-900 shadow-sm group h-full">
         <div className="flex flex-1 w-full h-full flex-col space-y-2  ">
           {/* TODO */}
           <Image
-            src="/linear.webp"
+            src="/movie-college-art.jpg"
             alt="header"
             width={800}
             height={800}
@@ -122,8 +121,8 @@ export const SkeletonOne = () => {
         </div>
       </div>
 
-      <div className="absolute bottom-0 z-40 inset-x-0 h-60 bg-gradient-to-t from-white dark:from-black via-white dark:via-black to-transparent w-full pointer-events-none" />
-      <div className="absolute top-0 z-40 inset-x-0 h-60 bg-gradient-to-b from-white dark:from-black via-transparent to-transparent w-full pointer-events-none" />
+      <div className="absolute bottom-0 z-40 inset-x-0 h-60 bg-gradient-to-t from-white/10 dark:from-black via-white/10 dark:via-black to-transparent w-full pointer-events-none" />
+      <div className="absolute top-0 z-40 inset-x-0 h-60 bg-gradient-to-b from-white/30 dark:from-black via-transparent to-transparent w-full pointer-events-none" />
     </div>
   );
 };
@@ -131,7 +130,7 @@ export const SkeletonOne = () => {
 export const SkeletonThree = () => {
   return (
     <Link
-      href="https://www.youtube.com/watch?v=RPa3_AD1_Vs"
+      href="https://www.youtube.com/watch?v=Gxp0HgHpkhA"
       target="__blank"
       className="relative flex gap-10  h-full group/image"
     >
@@ -140,11 +139,11 @@ export const SkeletonThree = () => {
           {/* TODO */}
           <IconBrandYoutubeFilled className="h-20 w-20 absolute z-10 inset-0 text-red-500 m-auto " />
           <Image
-            src="https://assets.aceternity.com/fireship.jpg"
+            src="/thumbnail.avif"
             alt="header"
             width={800}
             height={800}
-            className="h-full w-full aspect-square object-cover object-center rounded-sm blur-none group-hover/image:blur-md transition-all duration-200"
+            className="h-full w-full aspect-square object-cover object-center rounded-sm hover:image:blur-sm transition-all duration-200"
           />
         </div>
       </div>

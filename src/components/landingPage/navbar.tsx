@@ -80,7 +80,7 @@ export function NavbarSection() {
                 variant="primary"
                 className="w-full"
               >
-                Book a call
+                Get Started
               </NavbarButton>
             </div>
           </MobileNavMenu>
