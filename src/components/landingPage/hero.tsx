@@ -4,6 +4,7 @@ import { BackgroundBeams } from "../ui/background-beams";
 import { Button } from "../ui/moving-border";
 import { ArrowRight, Search } from "lucide-react";
 import { motion } from 'motion/react';
+import Link from "next/link";
 
 export function HeroSection() {
   return (
@@ -28,6 +29,7 @@ export function HeroSection() {
             <Search className="flex items-center justify-center text-white dark:text-black" />
           </span>
         </div>
+        <Link href="/home">
         <Button
           borderRadius="1.75rem"
           className="bg-white/60 dark:bg-zinc-900 text-black text-xl dark:text-white border-neutral-200 relative gap-2"
@@ -37,6 +39,7 @@ export function HeroSection() {
             <ArrowRight className="flex items-center h-16 text-black dark:text-white font-bold" />
           </span>{" "}
         </Button>
+        </Link>
       </div>
       <BackgroundBeams />
     </div>
