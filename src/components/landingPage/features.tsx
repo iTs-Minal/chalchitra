@@ -45,13 +45,13 @@ export function FeaturesSection() {
   return (
     <div className="w-100% relative z-20 border-t py-10 lg:py-40 mx-auto bg-neutral-50 dark:bg-neutral-950">
       <div className="px-4 mt-[-1rem]">
-        <h4 className="text-3xl lg:text-5xl lg:leading-tight max-w-5xl mx-auto text-center tracking-tight font-medium font-kanit text-black dark:text-white">
+        <motion.h4 initial={{y:-60 ,opacity:0}} whileInView={{y:0 , opacity:1}} transition={{duration:0.3}} className="text-3xl lg:text-5xl lg:leading-tight max-w-5xl mx-auto text-center tracking-tight font-medium font-kanit text-black dark:text-white">
         Explore Stories Beyond the Screen
-        </h4>
+        </motion.h4>
 
-        <p className="text-sm lg:text-base font-exo max-w-2xl  my-4 mx-auto text-neutral-500 text-center font-normal dark:text-neutral-300">
+        <motion.p initial={{x:-80 ,opacity:0}} whileInView={{x:0 , opacity:1}} transition={{duration:0.5, delay:0.3}} className="text-sm lg:text-base font-exo max-w-2xl  my-4 mx-auto text-neutral-500 text-center font-normal dark:text-neutral-300">
         Explore stories that move the world. Chalchitra is your cinematic universe — where films meet feeling, and discovery is just a scene away.
-        </p>
+        </motion.p>
       </div>
 
       <div className="relative ">
@@ -85,15 +85,16 @@ const FeatureCard = ({
 
 const FeatureTitle = ({ children }: { children?: React.ReactNode }) => {
   return (
-    <p className=" max-w-5xl mx-auto text-left tracking-tight text-black dark:text-white text-xl md:text-2xl md:leading-snug">
+    <motion.p initial={{y:-50 ,opacity:0}} whileInView={{y:0 , opacity:1}} transition={{duration:0.2}} className=" max-w-5xl mx-auto text-left tracking-tight text-black dark:text-white text-xl md:text-2xl md:leading-snug">
       {children}
-    </p>
+    </motion.p>
   );
 };
 
 const FeatureDescription = ({ children }: { children?: React.ReactNode }) => {
   return (
-    <p
+    <motion.p
+    initial={{x:-50 ,opacity:0}} whileInView={{x:0 , opacity:1}} transition={{duration:0.5}}
       className={cn(
         "text-sm md:text-base  max-w-4xl text-left mx-auto",
         "text-neutral-500 text-center font-normal dark:text-neutral-300",
@@ -101,7 +102,7 @@ const FeatureDescription = ({ children }: { children?: React.ReactNode }) => {
       )}
     >
       {children}
-    </p>
+    </motion.p>
   );
 };
 

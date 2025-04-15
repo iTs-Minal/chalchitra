@@ -33,10 +33,10 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
       ref={containerRef}
     >
       <div className="max-w-7xl mx-auto py-8 px-4 md:px-8 lg:px-10">
-        <h2 className="text-lg md:text-4xl mb-4 font-kanit text-black dark:text-white max-w-4xl">
+        <motion.h2 initial={{y:50 ,opacity:0}} whileInView={{y:0 , opacity:1}} transition={{duration:0.5}} className="text-lg md:text-4xl mb-4 font-kanit text-black dark:text-white max-w-4xl">
           Blockbusters and Beyond: A Timeline of Film Greatness
-        </h2>
-        <p className="text-neutral-700 font-outfit dark:text-neutral-300 text-sm mb-[-4rem] md:text-base max-w-sm">
+        </motion.h2>
+        <motion.p initial={{x:-100 ,opacity:0}} whileInView={{x:0 , opacity:1}} transition={{duration:0.6}} className="text-neutral-700 font-outfit dark:text-neutral-300 text-sm mb-[-4rem] md:text-base max-w-sm">
           From classic gems to modern blockbusters, our movie timeline
           highlights the key moments and films that have shaped the cinematic
           landscape.
@@ -44,7 +44,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
           <br/>
           From the first reel to the latest blockbuster, explore the films that
           have made an impact on our movie collection over the years.
-        </p>
+        </motion.p>
       </div>
 
       <div ref={ref} className="relative max-w-7xl mx-auto pb-20">
@@ -57,13 +57,13 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
               <div className="h-10 absolute left-3 md:left-3 w-10 rounded-full bg-white dark:bg-black flex items-center justify-center">
                 <div className="h-4 w-4 rounded-full bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 p-2" />
               </div>
-              <h3 className="hidden md:block text-xl md:pl-20 md:text-5xl font-bold text-neutral-500 dark:text-neutral-500 ">
+              <motion.h3 initial={{x:-100 ,opacity:0}} whileInView={{x:0 , opacity:1}}  transition={{duration:0.6}} className="hidden md:block text-xl md:pl-20 md:text-5xl font-bold text-neutral-800 dark:text-neutral-300 ">
                 {item.title}
-              </h3>
+              </motion.h3>
             </div>
 
             <div className="relative pl-20 pr-4 md:pl-4 w-full">
-              <h3 className="md:hidden block text-2xl mb-4 text-left font-bold text-neutral-500 dark:text-neutral-500">
+              <h3 className="md:hidden block text-2xl mb-4 text-left font-bold text-neutral-800 dark:text-neutral-300">
                 {item.title}
               </h3>
               {item.content}{" "}

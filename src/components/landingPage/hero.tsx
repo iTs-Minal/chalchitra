@@ -3,20 +3,21 @@ import React from "react";
 import { BackgroundBeams } from "../ui/background-beams";
 import { Button } from "../ui/moving-border";
 import { ArrowRight, Search } from "lucide-react";
+import { motion } from 'motion/react';
 
 export function HeroSection() {
   return (
     <div className="h-[50rem] w-100% bg-neutral-100 dark:bg-neutral-950 relative flex flex-col items-center justify-center antialiased">
       <div className="max-w-2xl mx-auto p-4 flex flex-col items-center justify-center h-full relative z-10">
-        <h1 className="relative z-10 text-lg md:text-7xl font-outfit  bg-clip-text text-transparent bg-black/70 dark:bg-gradient-to-b from-neutral-100 to-neutral-600   text-center font-sans font-bold">
+        <motion.h1 initial={{y:-100 ,opacity:1}} whileInView={{y:0 , opacity:1}} transition={{duration:0.5}} className="relative z-10 text-lg md:text-7xl font-outfit  bg-clip-text text-transparent bg-black/70 dark:bg-gradient-to-b from-neutral-100 to-neutral-600   text-center font-sans font-bold">
           Discover, Rate & Track Your Favorite Movies
-        </h1>
+        </motion.h1>
         <p></p>
-        <p className="dark:text-neutral-300 font-exo text-black max-w-lg mx-auto my-2 text-sm text-center relative z-10">
+        <motion.p initial={{y:-50 ,opacity:1}} whileInView={{y:0 , opacity:1}} transition={{duration:0.5}} className="dark:text-neutral-300 font-exo text-black max-w-lg mx-auto my-2 text-sm text-center relative z-10">
           Join Chalchitra — your personal movie companion. Explore trending
           films, add them to your watchlist, and share your ratings with the
           world.
-        </p>
+        </motion.p>
         <div className="flex items-center justify-center w-full rounded-full">
           <input
             type="text"
