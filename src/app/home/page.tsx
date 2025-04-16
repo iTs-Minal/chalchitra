@@ -5,7 +5,7 @@ import React from 'react'
 
 const Page = () => {
   return (
-    <main className="flex flex-col w-full h-auto">
+    <main className="flex flex-col items-center w-full h-auto">
       <Navbar/>
       <Header/>
       <MainSection/>

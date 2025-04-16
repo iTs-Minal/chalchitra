@@ -2,7 +2,7 @@ import React from 'react'
 
 const MainSection = () => {
   return (
-    <div>
+    <div className="h-100% mt-180">
       mainsection
     </div>
   )
