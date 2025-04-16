@@ -253,6 +253,7 @@ export const NavbarLogo = () => {
         alt="logo"
         width={40}
         height={40}
+        priority
       />)}
       <span className="font-medium text-black dark:text-white"></span>
     </Link>
@@ -261,7 +262,7 @@ export const NavbarLogo = () => {
 
 export const NavbarButton = ({
   href,
-  as: Tag = "a",
+  as: Tag = "button",
   children,
   className,
   variant = "primary",
@@ -287,6 +288,18 @@ export const NavbarButton = ({
     gradient:
       "bg-gradient-to-b from-blue-500 to-blue-700 text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]",
   };
+
+  const combinedClassName = `${baseStyles} ${variantStyles[variant]} ${className || ""}`;
+
+  if (href) {
+    return (
+      <Link href={href}>
+        <Tag className={combinedClassName} {...props}>
+          {children}
+        </Tag>
+      </Link>
+    );
+  }
 
   return (
     <Tag

@@ -11,6 +11,7 @@ const Page = () => {
       <MainSection/>
     </main>
   )
+  
 }
 
 export default Page

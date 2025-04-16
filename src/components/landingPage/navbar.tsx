@@ -14,6 +14,7 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useState } from "react";
 
+
 export function NavbarSection() {
   const navItems = [
     {
@@ -56,9 +57,9 @@ export function NavbarSection() {
                 }}
               />
             </SignedIn>
-            <Link href="/home">
-            <NavbarButton variant="primary">Get Started</NavbarButton>
-            </Link>
+ 
+              <NavbarButton href="/home">Get Started</NavbarButton>
+
           </div>
         </NavBody>
 
@@ -87,31 +88,34 @@ export function NavbarSection() {
               </Link>
             ))}
             <div className="flex w-full flex-col gap-4">
-            <SignedOut>
-              <SignInButton>
-                <NavbarButton variant="secondary">Sign In</NavbarButton>
-              </SignInButton>
-            </SignedOut>
-            <SignedIn>
-              <UserButton
-                appearance={{
-                  elements: {
-                    avatarBox: "w-10 h-10",
-                    userButtonPopoverCard: "shadow-xl",
-                    userPreviewMainIdentifier: "font-semibold",
-                  },
-                }}
-              />
-            </SignedIn>
-              <Link href="/home">
-              <NavbarButton
-                onClick={() => setIsMobileMenuOpen(false)}
-                variant="primary"
-                className="w-full"
+              
+                <SignedOut>
+                  <SignInButton>
+                    <NavbarButton variant="secondary">Sign In</NavbarButton>
+                  </SignInButton>
+                </SignedOut>
+              
+              <SignedIn>
+                <UserButton
+                  appearance={{
+                    elements: {
+                      avatarBox: "w-10 h-10",
+                      userButtonPopoverCard: "shadow-xl",
+                      userPreviewMainIdentifier: "font-semibold",
+                    },
+                  }}
+                />
+              </SignedIn>
+              
+                <NavbarButton
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  variant="primary"
+                  className="w-full"
+                  href="/home"
                 >
-                Get Started
-              </NavbarButton>
-                </Link>
+                  Get Started
+                </NavbarButton>
+              
             </div>
           </MobileNavMenu>
         </MobileNav>
