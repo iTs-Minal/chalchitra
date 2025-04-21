@@ -4,13 +4,19 @@ import { Menu, Moon, Search, Sun, XCircle } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-import { LampContainer } from "../ui/lamp";
-import { motion } from "motion/react";
+
+// import { motion } from "motion/react";
 
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
 
   const isDark = theme === "dark";
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [hideOnScroll, setHideOnScroll] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -19,9 +25,9 @@ const Navbar = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      setScrolled(window.scrollY > 10);
+      setScrolled(window.scrollY > 1);
 
-      if (currentScrollY > lastScrollY || currentScrollY > 10) {
+      if (currentScrollY > lastScrollY || currentScrollY > 1) {
         setHideOnScroll(true);
       } else {
         setHideOnScroll(false);
@@ -64,44 +70,60 @@ const Navbar = () => {
           <span
             onClick={openMenu}
             className={`${
-              hideOnScroll ? "opacity-0 pointer-events-none" : "opacity-100"
+              hideOnScroll ? "opacity-100" : "opacity-100"
             }`}
           >
             <Menu />
           </span>
 
           {isOpen && (
-            <div className={`${scrolled?"hidden" :"flex flex-col absolute items-center left-0 top-0 bottom-0 w-64 z-50 h-screen transition duration-1000"} `}>
-
-            <LampContainer>
-            
-            <div
-              onClick={closeMenu}
-              className="p-1 cursor-pointer absolute right-6 top-6 dark:hover:rounded-full dark:hover:bg-slate-900/70 dark:hover:text-white"
-            >
-              <span><XCircle size={36} className="w-10" /></span>
-            </div>
-              <motion.h1
-                initial={{ opacity: 0.5, y:10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{
-                  delay: 0.1,
-                  duration: 0.1,
-                }}
-                className="mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl"
+              <div className={`${
+                scrolled
+                  ? "flex absolute  items-center justify-center left-0 top-20 px-3 py-3 bg-neutral-200 dark:bg-zinc-900 h-20 bottom-0 w-130 z-50 transition duration-1000 rounded-full"
+                  : "fixed items-center left-0 top-0 px-3 py-4 bg-neutral-200 dark:bg-zinc-900 bottom-0 w-70 z-50 h-screen transition ease-in duration-1000"
+              } `}>
+                <div
+                  onClick={closeMenu}
+                  className={`${scrolled?"top-0":"p-1 cursor-pointer left-50 absolute dark:hover:rounded-full dark:hover:text-white"}`}
                 >
-                Build lamps <br /> the right way
-              </motion.h1>
-            </LampContainer>
+                  <span>
+                    <XCircle size={28} className="w-10 hover:scale-110" />
+                  </span>
                 </div>
+                <div className="flex items-center w-full h-full">
+                  <ul
+                    ref={sideMenuRef}
+                    className={`${scrolled?"flex flex-row items-center justify-center w-full h-20":"flex flex-col items-center relative top-10 w-full h-full text-black dark:text-white transition-transform duration-500"}`}
+                  >
+                    <li onClick={closeMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
+                      Home
+                    </li>
+                    <li onClick={closeMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
+                      Movies
+                    </li>
+                    <li onClick={closeMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
+                      TV Shows
+                    </li>
+                    <li onClick={closeMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
+                      Top ImDB
+                    </li>
+                    <li onClick={closeMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
+                      Trending
+                    </li>
+                  </ul>
+                </div>
+              </div>
           )}
 
-          <Image
-            src={isDark ? "/logo-white.png" : "/logo-black.png"}
-            alt="chalchitra-logo"
-            height={60}
-            width={60}
-          />
+          {mounted && (
+            <Image
+              src={isDark ? "/logo-white.png" : "/logo-black.png"}
+              alt="chalchitra-logo"
+              loading="lazy"
+              height={60}
+              width={60}
+            />
+          )}
         </div>
         <form
           className={`hidden lg:flex items-center ml-10 transition-all duration-300 ${

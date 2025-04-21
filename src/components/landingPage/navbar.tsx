@@ -91,9 +91,9 @@ export function NavbarSection() {
               
                 <SignedOut>
                   <SignInButton>
-                    <NavbarButton variant="secondary">Sign In</NavbarButton>
+                    <NavbarButton variant="secondary" href="/sign-in">Sign In</NavbarButton>
                   </SignInButton>
-                </SignedOut>
+                </SignedOut> 
               
               <SignedIn>
                 <UserButton

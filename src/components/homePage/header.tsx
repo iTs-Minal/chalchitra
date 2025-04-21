@@ -1,4 +1,4 @@
-import { Github, Instagram, Linkedin, Star, Twitter } from "lucide-react";
+import { Github, Instagram, Linkedin, MoveLeft, MoveRight, Star, Twitter } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 
@@ -27,25 +27,37 @@ const Header = () => {
             {`first rule of fight club is that you don't talk about fight club`}
           </p>
         </div>
+        <button
+          
+          className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white bg-gray-800 p-2 rounded hover:opacity-60"
+        >
+          <MoveLeft />
+        </button>
+        <button
+          
+          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white bg-gray-800 p-2 rounded hover:opacity-60"
+        >
+          <MoveRight />
+        </button>
       </div>
 
       {/* random 3 movies */}
       <div className="w-full md:w-[40%] flex flex-col space-y-6 p-3 cursor-pointer">
-        <div className="flex p-3 rounded-lg shadow-md hover:scale-105 transition duration-100 dark:bg-zinc-800">
+        <div className="flex p-3 rounded-lg shadow-sm hover:scale-105 transition duration-100 dark:bg-zinc-900">
           <Image
-            className="w-20 h-24 object-cover rounded"
+            className="w-24 h-30 object-cover"
             src="/dune-2.jpg"
             // TMDB image URL
             alt={"Movie title"}
             width={80}
-            height={120}
+            height={150}
           />
           <div className="ml-4 text-black dark:text-white">
-            <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 gap-3">
               <span className="text-yellow-400 flex items-center">
                 <Star className="mr-1" /> {`10`}
               </span>
-              <span className="bg-gray-700 px-2 py-1 rounded text-white">
+              <span className="bg-zinc-800 px-2 py-1 rounded text-white">
                 {"NP"}
               </span>
             </div>
@@ -58,21 +70,21 @@ const Header = () => {
           </div>
         </div>
 
-        <div className="flex p-3 rounded-lg shadow-md hover:scale-105 transition duration-100 dark:bg-zinc-800">
+        <div className="flex p-3 rounded-lg shadow-sm hover:scale-105 transition duration-100 dark:bg-zinc-900">
           <Image
-            className="w-20 h-24 object-cover rounded"
+            className="w-24 h-30 object-cover"
             src="/dune-2.jpg"
             // TMDB image URL
             alt={"Movie title"}
             width={80}
-            height={120}
+            height={150}
           />
           <div className="ml-4 text-black dark:text-white">
-            <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 gap-3">
               <span className="text-yellow-400 flex items-center">
                 <Star className="mr-1" /> {`10`}
               </span>
-              <span className="bg-gray-700 px-2 py-1 rounded text-white">
+              <span className="bg-zinc-800 px-2 py-1 rounded text-white">
                 {"NP"}
               </span>
             </div>
@@ -85,21 +97,21 @@ const Header = () => {
           </div>
         </div>
 
-        <div className="flex p-3 rounded-lg shadow-md hover:scale-105 transition duration-100 dark:bg-zinc-800">
+        <div className="flex p-3 rounded-lg shadow-sm hover:scale-105 transition duration-100 dark:bg-zinc-900">
           <Image
-            className="w-20 h-24 object-cover rounded"
+            className="w-24 h-30 object-cover"
             src="/dune-2.jpg"
             // TMDB image URL
             alt={"Movie title"}
             width={80}
-            height={120}
+            height={150}
           />
           <div className="ml-4 text-black dark:text-white">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 gap-3">
               <span className="text-yellow-400 flex items-center">
                 <Star className="mr-1" /> {`10`}
               </span>
-              <span className="bg-gray-700 px-2 py-1 rounded text-white">
+              <span className="bg-zinc-800 px-2 py-1 rounded text-white">
                 {"NP"}
               </span>
             </div>
@@ -115,7 +127,7 @@ const Header = () => {
 
       {/* social */}
 
-      <div className="w-full md:w-[10%] flex flex-row justify-center md:flex-col md:items-center gap-6 p-4 text-black dark:text-white">
+      <div className="w-full md:w-[10%] flex flex-row border-l-1 justify-center md:flex-col md:items-center gap-6 p-4 text-black dark:text-white">
         {[
           { icon: Twitter, name: "Twitter" },
           { icon: Instagram, name: "Instagram" },
