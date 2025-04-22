@@ -142,7 +142,7 @@ const Navbar = () => {
       </div>
 
       <div className="flex justify-center items-center gap-10 mr-10">
-        <div
+        {mounted&&(<div
           onClick={() => setTheme(isDark ? "light" : "dark")}
           className={`flex items-center cursor-pointer transition-transform duration-500 ${
             isDark ? "rotate-180" : "rotate-0"
@@ -154,6 +154,7 @@ const Navbar = () => {
             <Moon className="h-7 w-7 text-blue-500 rotate-0 transition-all" />
           )}
         </div>
+      )}
 
         <SignedIn>
           <UserButton

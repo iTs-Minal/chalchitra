@@ -1,9 +1,104 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { TracingBeam } from "../ui/tracing-beam";
 import { IconLine } from "@tabler/icons-react";
 import { FilmIcon, TvIcon } from "lucide-react";
+import MovieCard from "../movie-card";
+import MovieSkeleton from "../movie-skeleton";
+
+interface Movie {
+  id: number;
+  title?: string;
+  name?: string;
+  vote_average?: number;
+  poster_path?: string;
+  overview: string;
+  original_language: string;
+  release_date: string;
+}
 
 const MainSection = () => {
+  // Fetching trending movies from TMDB API
+  const [trendingMovies, setTrendingMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const getTrendingMovies = (category: string) => {
+    setLoading(true);
+    fetch(`/api/movies/${category}`)
+      .then((res) => res.json())
+      .then((json) => {
+        // Adjust for "latest" (it returns a single object)
+        const results = Array.isArray(json.results) ? json.results : [json];
+
+        const moviesData = results.map((movie: Movie) => ({
+          id: movie.id,
+          title: movie.title || "Movie Title",
+          vote_average: movie.vote_average,
+          poster_path: movie.poster_path,
+          overview: movie.overview,
+          original_language: movie.original_language,
+          release_date: movie.release_date,
+        }));
+        setTimeout(() => {
+          setTrendingMovies(moviesData);
+          setLoading(false); // Or use state based on the category
+        }, 2000);
+      })
+      .catch((error) =>
+        console.error(`Error fetching ${category} movies:`, error)
+      );
+  };
+
+  useEffect(() => {
+    getTrendingMovies("trending");
+    // setLoading(false); // Removed this line to avoid setting loading to false prematurely
+    // try "trending", "upcoming", etc.
+  }, []);
+
+  // Fetching latest movies from TMDB API
+  const [latestMovies, setLatestMovies] = useState<Movie[]>([]);
+
+  const getLatestMovies = (category: string) => {
+    setLoading(true);
+    fetch(`/api/movies/${category}`)
+      .then((res) => res.json())
+      .then((json) => {
+        // Adjust for "latest" (it returns a single object)
+        let results = [];
+
+      // If category is "latest", the response may not be an array, so handle that case
+      if (category === "latest" && json.title) {
+        // Latest returns a single movie, so put it in an array
+        results = [json];
+      } else if (Array.isArray(json.results)) {
+        // Other categories return an array
+        results = json.results;
+      }
+
+        const moviesData = results.map((movie: Movie) => ({
+          id: movie.id,
+          title: movie.title || "Movie Title",
+          vote_average: movie.vote_average,
+          poster_path: movie.poster_path,
+          overview: movie.overview,
+          original_language: movie.original_language,
+          release_date: movie.release_date,
+        }));
+        setTimeout(() => {
+          setLatestMovies(moviesData);
+          setLoading(false); // Or use state based on the category
+        }, 2000);
+      })
+      .catch((error) =>
+        console.error(`Error fetching ${category} movies:`, error)
+      );
+  };
+
+  useEffect(() => {
+    getLatestMovies("popular"); // Set loading to false after fetching
+    // try "trending", "upcoming", etc.
+  }, []);
+
   return (
     <main className="flex flex-col items-center justify-center px-2 mt-5">
       <div className="flex flex-col w-full items-center mt-5">
@@ -23,11 +118,10 @@ const MainSection = () => {
           have any issues, inquiries, or requests regarding the site.
         </p>
       </div>
-      <div className="flex flex-col w-full mt-30 px-2">
+      <div className="flex flex-col w-full mt-20 px-2">
         <TracingBeam className="flex flex-col w-full h-auto">
-
-          {/* -----trensding section----- */}
-          <div className="flex flex-col w-full h-screen cursor-pointer">
+          {/* -----trending section----- */}
+          <div className="flex flex-col w-full h-auto cursor-pointer mt-10">
             <div className="flex gap-6 items-center">
               <IconLine />
               <span className="font-lilita text-3xl">Trending</span>
@@ -47,20 +141,49 @@ const MainSection = () => {
                 </span>
               </div>
             </div>
-            <div>Trending movies and tvshow both option goes here</div>
+            <div className="flex flex-wrap items-center cursor-pointer ml-5">
+              {loading
+                ? Array.from({ length: 18 }).map((_, i) => (
+                    <MovieSkeleton key={i} />
+                  ))
+                : trendingMovies.map((movie) => (
+                    <div key={movie.id}>
+                      <MovieCard
+                        title={movie.title}
+                        vote_average={movie.vote_average}
+                        poster_path={movie.poster_path}
+                        id={movie.id}
+                      />
+                    </div>
+                  ))}
+            </div>
           </div>
 
-
-{/* -----movies section------- */}
-          <div className="flex flex-col w-full h-screen ">
+          {/* -----movies section------- */}
+          <div className="flex flex-col w-full h-auto mt-20 cursor-pointer">
             <div className="flex gap-5 items-center">
               <IconLine />
               <span className="font-lilita text-3xl">Latest Movies</span>
               <FilmIcon />
             </div>
-            <div>movie card goes here</div>
+            <div className="flex flex-wrap items-center cursor-pointer ml-5">
+              {loading
+                ? Array.from({ length: 18 }).map((_, i) => (
+                    <MovieSkeleton key={i} />
+                  ))
+                : latestMovies.map((movie) => (
+                    <div key={movie.id}>
+                      <MovieCard
+                        title={movie.title}
+                        vote_average={movie.vote_average}
+                        poster_path={movie.poster_path}
+                        id={movie.id}
+                      />
+                    </div>
+                  ))}
+            </div>
           </div>
-{/* -----tv show section---- */}
+          {/* -----tv show section---- */}
           <div className="flex flex-col w-full h-screen cursor-pointer">
             <div className="flex gap-5 items-center">
               <IconLine />
@@ -70,9 +193,7 @@ const MainSection = () => {
             <div>tvshow card goes here</div>
           </div>
 
-
-
-{/* ----upcoming section---- */}
+          {/* ----upcoming section---- */}
           <div className="flex flex-col w-full h-screen cursor-pointer">
             <div className="flex gap-5 items-center">
               <IconLine />
