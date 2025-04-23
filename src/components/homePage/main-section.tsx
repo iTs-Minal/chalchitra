@@ -42,7 +42,7 @@ const MainSection = () => {
         setTimeout(() => {
           setTrendingMovies(moviesData);
           setLoading(false); // Or use state based on the category
-        }, 2000);
+        }, 3000);
       })
       .catch((error) =>
         console.error(`Error fetching ${category} movies:`, error)
@@ -56,14 +56,14 @@ const MainSection = () => {
   }, []);
 
   // Fetching latest movies from TMDB API
-  const [latestMovies, setLatestMovies] = useState<Movie[]>([]);
+  const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
 
-  const getLatestMovies = (category: string) => {
+  const getPopularMovies = (category: string) => {
     setLoading(true);
     fetch(`/api/movies/${category}`)
       .then((res) => res.json())
       .then((json) => {
-        // Adjust for "latest" (it returns a single object)
+        // Adjust for "popular" (it returns a single object)
         let results = [];
 
       // If category is "latest", the response may not be an array, so handle that case
@@ -85,9 +85,9 @@ const MainSection = () => {
           release_date: movie.release_date,
         }));
         setTimeout(() => {
-          setLatestMovies(moviesData);
+          setPopularMovies(moviesData);
           setLoading(false); // Or use state based on the category
-        }, 2000);
+        }, 3000);
       })
       .catch((error) =>
         console.error(`Error fetching ${category} movies:`, error)
@@ -95,7 +95,7 @@ const MainSection = () => {
   };
 
   useEffect(() => {
-    getLatestMovies("popular"); // Set loading to false after fetching
+    getPopularMovies("popular"); // Set loading to false after fetching
     // try "trending", "upcoming", etc.
   }, []);
 
@@ -171,7 +171,7 @@ const MainSection = () => {
                 ? Array.from({ length: 18 }).map((_, i) => (
                     <MovieSkeleton key={i} />
                   ))
-                : latestMovies.map((movie) => (
+                : popularMovies.map((movie) => (
                     <div key={movie.id}>
                       <MovieCard
                         title={movie.title}
