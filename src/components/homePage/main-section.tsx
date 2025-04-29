@@ -33,10 +33,7 @@ interface TvShow {
 }
 
 const MainSection = () => {
-
-
   const [loading, setLoading] = useState(true);
-
 
   // Fetching trending movies from TMDB API
 
@@ -74,9 +71,8 @@ const MainSection = () => {
     getTrendingMovies("trending");
   }, []);
 
-
   // Fetching trending shows from TMDB API
-const [trendingShows, setTrendingShows] = useState<TvShow[]>([]);
+  const [trendingShows, setTrendingShows] = useState<TvShow[]>([]);
 
   const getTrendingShows = (category: string) => {
     setLoading(true);
@@ -109,9 +105,6 @@ const [trendingShows, setTrendingShows] = useState<TvShow[]>([]);
   useEffect(() => {
     getTrendingShows("trending");
   }, []);
-
-
-
 
   // Fetching latest movies from TMDB API
   const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
@@ -197,14 +190,7 @@ const [trendingShows, setTrendingShows] = useState<TvShow[]>([]);
     getonairShows("on_the_air");
   }, []);
 
-
-const [selectedType, setSelectedType]=useState("movies");
-
-
-
-
-
-
+  const [selectedType, setSelectedType] = useState("movies");
 
   return (
     <main className="flex flex-col items-center justify-center px-2 mt-5">
@@ -233,14 +219,24 @@ const [selectedType, setSelectedType]=useState("movies");
               <IconLine />
               <span className="font-lilita text-3xl">Trending</span>
               <div className="flex gap-4 items-center">
-                <span onClick={() => setSelectedType("movies")} className={`flex items-center text-sm font-kanit gap-2 bg-zinc-800 text-gray-200 p-1 rounded hover:scale-95 transition duation-300 ${selectedType ==="movies" ?"bg-zinc-800" :"bg-yellow-500" }`}>
+                <span
+                  onClick={() => setSelectedType("movies")}
+                  className={`flex items-center text-sm font-kanit gap-2 text-gray-200 p-1 rounded hover:scale-95 transition duation-300 ${
+                    selectedType === "movies" ? "bg-yellow-500" : "bg-zinc-800"
+                  }`}
+                >
                   {" "}
                   <span>
                     <FilmIcon />
                   </span>
                   Movies
                 </span>
-                <span onClick={() => setSelectedType("tvShows")} className={`flex items-center text-sm font-kanit gap-2 text-gray-200 p-1 rounded hover:scale-95 transition duation-300 ${selectedType ==="tvShows" ?"bg-yellow-500" : "bg-zinc-800"}`}>
+                <span
+                  onClick={() => setSelectedType("tvShows")}
+                  className={`flex items-center text-sm font-kanit gap-2 text-gray-200 p-1 rounded hover:scale-95 transition duation-300 ${
+                    selectedType === "tvShows" ? "bg-yellow-500" : "bg-zinc-800"
+                  }`}
+                >
                   <span>
                     <TvIcon />
                   </span>{" "}
@@ -253,9 +249,8 @@ const [selectedType, setSelectedType]=useState("movies");
                 ? Array.from({ length: 20 }).map((_, i) => (
                     <MovieSkeleton key={i} />
                   ))
-                :{
-                  selectedType==="movies"? 
-                  ( trendingMovies.map((movie) => (
+                : selectedType === "movies"
+                ? trendingMovies.map((movie) => (
                     <div key={movie.id}>
                       <MovieCard
                         title={movie.title}
@@ -264,21 +259,16 @@ const [selectedType, setSelectedType]=useState("movies");
                         id={movie.id}
                       />
                     </div>
-                    ):
-                    (
-                      trendingShows.map((show) => (
-                        <div key={show.id}>
-                          <ShowCard
-                            name={show.name}
-                            vote_average={show.vote_average}
-                            poster_path={show.poster_path}
-                            id={show.id}
-                          />
-                        </div>
-                    )
-
-                } 
-               
+                  ))
+                : trendingShows.map((show) => (
+                    <div key={show.id}>
+                      <ShowCard
+                        name={show.name}
+                        vote_average={show.vote_average}
+                        poster_path={show.poster_path}
+                        id={show.id}
+                      />
+                    </div>
                   ))}
             </div>
           </div>
