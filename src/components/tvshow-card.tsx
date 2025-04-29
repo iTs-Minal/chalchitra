@@ -3,14 +3,14 @@ import Image from "next/image";
 import React from "react";
 import { GlowingEffect } from "./ui/glowing-effect";
 
-interface Movie {
+interface TvShow {
   id:number;
-    title?: string;
+    name?: string;
     vote_average?: number;
     poster_path?: string;
   }
 
-const MovieCard = ({title,vote_average,poster_path}: Movie) => {
+const ShowCard = ({name,vote_average,poster_path}: TvShow) => {
   return (
     <div className="flex flex-col items-center justify-center w-[185px] h-90 bg-zinc-900 mt-5 mx-2">
         <div className="relative flex items-center justify-center w-full h-full object-contain">
@@ -23,7 +23,7 @@ const MovieCard = ({title,vote_average,poster_path}: Movie) => {
         />
           <Image
             src={`https://image.tmdb.org/t/p/original${poster_path}`}
-            alt={title || "Movie poster"}
+            alt={name || "Movie poster"}
             width={500}
   height={750}
             className="w-full h-full object-cover hover:brightness-40"
@@ -34,7 +34,7 @@ const MovieCard = ({title,vote_average,poster_path}: Movie) => {
         </div>
         <div>
           <div className=" flex flex-col items-center justify-center w-full h-full gap-1">
-            <span className="font-outfit text-md p-1 line-clamp-1">{title}</span>
+            <span className="font-outfit text-md p-1 line-clamp-1">{name}</span>
             <button className="p-2 mb-1 hover:scale-95 bg-zinc-950 flex items-center justify-center rounded-md text-sm">
               View Details
             </button>
@@ -44,4 +44,4 @@ const MovieCard = ({title,vote_average,poster_path}: Movie) => {
   );
 };
 
-export default MovieCard;
+export default ShowCard;

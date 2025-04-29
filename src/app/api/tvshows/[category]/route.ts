@@ -7,7 +7,7 @@ export async function GET(request: NextRequest, { params }: { params: { category
         trending: "https://api.themoviedb.org/3/trending/tv/day",
         top_rated: "https://api.themoviedb.org/3/tv/top_rated",
         upcoming: "https://api.themoviedb.org/3/tv/upcoming",
-        now_playing: "https://api.themoviedb.org/3/tv/now_playing",
+        on_the_air: "https://api.themoviedb.org/3/tv/on_the_air",
         popular: "https://api.themoviedb.org/3/tv/popular",
         latest: "https://api.themoviedb.org/3/tv/latest",
       };

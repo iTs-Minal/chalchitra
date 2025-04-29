@@ -169,7 +169,7 @@ const Header = () => {
         {trendingAll.length > 0 && (
           <div className="flex flex-col justify-start w-full h-auto top-82 p-6 text-white shadow-lg relative z-20 bg-gradient-to-b from via-neutral-900/90 to-zinc-950 ">
             <h2 className="text-4xl font-bold text-left">
-              {trendingAll[currentIndex].title || "Title"}
+              {trendingAll[currentIndex].title || trendingAll[currentIndex].name || "Title"}
             </h2>
             <div className="flex items-center space-x-2 mt-4 gap-5">
               <span className="text-yellow-400 flex items-center">
