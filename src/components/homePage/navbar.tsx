@@ -3,6 +3,7 @@ import { SignedIn, UserButton } from "@clerk/nextjs";
 import { Menu, Moon, Search, Sun, XCircle } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
 // import { motion } from "motion/react";
@@ -95,20 +96,21 @@ const Navbar = () => {
                     ref={sideMenuRef}
                     className={`${scrolled?"flex flex-row items-center justify-center w-full h-20":"flex flex-col items-center relative top-10 w-full h-full text-black dark:text-white transition-transform duration-500"}`}
                   >
+                    <Link href="/home">
                     <li onClick={closeMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
                       Home
-                    </li>
-                    <li onClick={closeMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
+                    </li></Link>
+                    <Link href="/home/movies"> <li onClick={closeMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
                       Movies
-                    </li>
-                    <li onClick={closeMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
+                    </li></Link>
+                    <Link href="/home/tvshows">  <li onClick={closeMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
                       TV Shows
-                    </li>
-                    <li onClick={closeMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
+                    </li></Link>
+                    <Link href="/home/topimdb">   <li onClick={closeMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
                       Top ImDB
-                    </li>
+                    </li></Link>
                     <li onClick={closeMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
-                      Trending
+                      Andriod App
                     </li>
                   </ul>
                 </div>
