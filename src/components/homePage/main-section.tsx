@@ -35,8 +35,7 @@ interface TvShow {
 const MainSection = () => {
   const [loading, setLoading] = useState(true);
 
-  // Fetching trending movies from TMDB API
-
+  // ---------------------Fetching trending movies from TMDB API-------------------------
   const [trendingMovies, setTrendingMovies] = useState<Movie[]>([]);
 
   const getTrendingMovies = (category: string) => {
@@ -44,7 +43,6 @@ const MainSection = () => {
     fetch(`/api/movies/${category}`)
       .then((res) => res.json())
       .then((json) => {
-        // Adjust for "latest" (it returns a single object)
         const results = Array.isArray(json.results) ? json.results : [json];
 
         const moviesData = results.map((movie: Movie) => ({
@@ -66,12 +64,11 @@ const MainSection = () => {
         console.error(`Error fetching ${category} movies:`, error)
       );
   };
-
   useEffect(() => {
     getTrendingMovies("trending");
   }, []);
 
-  // Fetching trending shows from TMDB API
+  //---------------- Fetching trending shows from TMDB API-----------------------
   const [trendingShows, setTrendingShows] = useState<TvShow[]>([]);
 
   const getTrendingShows = (category: string) => {
@@ -101,12 +98,11 @@ const MainSection = () => {
         console.error(`Error fetching ${category} movies:`, error)
       );
   };
-
   useEffect(() => {
     getTrendingShows("trending");
   }, []);
 
-  // Fetching latest movies from TMDB API
+  // -----------------Fetching latest movies from TMDB API----------------------------
   const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
 
   const getPopularMovies = (category: string) => {
@@ -142,12 +138,11 @@ const MainSection = () => {
         console.error(`Error fetching ${category} movies:`, error)
       );
   };
-
   useEffect(() => {
     getPopularMovies("popular"); // Set loading to false after fetching
   }, []);
 
-  // Fetching latest shows from TMDB API
+  // -------------------------Fetching latest shows from TMDB API-------------------------
   const [onairShows, setonairShows] = useState<TvShow[]>([]);
 
   const getonairShows = (category: string) => {
@@ -155,15 +150,10 @@ const MainSection = () => {
     fetch(`/api/tvshows/${category}`)
       .then((res) => res.json())
       .then((json) => {
-        // Adjust for "popular" (it returns a single object)
         let results = [];
-
-        // If category is "latest", the response may not be an array, so handle that case
         if (category === "latest" && json.title) {
-          // Latest returns a single movie, so put it in an array
           results = [json];
         } else if (Array.isArray(json.results)) {
-          // Other categories return an array
           results = json.results;
         }
 
@@ -185,16 +175,82 @@ const MainSection = () => {
         console.error(`Error fetching ${category} movies:`, error)
       );
   };
-
   useEffect(() => {
     getonairShows("on_the_air");
   }, []);
 
+  //---------------------- Fetching upcoming movies from TMDb api---------------------
+  const [upcomingMovies, setUpcomingMovies] = useState<Movie[]>([]);
+
+  const getUpcomingMovies = (category: string) => {
+    setLoading(true);
+    fetch(`/api/movies/${category}`)
+      .then((res) => res.json())
+      .then((json) => {
+        const results = Array.isArray(json.results) ? json.results : [json];
+
+        const moviesData = results.map((movie: Movie) => ({
+          id: movie.id,
+          title: movie.title || "Movie Title",
+          vote_average: movie.vote_average,
+          poster_path: movie.poster_path,
+          overview: movie.overview,
+          original_language: movie.original_language,
+          release_date: movie.release_date,
+          media_type: movie.media_type,
+        }));
+        setTimeout(() => {
+          setUpcomingMovies(moviesData);
+          setLoading(false); // Or use state based on the category
+        }, 3000);
+      })
+      .catch((error) =>
+        console.error(`Error fetching ${category} movies:`, error)
+      );
+  };
+  useEffect(() => {
+    getUpcomingMovies("upcoming");
+  }, []);
+
+  //---------------- Fetching upcoming shows from TMDB API-----------------------
+  // const [upcomingShows, setUpcomingShows] = useState<TvShow[]>([]);
+
+  // const getUpcomingShows = (category: string) => {
+  //   setLoading(true);
+  //   fetch(`/api/tvshows/${category}`)
+  //     .then((res) => res.json())
+  //     .then((json) => {
+  //       // Adjust for "latest" (it returns a single object)
+  //       const results = Array.isArray(json.results) ? json.results : [json];
+
+  //       const showsData = results.map((show: TvShow) => ({
+  //         id: show.id,
+  //         name: show.name || "Show Title",
+  //         vote_average: show.vote_average,
+  //         poster_path: show.poster_path,
+  //         overview: show.overview,
+  //         original_language: show.original_language,
+  //         first_air_date: show.first_air_date,
+  //         media_type: show.media_type,
+  //       }));
+  //       setTimeout(() => {
+  //         setUpcomingShows(showsData);
+  //         setLoading(false); // Or use state based on the category
+  //       }, 3000);
+  //     })
+  //     .catch((error) =>
+  //       console.error(`Error fetching ${category} movies:`, error)
+  //     );
+  // };
+  // useEffect(() => {
+  //   getUpcomingShows("upcoming");
+  // }, []);
+
   const [selectedType, setSelectedType] = useState("movies");
 
   return (
-    <main className="flex flex-col items-center justify-center px-2 mt-5">
-      <div className="flex flex-col w-full items-center mt-5">
+    <div className="flex flex-col items-center justify-center px-2 mt-5 h-full bg-neutral-100 dark:bg-zinc-950">
+      <div className="flex flex-col w-full items-center mt-5 dark:bg-zinc-950">
         <p className="text-md font-bold text-black dark:text-white font-kanit">
           Are you looking for the best site for watching movies online? A site
           that is not only free but also safe? If yes, search no more, you are
@@ -211,10 +267,10 @@ const MainSection = () => {
           have any issues, inquiries, or requests regarding the site.
         </p>
       </div>
-      <div className="flex flex-col w-full mt-20 px-2">
+      <div className="flex flex-col w-full mt-20 px-2 h-auto bg-zinc-100 dark:bg-neutral-950">
         <TracingBeam className="flex flex-col w-full h-auto">
           {/* -----trending section----- */}
-          <div className="flex flex-col w-full h-auto cursor-pointer mt-10">
+          <div className="flex flex-col w-full h-auto cursor-pointer mt-10 bg-zinc-100 dark:bg-zinc-950">
             <div className="flex gap-6 items-center">
               <IconLine />
               <span className="font-lilita text-3xl">Trending</span>
@@ -272,9 +328,8 @@ const MainSection = () => {
                   ))}
             </div>
           </div>
-
           {/* -----movies section------- */}
-          <div className="flex flex-col w-full h-auto mt-20 cursor-pointer">
+          <div className="flex flex-col w-full h-auto mt-20 cursor-pointer bg-zinc-100 dark:bg-zinc-950">
             <div className="flex gap-5 items-center">
               <IconLine />
               <span className="font-lilita text-3xl">Latest Movies</span>
@@ -298,7 +353,7 @@ const MainSection = () => {
             </div>
           </div>
           {/* -----tv show section---- */}
-          <div className="flex flex-col mt-20 w-full h-auto cursor-pointer">
+          <div className="flex flex-col mt-20 w-full h-auto cursor-pointer bg-zinc-100 dark:bg-zinc-950">
             <div className="flex gap-5 items-center">
               <IconLine />
               <span className="font-lilita text-3xl">Latest Tv Shows</span>
@@ -321,19 +376,45 @@ const MainSection = () => {
                   ))}
             </div>
           </div>
-
           {/* ----upcoming section---- */}
-          <div className="flex flex-col w-full h-screen cursor-pointer">
+          <div className="flex flex-col w-full h-auto cursor-pointer mt-20 mb-10 bg-zinc-100 dark:bg-zinc-950">
             <div className="flex gap-5 items-center">
               <IconLine />
               <span className="font-lilita text-3xl">Upcoming</span>
-              <FilmIcon />
+              <div className="flex gap-4 items-center">
+                <span
+                  className={`flex items-center text-sm font-kanit gap-2 text-gray-200 p-1 rounded hover:scale-95 transition duation-300 
+                    bg-yellow-500
+                  `}
+                >
+                  {" "}
+                  <span>
+                    <FilmIcon />
+                  </span>
+                  Movies
+                </span>
+              </div>
             </div>
-            <div>upcoming card goes here</div>
+            <div className="flex flex-wrap items-center cursor-pointer ml-5">
+              {loading
+                ? Array.from({ length: 20 }).map((_, i) => (
+                    <MovieSkeleton key={i} />
+                  ))
+                : upcomingMovies.map((movie) => (
+                    <div key={movie.id}>
+                      <MovieCard
+                        title={movie.title}
+                        vote_average={movie.vote_average}
+                        poster_path={movie.poster_path}
+                        id={movie.id}
+                      />
+                    </div>
+                  ))}
+            </div>
           </div>
         </TracingBeam>
       </div>
-    </main>
+    </div>
   );
 };
 

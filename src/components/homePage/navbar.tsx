@@ -59,9 +59,9 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`sticky top-0 z-50 flex mx-auto justify-between bg-neutral-200 dark:bg-neutral-800 items-center transition-all duration-300 px-2 ${
+      className={`absolute md:sticky top-0 z-50 flex mx-auto justify-between bg-neutral-200 dark:bg-neutral-800 items-center transition-all duration-300 px-2 ${
         scrolled
-          ? "py-1 rounded-full opacity-90 scale-90 w-[70%] top-4 backdrop-blur-lg"
+          ? "md:py-1 rounded-full opacity-90 md:scale-90 md:w-[80%] md:top-4 backdrop-blur-lg"
           : "py-1 scale-100 w-[100%]"
       }`}
     >

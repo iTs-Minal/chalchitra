@@ -14,8 +14,8 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className="bg-zinc-100 dark:bg-black text-black dark:text-white border-t border-neutral-200 dark:border-neutral-800 mt-1 flex flex-col items-center">
-      <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center md:items-start gap-10">
+    <footer className="bg-zinc-100 dark:bg-black text-black dark:text-white border-t border-neutral-200 dark:border-neutral-800 mt-1 flex flex-col">
+      <div className="max-w-7xl px-6 py-12 flex flex-col md:flex-row justify-between items-center md:items-start gap-10">
         {/* Logo */}
         <div className="flex-shrink-0">
           {mounted && (
