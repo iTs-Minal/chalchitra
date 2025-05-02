@@ -5,6 +5,7 @@ import { TracingBeam } from "@/components/ui/tracing-beam";
 import { IconLine } from "@tabler/icons-react";
 import { Star } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 type Params = {
@@ -22,6 +23,8 @@ export default async function SearchResultsPage({ params }: Params) {
   if (!res.ok) return notFound();
 
   const data = await res.json();
+
+
 
   return (
     <main className="flex flex-col justify-center w-full h-auto">
@@ -48,7 +51,12 @@ export default async function SearchResultsPage({ params }: Params) {
                 poster_path?: string;
                 backdrop_path?: string;
                 vote_average?: number;
-              }) => (
+                media_type?:string;
+              }) => {
+                  const title=item.title||item.name;
+                  const slug = `${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${item.id}`;
+              
+                return(
                 <div
                   key={item.id}
                   className="flex flex-col items-center justify-center w-[185px] h-90  bg-neutral-300 dark:bg-zinc-900 mt-5 mx-2"
@@ -78,13 +86,14 @@ export default async function SearchResultsPage({ params }: Params) {
                       <span className="font-outfit text-md p-1 line-clamp-1">
                         {item.title || item.name}
                       </span>
-                      <button className="p-2 mb-1 hover:scale-95 bg-zinc-50 dark:text-white dark:bg-zinc-950 flex items-center justify-center rounded-md text-sm">
+                     <Link href={item.media_type==="movie"?`/movies/${slug}`:`/tvshows/${slug}`}> <button className="p-2 mb-1 hover:scale-95 bg-zinc-50 dark:text-white dark:bg-zinc-950 flex items-center justify-center rounded-md text-sm">
                         View Details
-                      </button>
+                      </button></Link>
                     </div>
                   </div>
                 </div>
-              )
+              );
+            }
             )}
           </div>
         </TracingBeam>
