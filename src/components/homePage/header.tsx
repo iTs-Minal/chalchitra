@@ -173,7 +173,7 @@ const Header = () => {
             </h2>
             <div className="flex items-center space-x-2 mt-4 gap-5">
               <span className="text-yellow-400 flex items-center">
-                <Star className="mr-1 text-yellow-400" />
+                <Star className="mr-1 text-yellow-400 fill-yellow-500" />
                 {trendingAll[currentIndex].vote_average?.toFixed(1)}
               </span>
               <span className="bg-gray-700 px-2 py-1 rounded">
@@ -227,7 +227,7 @@ const Header = () => {
                 <div className="ml-4 text-black dark:text-white">
                   <div className="flex items-center space-x-2 gap-3">
                     <span className="text-yellow-400 flex items-center">
-                      <Star className="mr-1" />{" "}
+                      <Star className="mr-1 fill-yellow-500 text-yellow-500" />{" "}
                       {movie.vote_average?.toFixed(1) || `N/A`}
                     </span>
                     <span className="bg-zinc-800 px-2 py-1 rounded text-white">

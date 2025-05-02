@@ -2,15 +2,19 @@ import { Star } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import { GlowingEffect } from "../ui/glowing-effect";
+import Link from "next/link";
 
 interface Movie {
   id:number;
-    title?: string;
+    title: string;
     vote_average?: number;
     poster_path?: string;
   }
 
-const MovieCard = ({title,vote_average,poster_path}: Movie) => {
+const MovieCard = ({id,title,vote_average,poster_path}: Movie) => {
+
+  const slug = `${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${id}`;
+
   return (
     <div className="flex flex-col items-center justify-center w-[185px] h-90  bg-neutral-300 dark:bg-zinc-900 mt-5 mx-2">
         <div className="relative flex items-center justify-center w-full h-full object-contain">
@@ -35,9 +39,9 @@ const MovieCard = ({title,vote_average,poster_path}: Movie) => {
         <div>
           <div className=" flex flex-col items-center justify-center w-full h-full gap-1">
             <span className="font-outfit text-md p-1 line-clamp-1">{title}</span>
-            <button className="p-2 mb-1 hover:scale-95 bg-zinc-50 dark:text-white dark:bg-zinc-950 flex items-center justify-center rounded-md text-sm">
+            <Link href={`/movies/${slug}`}><button className="p-2 mb-1 hover:scale-95 bg-zinc-50 dark:text-white dark:bg-zinc-950 flex items-center justify-center rounded-md text-sm">
               View Details
-            </button>
+            </button></Link>
           </div>
         </div>
       </div>
