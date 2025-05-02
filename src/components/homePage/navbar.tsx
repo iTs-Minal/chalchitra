@@ -80,7 +80,7 @@ const Navbar = () => {
           {isOpen && (
               <div className={`${
                 scrolled
-                  ? "flex absolute  items-center justify-center left-0 top-20 px-3 py-3 bg-neutral-200 dark:bg-zinc-900 h-20 bottom-0 w-130 z-50 transition duration-1000 rounded-full"
+                  ? "flex absolute  items-center justify-center left-0 top-20 px-3 py-3 bg-neutral-200 dark:bg-zinc-900 h-20 bottom-0 w-auto z-50 transition duration-1000 rounded-full"
                   : "fixed items-center left-0 top-0 px-3 py-4 bg-neutral-200 dark:bg-zinc-900 bottom-0 w-70 z-50 h-screen transition ease-in duration-1000"
               } `}>
                 <div

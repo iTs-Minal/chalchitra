@@ -19,7 +19,7 @@ export async function GET(request: NextRequest, { params }: { params: { category
       }
     
       try {
-        const response = await fetch(`${url}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`);
+        const response = await fetch(`${url}?api_key=${process.env.TMDB_API_KEY}`);
         const data = await response.json();
         return NextResponse.json(data);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

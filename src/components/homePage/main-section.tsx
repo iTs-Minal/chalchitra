@@ -254,15 +254,15 @@ const MainSection = () => {
         <p className="text-md font-bold text-black dark:text-white font-kanit">
           Are you looking for the best site for watching movies online? A site
           that is not only free but also safe? If yes, search no more, you are
-          at the right place. DopeBox allows users to watch thousands of movies
+          at the right place. Chalchitra allows users to watch thousands of movies
           and TV shows in HD quality. You are completely safe on the site as we
           do not have any ads or require any registration. Although we are free
           of charge, our quality is on the same par with that of paid streaming
           services. Our content library is huge with dozens of thousands of
-          titles and our features are excellent. Only on DopeBox can you watch
+          titles and our features are excellent. Only on Chalchitra can you watch
           your favorite movies seamlessly with no buffering, lagging, redirects,
           and pop ups. We also update new titles on a daily basis so rest
-          assured, fun never ends on DopeBox. Your complete satisfaction is our
+          assured, fun never ends on Chalchitra. Your complete satisfaction is our
           ultimate goal; therefore, do not hesitate to contact us should you
           have any issues, inquiries, or requests regarding the site.
         </p>

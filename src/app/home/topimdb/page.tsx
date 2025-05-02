@@ -11,6 +11,7 @@ import MovieSkeleton from "@/components/movie-skeleton";
 import { TracingBeam } from "@/components/ui/tracing-beam";
 
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import Footer from "@/components/homePage/footer";
 
 interface Movie {
   title?: string;
@@ -43,10 +44,10 @@ export default function MoviesPage() {
       const fetchData = async () => {
         setLoading(true);
         if (selectedType === "movies") {
-          const fetchedMovieData = await fetchFromTMDB("movie/top_rated", page);
+          const fetchedMovieData = await fetchFromTMDB("/api/tmdb/movie/top_rated", page);
           setMovieData(fetchedMovieData);
         } else {
-          const fetchedShowData = await fetchFromTMDB("tv/top_rated", page);
+          const fetchedShowData = await fetchFromTMDB("/api/tmdb/tv/top_rated", page);
           setShowData(fetchedShowData);
         }
         setLoading(false);
@@ -135,6 +136,9 @@ export default function MoviesPage() {
 
       <div className="flex flex-col items-center justify-center mb-8">
         <Pagination currentPage={page} totalPages={totalPages} type={selectedType} />
+      </div>
+      <div className='flex flex-col justify-center w-full'>
+        <Footer/>
       </div>
     </main>
   );

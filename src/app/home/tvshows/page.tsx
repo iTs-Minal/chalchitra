@@ -9,6 +9,7 @@ import { FilmIcon } from 'lucide-react';
 import { TracingBeam } from '@/components/ui/tracing-beam';
 import ShowSkeleton from '@/components/show-skeleton';
 import ShowCard from '@/components/tvshow-card';
+import Footer from '@/components/homePage/footer';
 
 
 
@@ -30,7 +31,7 @@ export default function MoviesPage() {
   React.useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const fetchedData = await fetchFromTMDB('tv/popular', page);
+      const fetchedData = await fetchFromTMDB('/api/tmdb/tv/popular', page);
       setData(fetchedData);
       setLoading(false);
     };
@@ -74,6 +75,9 @@ export default function MoviesPage() {
 
       <div className='flex flex-col items-center justify-center mb-8'>
       <Pagination currentPage={page} totalPages={totalPages} />
+      </div>
+      <div className='flex flex-col w-full justify-center'>
+        <Footer/>
       </div>
     </main>
   );

@@ -29,7 +29,7 @@ const ShowCard = ({name,vote_average,poster_path}: TvShow) => {
             className="w-full h-full object-cover hover:brightness-40"
           />
           <span className="absolute top-1 left-1 flex items-center gap-1 text-yellow-500 font-bold font-kanit">
-            <Star /> {vote_average?.toFixed(1)}
+            <Star className="fill-amber-400"/> {vote_average?.toFixed(1)}
           </span>
         </div>
         <div>
