@@ -7,8 +7,8 @@ import { fetchFromTMDB } from '@/lib/tmdb';
 import { IconLine } from '@tabler/icons-react';
 import { FilmIcon } from 'lucide-react';
 import { TracingBeam } from '@/components/ui/tracing-beam';
-import ShowSkeleton from '@/components/show-skeleton';
-import ShowCard from '@/components/tvshow-card';
+import ShowSkeleton from '@/components/skeleton/show-skeleton';
+import ShowCard from '@/components/card/tvshow-card';
 import Footer from '@/components/homePage/footer';
 
 

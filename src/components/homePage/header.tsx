@@ -10,8 +10,8 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import SliderSkeleton from "../slider-skeleton";
-import PlaceSkeleton from "../3place-skeleton";
+import SliderSkeleton from "../skeleton/slider-skeleton";
+import PlaceSkeleton from "../skeleton/3place-skeleton";
 
 interface Movie {
   id: number;

@@ -1,7 +1,7 @@
 import { Star } from "lucide-react";
 import Image from "next/image";
 import React from "react";
-import { GlowingEffect } from "./ui/glowing-effect";
+import { GlowingEffect } from "../ui/glowing-effect";
 
 interface TvShow {
   id:number;

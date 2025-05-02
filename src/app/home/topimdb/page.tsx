@@ -5,9 +5,9 @@ import Navbar from "@/components/homePage/navbar";
 import { fetchFromTMDB } from "@/lib/tmdb";
 import { IconLine } from "@tabler/icons-react";
 import { FilmIcon, TvIcon } from "lucide-react";
-import MovieCard from "@/components/movie-card";
-import ShowCard from "@/components/tvshow-card";
-import MovieSkeleton from "@/components/movie-skeleton";
+import MovieCard from "@/components/card/movie-card";
+import ShowCard from "@/components/card/tvshow-card";
+import MovieSkeleton from "@/components/skeleton/movie-skeleton";
 import { TracingBeam } from "@/components/ui/tracing-beam";
 
 import { useSearchParams, usePathname, useRouter } from "next/navigation";

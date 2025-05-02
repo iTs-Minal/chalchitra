@@ -5,8 +5,23 @@ import { Button } from "../ui/moving-border";
 import { ArrowRight, Search } from "lucide-react";
 import { motion } from 'motion/react';
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export function HeroSection() {
+
+   const [query,setQuery]=React.useState("");
+   const router = useRouter();
+
+   const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      router.push(`/search/${encodeURIComponent(query)}/page/1`);
+      setQuery('');
+    }
+  };
+
+
+
   return (
     <div className="h-[50rem] w-100% bg-neutral-100 dark:bg-neutral-950 relative flex flex-col items-center justify-center antialiased">
       <div className="max-w-2xl mx-auto p-4 flex flex-col items-center justify-center h-full relative z-10">
@@ -19,16 +34,18 @@ export function HeroSection() {
           films, add them to your watchlist, and share your ratings with the
           world.
         </motion.p>
-        <div className="flex items-center justify-center w-full rounded-full">
+        <form onSubmit={handleSearch} className="flex items-center justify-center w-full rounded-full">
           <input
             type="text"
+            value={query}
+            onChange={(e)=>setQuery(e.target.value)}
             placeholder="Search for movies..."
             className="rounded-l-lg w-full relative text-white dark:text-black z-10 mt-4 p-2.5 dark:bg-white/90 bg-neutral-950 placeholder:text-white dark:placeholder:text-zinc-600 focus:placeholder:opacity-0 focus:outline-none"
           />
           <span className="relative flex items-center justify-center dark:bg-white/70 bg-neutral-800 p-2.5 top-2 rounded-r-lg z-10">
             <Search className="flex items-center justify-center text-white dark:text-black" />
           </span>
-        </div>
+        </form>
         <Link href="/home">
         <Button
           borderRadius="1.75rem"

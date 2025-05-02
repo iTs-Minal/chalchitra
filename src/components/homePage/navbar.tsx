@@ -1,20 +1,19 @@
 "use client";
 import { SignedIn, UserButton } from "@clerk/nextjs";
-import { Menu, Moon, Search, Sun, XCircle } from "lucide-react";
+import { Menu, Moon, Search, Star, Sun, XCircle } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 
 // import { motion } from "motion/react";
 
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
-
   const isDark = theme === "dark";
 
   const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -22,7 +21,6 @@ const Navbar = () => {
   const [hideOnScroll, setHideOnScroll] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [scrolled, setScrolled] = useState(false);
-
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -32,6 +30,7 @@ const Navbar = () => {
         setHideOnScroll(true);
       } else {
         setHideOnScroll(false);
+        
       }
 
       setLastScrollY(currentScrollY);
@@ -43,18 +42,59 @@ const Navbar = () => {
 
   const sideMenuRef = useRef<HTMLUListElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-
   const openMenu = () => {
     setIsOpen(true);
     if (sideMenuRef.current) {
       sideMenuRef.current.style.transform = "translateX(-16rem)";
     }
   };
-
   const closeMenu = () => {
     setIsOpen(false);
     if (sideMenuRef.current) {
       sideMenuRef.current.style.transform = "translateX(16rem)";
+    }
+  };
+
+
+  const [query,setQuery]=useState("");
+  interface Suggestion {
+    id: string;
+    title?: string;
+    name?: string;
+    first_air_date?: string;
+    poster_path?:string
+    vote_average?:number;
+    original_language?:string;
+    release_date?:string;
+  }
+
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const router = useRouter();
+
+  useEffect(()=>{
+    const delayDebounce = setTimeout(()=>{
+      if (query.length>1){
+        fetch(`/api/search?query=${query}`)
+        .then(res=>res.json())
+        .then(data=>{
+          setSuggestions(data.results.slice(0,5));
+        });
+      }else{
+        setSuggestions([]);
+      }
+    },300);
+    return()=> clearTimeout(delayDebounce);
+  },[query])
+
+ const handleSelect = (name:string)=>{
+    router.push(`/search/${encodeURIComponent(name)}/page/1`);
+    setQuery("");
+    setSuggestions([]);
+  }
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (query.trim()) {
+      handleSelect(query);
     }
   };
 
@@ -67,6 +107,7 @@ const Navbar = () => {
       }`}
     >
       <div className="flex justify-center items-center gap-10">
+        {/* ------------------------browse menu and logo------------------------------------ */}
         <div className="flex justify-center items-center gap-6 ml-4">
           <span
             onClick={openMenu}
@@ -118,16 +159,18 @@ const Navbar = () => {
           )}
 
           {mounted && (
-            <Image
+         <Link href="/home">   <Image
               src={isDark ? "/logo-white.png" : "/logo-black.png"}
               alt="chalchitra-logo"
               loading="lazy"
               height={60}
               width={60}
-            />
+            /></Link>
           )}
         </div>
-        <form
+
+        {/* ----------------------------input and suggestion section----------------------------- */}
+        <form onSubmit={handleSubmit}
           className={`hidden lg:flex items-center ml-10 transition-all duration-300 ${
             hideOnScroll ? "opacity-0 pointer-events-none" : "opacity-100"
           }`}
@@ -135,12 +178,59 @@ const Navbar = () => {
           <input
             type="text"
             placeholder="Search Keywords..."
-            className="w-130 px-4 p-2 rounded-l-full border-solid-black bg-zinc-700 placeholder:text-white  text-white dark:bg-white/90 dark:text-black dark:placeholder:text-zinc-800 focus:placeholder:opacity-0 focus:outline-none"
+            value={query}
+            onChange={e => {
+              const value = e.target.value;
+              setQuery(value);
+              if (value.trim() === '') {
+                setSuggestions([]); // clear instantly
+              }
+            }}
+            className="w-140 px-4 p-2 rounded-l-full border-solid-black bg-zinc-700 placeholder:text-white  text-white dark:bg-white/90 dark:text-black dark:placeholder:text-zinc-800 focus:placeholder:opacity-0 focus:outline-none"
           />
           <span className="bg-zinc-950 p-2 rounded-r-full text-white">
             <Search />
           </span>
         </form>
+        {suggestions.length > 0 && (
+        <ul className={`${scrolled?"hidden":" absolute z-10 bg-white top-13 left-53 mt-1 rounded shadow text-black w-140"}`}>
+          {suggestions.map((item) => {
+            const title = item.title || item.name || 'Unknown Title';
+            const image = item.poster_path
+              ? `https://image.tmdb.org/t/p/original${item.poster_path}`
+              : '/no-image.jpg'; // fallback image if needed
+            const rating = item.vote_average?.toFixed(1) || 'N/A';
+            const language = item.original_language?.toUpperCase() || 'N/A';
+            const date = item.release_date?.slice(0, 4) || item.first_air_date?.slice(0, 4) || 'N/A';
+            return(
+            <li
+              key={item.id}
+              className="p-2 hover:bg-gray-300  cursor-pointer"
+              onClick={() =>
+                handleSelect(item.title || item.name || 'unknown')
+              }
+            >
+          <div className="flex flex-row gap-6 py-1 border-b-1 border-black">
+          <Image
+                  src={image}
+                  alt={title}
+                  width={16}
+                  height={20}
+                  className="w-16 h-20 object-cover"
+                />
+                <div className="flex-1 gap-2 ">
+                  <p className="font-medium font-kanit">{title}</p>
+                  <div className="text-sm text-gray-600 mt-1 flex items-center">
+                    <span className="pr-4 font-exo flex flex-row items-center gap-1 "><Star className="fill-yellow-500"/> {rating} </span> 
+                     <span className="bg-gray-700 text-white font-exo p-1 rounded-lg text-sm">{language}</span> 
+                      <span className="px-4 font-exo">{date}</span>
+                  </div>
+                </div> 
+          </div>
+            </li>
+          )})}
+        </ul>
+      )}
       </div>
 
       <div className="flex justify-center items-center gap-10 mr-10">

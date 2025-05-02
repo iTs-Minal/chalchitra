@@ -6,8 +6,8 @@ import Navbar from '@/components/homePage/navbar';
 import { fetchFromTMDB } from '@/lib/tmdb';
 import { IconLine } from '@tabler/icons-react';
 import { FilmIcon } from 'lucide-react';
-import MovieCard from '@/components/movie-card';
-import MovieSkeleton from '@/components/movie-skeleton';
+import MovieCard from '@/components/card/movie-card';
+import MovieSkeleton from '@/components/skeleton/movie-skeleton';
 import { TracingBeam } from '@/components/ui/tracing-beam';
 import Footer from '@/components/homePage/footer';
 

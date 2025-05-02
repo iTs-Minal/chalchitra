@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import { TracingBeam } from "../ui/tracing-beam";
 import { IconLine } from "@tabler/icons-react";
 import { FilmIcon, TvIcon } from "lucide-react";
-import MovieCard from "../movie-card";
-import MovieSkeleton from "../movie-skeleton";
-import ShowCard from "../tvshow-card";
-import ShowSkeleton from "../show-skeleton";
+import MovieCard from "../card/movie-card";
+import MovieSkeleton from "../skeleton/movie-skeleton";
+import ShowCard from "../card/tvshow-card";
+import ShowSkeleton from "../skeleton/show-skeleton";
 
 interface Movie {
   id: number;

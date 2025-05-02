@@ -19,15 +19,15 @@ export function NavbarSection() {
   const navItems = [
     {
       name: "Movies",
-      link: "#movies",
+      link: "/home/movies",
     },
     {
       name: "Top ImDB",
-      link: "#top-imdb",
+      link: "/home/topimdb",
     },
     {
       name: "TV Shows",
-      link: "#tv-shows",
+      link: "/home/tvshows",
     },
   ];
 
