@@ -99,12 +99,12 @@ export default async function SearchResultsPage({ params }: Params) {
         </TracingBeam>
       </div>
 
-      {/* Pagination */}
+      {/* ---------Pagination------  */}
       <div className="flex items-center justify-center m-6 space-x-2">
         {+page > 1 && (
           <a
             href={`/search/${query}/page/${+page - 1}`}
-            className="px-3 py-1 bg-purple-900 rounded"
+            className="px-3 py-1 bg-gray-300 text-black rounded"
           >
             Prev
           </a>
@@ -138,6 +138,8 @@ export default async function SearchResultsPage({ params }: Params) {
           </a>
         )}
       </div>
+
+      {/* ------footer----- */}
       <div>
         <Footer />
       </div>

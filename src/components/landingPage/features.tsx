@@ -94,7 +94,7 @@ const FeatureTitle = ({ children }: { children?: React.ReactNode }) => {
 const FeatureDescription = ({ children }: { children?: React.ReactNode }) => {
   return (
     <motion.p
-    initial={{x:-50 ,opacity:0}} whileInView={{x:0 , opacity:1}} transition={{duration:0.5}}
+    initial={{y:50 ,opacity:0}} whileInView={{y:0 , opacity:1}} transition={{duration:0.5}}
       className={cn(
         "text-sm md:text-base  max-w-4xl text-left mx-auto",
         "text-neutral-500 text-center font-normal dark:text-neutral-300",

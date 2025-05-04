@@ -42,18 +42,14 @@ const Navbar = () => {
 
   const sideMenuRef = useRef<HTMLUListElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const openMenu = () => {
-    setIsOpen(true);
-    if (sideMenuRef.current) {
-      sideMenuRef.current.style.transform = "translateX(-16rem)";
-    }
+  
+  const toggleMenu=()=>{
+    setIsOpen(prev=>!prev)
   };
-  const closeMenu = () => {
+
+  const handleCloseMenu=()=>{
     setIsOpen(false);
-    if (sideMenuRef.current) {
-      sideMenuRef.current.style.transform = "translateX(16rem)";
-    }
-  };
+  }
 
 
   const [query,setQuery]=useState("");
@@ -110,7 +106,7 @@ const Navbar = () => {
         {/* ------------------------browse menu and logo------------------------------------ */}
         <div className="flex justify-center items-center gap-6 ml-4">
           <span
-            onClick={openMenu}
+            onClick={toggleMenu}
             className={`${
               hideOnScroll ? "opacity-100" : "opacity-100"
             }`}
@@ -125,7 +121,7 @@ const Navbar = () => {
                   : "fixed items-center left-0 top-0 px-3 py-4 bg-neutral-200 dark:bg-zinc-900 bottom-0 w-70 z-50 h-screen transition ease-in duration-1000"
               } `}>
                 <div
-                  onClick={closeMenu}
+                  onClick={handleCloseMenu}
                   className={`${scrolled?"top-0":"p-1 cursor-pointer left-50 absolute dark:hover:rounded-full dark:hover:text-white"}`}
                 >
                   <span>
@@ -138,19 +134,19 @@ const Navbar = () => {
                     className={`${scrolled?"flex flex-row items-center justify-center w-full h-20":"flex flex-col items-center relative top-10 w-full h-full text-black dark:text-white transition-transform duration-500"}`}
                   >
                     <Link href="/home">
-                    <li onClick={closeMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
+                    <li onClick={handleCloseMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
                       Home
                     </li></Link>
-                    <Link href="/home/movies"> <li onClick={closeMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
+                    <Link href="/home/movies"> <li onClick={handleCloseMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
                       Movies
                     </li></Link>
-                    <Link href="/home/tvshows">  <li onClick={closeMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
+                    <Link href="/home/tvshows">  <li onClick={handleCloseMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
                       TV Shows
                     </li></Link>
-                    <Link href="/home/topimdb">   <li onClick={closeMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
+                    <Link href="/home/topimdb">   <li onClick={handleCloseMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
                       Top ImDB
                     </li></Link>
-                    <li onClick={closeMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
+                    <li onClick={handleCloseMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
                       Andriod App
                     </li>
                   </ul>
@@ -188,7 +184,7 @@ const Navbar = () => {
             }}
             className="w-140 px-4 p-2 rounded-l-full border-solid-black bg-zinc-700 placeholder:text-white  text-white dark:bg-white/90 dark:text-black dark:placeholder:text-zinc-800 focus:placeholder:opacity-0 focus:outline-none"
           />
-          <span className="bg-zinc-950 p-2 rounded-r-full text-white">
+          <span onClick={() => handleSubmit(new Event('submit') as unknown as React.FormEvent<HTMLFormElement>)} className="bg-zinc-950 p-2 rounded-r-full text-white">
             <Search />
           </span>
         </form>
@@ -233,6 +229,7 @@ const Navbar = () => {
       )}
       </div>
 
+        {/* ---------------------light and dark mode and user button-------------------- */}
       <div className="flex justify-center items-center gap-10 mr-10">
         {mounted&&(<div
           onClick={() => setTheme(isDark ? "light" : "dark")}

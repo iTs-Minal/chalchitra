@@ -10,8 +10,8 @@ import ShowSkeleton from "../skeleton/show-skeleton";
 
 interface Movie {
   id: number;
-  title?: string;
-  name?: string;
+  title: string;
+  name: string;
   vote_average?: number;
   poster_path?: string;
   overview: string;
@@ -22,8 +22,7 @@ interface Movie {
 
 interface TvShow {
   id: number;
-  title?: string;
-  name?: string;
+  name: string;
   vote_average?: number;
   poster_path?: string;
   overview: string;

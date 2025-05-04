@@ -1,8 +1,9 @@
+import Navbar from '@/components/homePage/navbar';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
 export default async function MoviePage({ params }: { params: { slug: string } }) {
-  const id = params.slug.split('-').pop();
+  const id = params.slug?.split('-').pop();
   
   const res = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.TMDB_API_KEY}`);
   if (!res.ok) return notFound();
@@ -10,16 +11,30 @@ export default async function MoviePage({ params }: { params: { slug: string } }
   const movie = await res.json();
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold">{movie.title}</h1>
-      <p className="mt-2">{movie.overview}</p>
-      <Image
-        className="mt-4 rounded-lg"
-        src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-        alt={movie.title}
-        width={200}
-        height={400}
-      />
-    </div>
+    <main className='flex flex-col justify-center w-full h-auto'>
+      <nav>
+        <Navbar/>
+      </nav>
+
+         {/* ---------- for image -------- */}
+      <div className='relative w-full'>
+
+       {/* --------------image----------- */}
+       <Image src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
+    alt="Background"
+    height={500}
+    width={500}
+    priority
+    className="w-full h-auto object-cover" />
+      {/* -----------for bg gradient over image-------------- */}
+    <div className="absolute inset-0 h-full w-full bg-gradient-to-b from-black/80 via-black/80 to-black/80" />
+
+          {/* ---------------content over image------------- */}
+
+      
+
+      </div>
+      
+    </main>
   );
 }

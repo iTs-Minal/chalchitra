@@ -47,7 +47,6 @@ const Header = () => {
   const nextMovie = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % trendingAll.length);
   };
-
   const prevMovie = () => {
     setCurrentIndex(
       (prevIndex) => (prevIndex - 1 + trendingAll.length) % trendingAll.length
@@ -100,7 +99,6 @@ const Header = () => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     getTrendingAll();
   }, []);
@@ -140,7 +138,6 @@ const Header = () => {
         console.error(`Error fetching ${category} movies:`, error)
       );
   };
-
   useEffect(() => {
     getPopularMovies("popular");
   }, []);
@@ -167,7 +164,7 @@ const Header = () => {
           )
         )}
         {trendingAll.length > 0 && (
-          <div className="flex flex-col justify-start w-full h-auto top-82 p-6 text-white shadow-lg relative z-20 bg-gradient-to-b from via-neutral-900/90 to-zinc-950 ">
+          <div className="flex flex-col justify-start w-full h-auto top-82 p-6 text-white shadow-lg relative z-20 bg-gradient-to-b from via-neutral-900/95 to-zinc-950 ">
             <h2 className="text-4xl font-bold text-left">
               {trendingAll[currentIndex].title || trendingAll[currentIndex].name || "Title"}
             </h2>
