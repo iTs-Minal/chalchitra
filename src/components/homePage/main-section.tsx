@@ -312,6 +312,8 @@ const MainSection = () => {
                         vote_average={movie.vote_average}
                         poster_path={movie.poster_path}
                         id={movie.id}
+                        release_date={movie.release_date}
+                        media_type={movie.media_type}
                       />
                     </div>
                   ))
@@ -346,12 +348,14 @@ const MainSection = () => {
                         vote_average={movie.vote_average}
                         poster_path={movie.poster_path}
                         id={movie.id}
+                        release_date={movie.release_date}
+                        media_type={movie.media_type}
                       />
                     </div>
                   ))}
             </div>
           </div>
-          {/* -----tv show section---- */}
+          {/* -------tv show section----- */}
           <div className="flex flex-col mt-20 w-full h-auto cursor-pointer bg-zinc-100 dark:bg-zinc-950">
             <div className="flex gap-5 items-center">
               <IconLine />
@@ -375,7 +379,7 @@ const MainSection = () => {
                   ))}
             </div>
           </div>
-          {/* ----upcoming section---- */}
+          {/* ------upcoming section------ */}
           <div className="flex flex-col w-full h-auto cursor-pointer mt-20 mb-10 bg-zinc-100 dark:bg-zinc-950">
             <div className="flex gap-5 items-center">
               <IconLine />
@@ -406,6 +410,8 @@ const MainSection = () => {
                         vote_average={movie.vote_average}
                         poster_path={movie.poster_path}
                         id={movie.id}
+                        release_date={movie.release_date}
+                        media_type={movie.media_type}
                       />
                     </div>
                   ))}

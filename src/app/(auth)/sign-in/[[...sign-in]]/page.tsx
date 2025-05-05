@@ -1,7 +1,8 @@
+
 import { SignIn } from "@clerk/nextjs"
 
 const Page = () => {
-  return <SignIn forceRedirectUrl={"/home"}/>
+  return <SignIn/>
 }
 
 export default Page

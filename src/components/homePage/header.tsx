@@ -5,6 +5,7 @@ import {
   Linkedin,
   MoveLeft,
   MoveRight,
+  PlayCircle,
   Star,
   Twitter,
 } from "lucide-react";
@@ -164,8 +165,22 @@ const Header = () => {
           )
         )}
         {trendingAll.length > 0 && (
-          <div className="flex flex-col justify-start w-full h-auto top-82 p-6 text-white shadow-lg relative z-20 bg-gradient-to-b from via-neutral-900/95 to-zinc-950 ">
-            <h2 className="text-4xl font-bold text-left">
+          <div className="flex flex-row w-full h-auto top-70 p-6 text-white shadow-lg relative z-20 bg-gradient-to-b from via-neutral-900/95 to-zinc-950 gap-3">
+              <div className="w-auto h-auto">
+              <Image src={`https://image.tmdb.org/t/p/original${trendingAll[currentIndex].poster_path}`} 
+              alt="photo" 
+              width={120} 
+              height={120} 
+              priority
+              className=" " />
+              </div>
+
+              <div className="">
+                <span className="relative top-10 text-yellow-400 w-16 h-16"><PlayCircle/></span>
+              </div>
+          
+          <div className="flex flex-col justify-start  ">
+            <h2 className="text-4xl font-bold text-left text-wrap w-150">
               {trendingAll[currentIndex].title || trendingAll[currentIndex].name || "Title"}
             </h2>
             <div className="flex items-center space-x-2 mt-4 gap-5">
@@ -182,9 +197,10 @@ const Header = () => {
                   : trendingAll[currentIndex].release_date?.slice(0, 4)}
               </span>
             </div>
-            <p className="mt-4 text-sm text-white line-clamp-1 text-left">
+            <p className="mt-4 text-[12px] text-white w-150 text-left">
               {trendingAll[currentIndex].overview}
             </p>
+          </div>
           </div>
         )}
 

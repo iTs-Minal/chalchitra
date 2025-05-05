@@ -17,7 +17,7 @@ const ShowCard = ({id,name,vote_average,poster_path}: TvShow) => {
 
 
   return (
-    <div className="flex flex-col items-center justify-center w-[185px] h-90 bg-neutral-300 dark:bg-zinc-900 mt-5 mx-2">
+    <div className="flex flex-col items-center justify-center w-[185px] h-100 bg-neutral-300 dark:bg-zinc-900 mt-5 mx-2">
         <div className="relative flex items-center justify-center w-full h-full object-contain">
         <GlowingEffect
           spread={60}
