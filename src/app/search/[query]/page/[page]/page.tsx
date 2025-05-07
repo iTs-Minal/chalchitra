@@ -28,6 +28,8 @@ export default async function SearchResultsPage({ params }: Params) {
 
   return (
     <main className="flex flex-col justify-center w-full h-auto">
+
+       {/* --------------------navbar------------------- */}
       <div className="flex flex-col items-center justify-center w-full">
         <Navbar />
       </div>

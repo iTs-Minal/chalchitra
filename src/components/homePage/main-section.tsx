@@ -253,17 +253,18 @@ const MainSection = () => {
         <p className="text-md font-bold text-black dark:text-white font-kanit">
           Are you looking for the best site for watching movies online? A site
           that is not only free but also safe? If yes, search no more, you are
-          at the right place. Chalchitra allows users to watch thousands of movies
-          and TV shows in HD quality. You are completely safe on the site as we
-          do not have any ads or require any registration. Although we are free
-          of charge, our quality is on the same par with that of paid streaming
-          services. Our content library is huge with dozens of thousands of
-          titles and our features are excellent. Only on Chalchitra can you watch
-          your favorite movies seamlessly with no buffering, lagging, redirects,
-          and pop ups. We also update new titles on a daily basis so rest
-          assured, fun never ends on Chalchitra. Your complete satisfaction is our
-          ultimate goal; therefore, do not hesitate to contact us should you
-          have any issues, inquiries, or requests regarding the site.
+          at the right place. Chalchitra allows users to watch thousands of
+          movies and TV shows in HD quality. You are completely safe on the site
+          as we do not have any ads or require any registration. Although we are
+          free of charge, our quality is on the same par with that of paid
+          streaming services. Our content library is huge with dozens of
+          thousands of titles and our features are excellent. Only on Chalchitra
+          can you watch your favorite movies seamlessly with no buffering,
+          lagging, redirects, and pop ups. We also update new titles on a daily
+          basis so rest assured, fun never ends on Chalchitra. Your complete
+          satisfaction is our ultimate goal; therefore, do not hesitate to
+          contact us should you have any issues, inquiries, or requests
+          regarding the site.
         </p>
       </div>
       <div className="flex flex-col w-full mt-20 px-2 h-auto bg-zinc-100 dark:bg-neutral-950">
@@ -330,28 +331,32 @@ const MainSection = () => {
             </div>
           </div>
           {/* -----movies section------- */}
-          <div className="flex flex-col w-full h-auto mt-20 cursor-pointer bg-zinc-100 dark:bg-zinc-950">
-            <div className="flex gap-5 items-center">
+          <div className="flex flex-col w-full h-auto mt-20 cursor-pointer bg-zinc-100 dark:bg-zinc-950 px-4 md:px-8">
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-6">
               <IconLine />
-              <span className="font-lilita text-3xl">Latest Movies</span>
+              <span className="font-lilita text-2xl sm:text-3xl">
+                Latest Movies
+              </span>
               <FilmIcon />
             </div>
-            <div className="flex flex-wrap items-center cursor-pointer ml-5">
+
+            {/* Movie Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
               {loading
                 ? Array.from({ length: 20 }).map((_, i) => (
                     <MovieSkeleton key={i} />
                   ))
                 : popularMovies.map((movie) => (
-                    <div key={movie.id}>
-                      <MovieCard
-                        title={movie.title}
-                        vote_average={movie.vote_average}
-                        poster_path={movie.poster_path}
-                        id={movie.id}
-                        release_date={movie.release_date}
-                        media_type={movie.media_type}
-                      />
-                    </div>
+                    <MovieCard
+                      key={movie.id}
+                      title={movie.title}
+                      vote_average={movie.vote_average}
+                      poster_path={movie.poster_path}
+                      id={movie.id}
+                      release_date={movie.release_date}
+                      media_type={movie.media_type}
+                    />
                   ))}
             </div>
           </div>

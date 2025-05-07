@@ -10,14 +10,14 @@ import {
   Twitter,
 } from "lucide-react";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SliderSkeleton from "../skeleton/slider-skeleton";
 import PlaceSkeleton from "../skeleton/3place-skeleton";
 
 interface Movie {
   id: number;
-  title?: string;
-  name?: string;
+  title: string;
+  name: string;
   vote_average?: number;
   poster_path?: string;
   overview?: string;
@@ -25,12 +25,13 @@ interface Movie {
   release_date?: string;
   first_air_date?: string;
   media_type: string;
+  backdrop_path: string;
 }
 
 interface TvShow {
   id: number;
-  title?: string;
-  name?: string;
+  title: string;
+  name: string;
   vote_average?: number;
   poster_path?: string;
   overview?: string;
@@ -38,6 +39,7 @@ interface TvShow {
   first_air_date?: string;
   release_date?: string;
   media_type: string;
+  backdrop_path: string;
 }
 
 const Header = () => {
@@ -45,6 +47,10 @@ const Header = () => {
   const [loading, setLoading] = useState(true);
 
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+
   const nextMovie = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % trendingAll.length);
   };
@@ -53,9 +59,22 @@ const Header = () => {
       (prevIndex) => (prevIndex - 1 + trendingAll.length) % trendingAll.length
     );
   };
+  const handleMouseDown = (e: React.MouseEvent) => {
+    isDragging.current = true;
+    startX.current = e.clientX;
+  };
+
+  const handleMouseUp = (e: React.MouseEvent) => {
+    if (!isDragging.current) return;
+    const deltaX = e.clientX - startX.current;
+    if (deltaX > 50) prevMovie();
+    else if (deltaX < -50) nextMovie();
+    isDragging.current = false;
+  };
+
+  const currentMovie = trendingAll[currentIndex];
 
   ///-----------------------fetching combined movies for slider-----------------
-
   const getTrendingAll = async () => {
     setLoading(true);
     try {
@@ -146,76 +165,80 @@ const Header = () => {
   return (
     <div className="flex flex-col md:flex-row w-full pt-2 bg-zinc-100 dark:bg-neutral-900 px-2 md:gap-2">
       {/* movie slider */}
-      <div className="w-full md:w-full h-[500px] relative max-w-4xl">
-        {loading ? (
+      <div
+        className="w-full h-auto relative max-w-5xl mx-auto overflow-hidden"
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+      >
+        {loading || !trendingAll.length ? (
           <SliderSkeleton />
         ) : (
-          trendingAll.length > 0 && (
-            <Image
-              src={`https://image.tmdb.org/t/p/original${trendingAll[currentIndex].poster_path}`}
-              alt={
-                trendingAll[currentIndex].title ||
-                trendingAll[currentIndex].name ||
-                "Title"
-              }
-              fill
-              priority
-              className="w-full h-[500px] inset-0 absolute aspect-square max-w-4xl object-cover mx-auto shadow-lg "
-            />
-          )
-        )}
-        {trendingAll.length > 0 && (
-          <div className="flex flex-row w-full h-auto top-70 p-6 text-white shadow-lg relative z-20 bg-gradient-to-b from via-neutral-900/95 to-zinc-950 gap-3">
-              <div className="w-auto h-auto">
-              <Image src={`https://image.tmdb.org/t/p/original${trendingAll[currentIndex].poster_path}`} 
-              alt="photo" 
-              width={120} 
-              height={120} 
-              priority
-              className=" " />
-              </div>
-
-              <div className="">
-                <span className="relative top-10 text-yellow-400 w-16 h-16"><PlayCircle/></span>
-              </div>
-          
-          <div className="flex flex-col justify-start  ">
-            <h2 className="text-4xl font-bold text-left text-wrap w-150">
-              {trendingAll[currentIndex].title || trendingAll[currentIndex].name || "Title"}
-            </h2>
-            <div className="flex items-center space-x-2 mt-4 gap-5">
-              <span className="text-yellow-400 flex items-center">
-                <Star className="mr-1 text-yellow-400 fill-yellow-500" />
-                {trendingAll[currentIndex].vote_average?.toFixed(1)}
-              </span>
-              <span className="bg-gray-700 px-2 py-1 rounded">
-                {trendingAll[currentIndex].original_language?.toUpperCase()}
-              </span>
-              <span className="px-2 py-1 rounded font-kanit">
-                {trendingAll[currentIndex].media_type === "tv"
-                  ? trendingAll[currentIndex].first_air_date?.slice(0, 4)
-                  : trendingAll[currentIndex].release_date?.slice(0, 4)}
-              </span>
+          <>
+            {/* BACKDROP IMAGE */}
+            <div className="relative w-full h-[500px] sm:h-[450px] xs:h-[350px] rounded-lg overflow-hidden">
+              <Image
+                src={`https://image.tmdb.org/t/p/original${currentMovie.backdrop_path}`}
+                alt={currentMovie.title || currentMovie.name || "Title"}
+                fill
+                className="object-cover w-full h-full"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/90" />
             </div>
-            <p className="mt-4 text-[12px] text-white w-150 text-left">
-              {trendingAll[currentIndex].overview}
-            </p>
-          </div>
-          </div>
-        )}
 
-        <button
-          onClick={prevMovie}
-          className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white bg-gray-800 p-2 rounded hover:opacity-60"
-        >
-          <MoveLeft />
-        </button>
-        <button
-          onClick={nextMovie}
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white bg-gray-800 p-2 rounded hover:opacity-60"
-        >
-          <MoveRight />
-        </button>
+            {/* MOVIE INFO */}
+            <div className="absolute bottom-0 w-full p-6 z-10 text-white bg-gradient-to-t from-black/90 to-transparent flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6">
+              <div className="flex-shrink-0 hidden sm:block">
+                <Image
+                  src={`https://image.tmdb.org/t/p/w300${currentMovie.poster_path}`}
+                  alt="poster"
+                  width={120}
+                  height={180}
+                  className="rounded-md shadow-md"
+                />
+              </div>
+              {/* Play Icon */}{" "}
+              <div className="text-yellow-400 sm:order-none order-first">
+                <PlayCircle size={50} className="mx-auto sm:mx-0" />
+              </div>{" "}
+              {/* Text Info */}
+              <div className="flex-grow">
+                <h2 className="text-2xl sm:text-3xl font-bold mb-2">
+                  {currentMovie.title || currentMovie.name}
+                </h2>
+                <div className="flex flex-wrap items-center gap-3 text-sm mb-2">
+                  <span className="flex items-center text-yellow-400">
+                    <Star className="mr-1 fill-yellow-500" size={18} />
+                    {currentMovie.vote_average?.toFixed(1)}
+                  </span>
+                  <span className="bg-gray-700 px-2 py-1 rounded">
+                    {currentMovie.original_language?.toUpperCase()}
+                  </span>
+                  <span className="px-2 py-1 rounded bg-gray-700">
+                    {currentMovie.media_type === "tv"
+                      ? currentMovie.first_air_date?.slice(0, 4)
+                      : currentMovie.release_date?.slice(0, 4)}
+                  </span>
+                </div>
+                <p className="text-sm line-clamp-3">{currentMovie.overview}</p>
+              </div>
+            </div>
+
+            {/* Nav Buttons */}
+            <button
+              onClick={prevMovie}
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white bg-black/50 hover:bg-black/70 p-2 rounded-full z-20"
+            >
+              <MoveLeft />
+            </button>
+            <button
+              onClick={nextMovie}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white bg-black/50 hover:bg-black/70 p-2 rounded-full z-20"
+            >
+              <MoveRight />
+            </button>
+          </>
+        )}
       </div>
 
       {/* random 3 movies */}
