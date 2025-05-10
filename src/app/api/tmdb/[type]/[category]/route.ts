@@ -13,14 +13,14 @@ export async function GET(
       top_rated: "https://api.themoviedb.org/3/movie/top_rated",
       upcoming: "https://api.themoviedb.org/3/movie/upcoming",
       now_playing: "https://api.themoviedb.org/3/movie/now_playing",
-      latest: "https://api.themoviedb.org/3/movie/latest",
+      trending: "https://api.themoviedb.org/3/trending/movie/day",
     },
     tv: {
       popular: "https://api.themoviedb.org/3/tv/popular",
       top_rated: "https://api.themoviedb.org/3/tv/top_rated",
       airing_today: "https://api.themoviedb.org/3/tv/airing_today",
       on_the_air: "https://api.themoviedb.org/3/tv/on_the_air",
-      latest: "https://api.themoviedb.org/3/tv/latest",
+      trending: "https://api.themoviedb.org/3/trending/tv/day",
     },
   };
 

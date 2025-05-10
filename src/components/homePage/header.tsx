@@ -127,9 +127,9 @@ const Header = () => {
 
   const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
 
-  const getPopularMovies = (category: string) => {
+  const getPopularMovies = (category: string,type:string) => {
     setLoading(true);
-    fetch(`/api/movies/${category}`)
+    fetch(`/api/tmdb/${type}/${category}`)
       .then((res) => res.json())
       .then((json) => {
         let results = [];
@@ -159,11 +159,12 @@ const Header = () => {
       );
   };
   useEffect(() => {
-    getPopularMovies("popular");
+    getPopularMovies("popular","movie");
   }, []);
 
   return (
     <div className="flex flex-col md:flex-row w-full pt-2 bg-zinc-100 dark:bg-neutral-900 px-2 md:gap-2">
+    
       {/* movie slider */}
       <div
         className="w-full h-auto relative max-w-5xl mx-auto overflow-hidden"
@@ -249,7 +250,7 @@ const Header = () => {
               .map((_, index) => <PlaceSkeleton key={index} />)
           : popularMovies.map((movie) => (
               <div
-                className="flex p-3 rounded-lg shadow-sm hover:scale-105 transition duration-100 dark:bg-zinc-900"
+                className="flex p-3 rounded-lg shadow-sm hover:scale-105 transition duration-100 dark:bg-neutral-900"
                 key={movie.id}
               >
                 <Image
@@ -282,7 +283,6 @@ const Header = () => {
       </div>
 
       {/* social */}
-
       <div className="w-full md:w-[10%] flex flex-row border-l-1 justify-center md:flex-col md:items-center gap-6 p-4 text-black dark:text-white">
         {[
           { icon: Twitter, name: "Twitter" },
@@ -298,6 +298,7 @@ const Header = () => {
           </button>
         ))}
       </div>
+
     </div>
   );
 };

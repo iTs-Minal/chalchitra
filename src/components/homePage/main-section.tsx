@@ -37,9 +37,9 @@ const MainSection = () => {
   // ---------------------Fetching trending movies from TMDB API-------------------------
   const [trendingMovies, setTrendingMovies] = useState<Movie[]>([]);
 
-  const getTrendingMovies = (category: string) => {
+  const getTrendingMovies = (category: string, type: string) => {
     setLoading(true);
-    fetch(`/api/movies/${category}`)
+    fetch(`/api/tmdb/${type}/${category}`)
       .then((res) => res.json())
       .then((json) => {
         const results = Array.isArray(json.results) ? json.results : [json];
@@ -64,15 +64,15 @@ const MainSection = () => {
       );
   };
   useEffect(() => {
-    getTrendingMovies("trending");
+    getTrendingMovies("trending", "movie");
   }, []);
 
   //---------------- Fetching trending shows from TMDB API-----------------------
   const [trendingShows, setTrendingShows] = useState<TvShow[]>([]);
 
-  const getTrendingShows = (category: string) => {
+  const getTrendingShows = (category: string, type: string) => {
     setLoading(true);
-    fetch(`/api/tvshows/${category}`)
+    fetch(`/api/tmdb/${type}/${category}`)
       .then((res) => res.json())
       .then((json) => {
         // Adjust for "latest" (it returns a single object)
@@ -94,28 +94,26 @@ const MainSection = () => {
         }, 3000);
       })
       .catch((error) =>
-        console.error(`Error fetching ${category} movies:`, error)
+        console.error(`Error fetching ${category} shows:`, error)
       );
   };
   useEffect(() => {
-    getTrendingShows("trending");
+    getTrendingShows("trending", "tv");
   }, []);
 
   // -----------------Fetching latest movies from TMDB API----------------------------
   const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
 
-  const getPopularMovies = (category: string) => {
+  const getPopularMovies = (category: string, type: string) => {
     setLoading(true);
-    fetch(`/api/movies/${category}`)
+    fetch(`/api/tmdb/${type}/${category}`)
       .then((res) => res.json())
       .then((json) => {
         // Adjust for "popular" (it returns a single object)
         let results = []; // If category is "latest", the response may not be an array, so handle that case
         if (category === "latest" && json.title) {
-          // Latest returns a single movie, so put it in an array
           results = [json];
         } else if (Array.isArray(json.results)) {
-          // Other categories return an array
           results = json.results;
         }
 
@@ -138,15 +136,15 @@ const MainSection = () => {
       );
   };
   useEffect(() => {
-    getPopularMovies("popular"); // Set loading to false after fetching
+    getPopularMovies("popular", "movie"); // Set loading to false after fetching
   }, []);
 
-  // -------------------------Fetching latest shows from TMDB API-------------------------
+  // -------------------------Fetching latest shows from TMDB API-------------`------------
   const [onairShows, setonairShows] = useState<TvShow[]>([]);
 
-  const getonairShows = (category: string) => {
+  const getonairShows = (category: string, type: string) => {
     setLoading(true);
-    fetch(`/api/tvshows/${category}`)
+    fetch(`/api/tmdb/${type}/${category}`)
       .then((res) => res.json())
       .then((json) => {
         let results = [];
@@ -175,15 +173,15 @@ const MainSection = () => {
       );
   };
   useEffect(() => {
-    getonairShows("on_the_air");
+    getonairShows("on_the_air", "tv");
   }, []);
 
   //---------------------- Fetching upcoming movies from TMDb api---------------------
   const [upcomingMovies, setUpcomingMovies] = useState<Movie[]>([]);
 
-  const getUpcomingMovies = (category: string) => {
+  const getUpcomingMovies = (category: string, type: string) => {
     setLoading(true);
-    fetch(`/api/movies/${category}`)
+    fetch(`/api/tmdb/${type}/${category}`)
       .then((res) => res.json())
       .then((json) => {
         const results = Array.isArray(json.results) ? json.results : [json];
@@ -208,7 +206,7 @@ const MainSection = () => {
       );
   };
   useEffect(() => {
-    getUpcomingMovies("upcoming");
+    getUpcomingMovies("upcoming", "movie");
   }, []);
 
   //---------------- Fetching upcoming shows from TMDB API-----------------------

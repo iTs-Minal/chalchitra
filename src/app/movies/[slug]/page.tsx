@@ -10,7 +10,7 @@ export default async function MoviePage({
 }: {
   params: { slug: string };
 }) {
-  const id = params.slug?.split("-").pop();
+  const id = params.slug.split("-").pop();
 
   const res = await fetch(
     `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.TMDB_API_KEY}&append_to_response=videos,images,credits,recommendations,watch/providers,reviews`
@@ -19,9 +19,12 @@ export default async function MoviePage({
 
   const movie = await res.json();
 
-  const availablePlatforms = movie.watch_providers?.results?.US?.flatrate || [];
+  const providersRes = await fetch(
+    `https://api.themoviedb.org/3/movie/${id}/watch/providers?api_key=${process.env.TMDB_API_KEY}`
+  );
+  const providers = await providersRes.json();
 
-  console.log(movie.watch_providers);
+  console.log(providers.results?.US);
 
   return (
     <main className="flex flex-col justify-center w-full h-auto">
@@ -40,6 +43,7 @@ export default async function MoviePage({
           priority
           className="w-full h-auto object-cover"
         />
+
         {/* -----------for bg gradient over image-------------- */}
         <div className="absolute inset-0 h-full w-full bg-gradient-to-b from-black/80 via-black/80 to-black/80" />
 
@@ -150,25 +154,29 @@ export default async function MoviePage({
               )}
 
               {/* Watch Providers */}
-              {availablePlatforms.length > 0 && (
+              {providers.results?.US?.rent?.length > 0 && (
                 <div className="w-1/2 pl-6">
                   <h2 className="text-4xl font-bold mb-6">
                     Available on OTT Platforms:
                   </h2>
-                  <div className="flex gap-6">
-                    {availablePlatforms.map((provider: any) => (
+                  <div className="flex flex-wrap gap-6">
+                    {providers.results.US.rent.map((provider: any) => (
                       <div
                         key={provider.provider_id}
-                        className="text-center w-24"
+                        className="w-24 flex flex-col items-center p-3 rounded-2xl bg-white shadow hover:shadow-lg transition duration-300 ease-in-out"
                       >
-                        <Image
-                          src={`https://image.tmdb.org/t/p/w200${provider.logo_path}`}
-                          alt={provider.provider_name}
-                          width={75}
-                          height={75}
-                          className="mx-auto"
-                        />
-                        <p className="text-sm">{provider.provider_name}</p>
+                        <div className="w-[75px] h-[75px] overflow-hidden rounded-full border border-gray-200 bg-gray-100">
+                          <Image
+                            src={`https://image.tmdb.org/t/p/w200${provider.logo_path}`}
+                            alt={provider.provider_name}
+                            width={75}
+                            height={75}
+                            className="object-contain"
+                          />
+                        </div>
+                        <p className="text-xs mt-2 text-center font-medium text-gray-700">
+                          {provider.provider_name}
+                        </p>
                       </div>
                     ))}
                   </div>
