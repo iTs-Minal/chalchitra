@@ -13,7 +13,7 @@ export default async function MoviePage({
   const id = params.slug.split("-").pop();
 
   const res = await fetch(
-    `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.TMDB_API_KEY}&append_to_response=videos,images,credits,recommendations,watch/providers,reviews`
+    `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.TMDB_API_KEY}&append_to_response=videos,images,credits,recommendations,reviews`
   );
   if (!res.ok) return notFound();
 

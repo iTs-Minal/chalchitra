@@ -88,18 +88,10 @@ const Header = () => {
 
       const movies = moviesJson.results.map((movie: Movie) => ({
         ...movie,
-        media_type: "movie",
       }));
 
       const tvShows = tvJson.results.map((tv: TvShow) => ({
-        id: tv.id,
-        title: tv.name,
-        vote_average: tv.vote_average,
-        poster_path: tv.poster_path,
-        overview: tv.overview,
-        original_language: tv.original_language,
-        first_air_date: tv.first_air_date,
-        media_type: "tv",
+        ...tv,
       }));
 
       // Combine and optionally sort
