@@ -1,14 +1,58 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { Heart, Star, Eye, ShoppingCart } from 'lucide-react';
 
-export default function MovieActions({ movieId }: { movieId: string }) {
+export default function MovieActions({ tmdbId }: { tmdbId: number }) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isRated, setIsRated] = useState(false);
   const [isWatched, setIsWatched] = useState(false);
   const [isInWishlist, setIsInWishlist] = useState(false);
 
-;
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchFavorite() {
+      try {
+        const res = await fetch('/api/movies/favorite');
+        if (!res.ok) throw new Error('Failed to fetch favorites');
+        const data = await res.json();
+
+        // Check if current movie is in favorites
+        const favorited = data.some((fav: any) => fav.tmdbId === tmdbId);
+        setIsFavorite(favorited);
+      } catch (err) {
+        console.error('Error fetching favorites:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchFavorite();
+  }, [tmdbId]);
+
+  const handleFavoriteClick = async () => {
+    const newStatus = !isFavorite;
+    setIsFavorite(newStatus); // Optimistic UI update
+
+    try {
+      const res = await fetch('/api/movies/favorite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tmdbId, isFavorite: newStatus }),
+      });
+
+      if (!res.ok) throw new Error('Failed to update favorite status');
+
+      const data = await res.json();
+      console.log('Favorite status updated:', data);
+    } catch (err) {
+      console.error('Failed to update favorite status:', err);
+      setIsFavorite(!newStatus); // revert UI on error
+    }
+  };
+
+  if (loading) return <p>Loading...</p>; 
+
 
   const baseStyle =
     'w-44 flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium shadow-md transition-all duration-200';
@@ -16,7 +60,7 @@ export default function MovieActions({ movieId }: { movieId: string }) {
   return (
     <div className="flex flex-wrap gap-4 mt-6">
       <button
-        onClick={() => setIsFavorite(!isFavorite)}
+        onClick={handleFavoriteClick}
         className={`${baseStyle} ${
           isFavorite
             ? 'bg-pink-600 text-white hover:bg-pink-700'

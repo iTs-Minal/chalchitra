@@ -10,7 +10,7 @@ interface Movie {
     vote_average?: number;
     poster_path?: string;
     release_date?:string;
-    media_type:string;
+    media_type?:string;
   }
 
 const MovieCard = ({id,title,vote_average,poster_path}: Movie) => {

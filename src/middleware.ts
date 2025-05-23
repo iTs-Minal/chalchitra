@@ -6,6 +6,7 @@ const isProtectedRoute= createRouteMatcher([
   "/movies(.*)",
   "/search(.*)",
   "/tvshows(.*)",
+  "/dashboard(.*)"
 ]);
 
 export default clerkMiddleware(async(auth,req)=>{

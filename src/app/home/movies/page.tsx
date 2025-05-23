@@ -14,10 +14,11 @@ import Footer from '@/components/homePage/footer';
 
 
 interface Movie{
-  title?:string;
+  title:string;
   id?:number;
   vote_average?:number;
   poster_path?:string;
+  media_type?:string;
 }
 
 
@@ -66,6 +67,7 @@ export default function MoviesPage() {
                         vote_average={movie.vote_average}
                         poster_path={movie.poster_path}
                         id={movie.id ?? 0}
+                        media_type={movie.media_type}
                       />
                     </div>
                   ))}

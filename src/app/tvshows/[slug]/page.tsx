@@ -92,10 +92,10 @@ export default async function ShowPage({ params }: { params: { slug: string } })
                     .map((p: any) => p.name)
                     .join(", ")}
                 </p>
-              </div>
+              {/* </div> */}
 
               <div>
-                <MovieActions movieId={show.id} />
+                <MovieActions tmdbId={show.id} />
               </div>
             </div>
           </div>
@@ -340,6 +340,7 @@ export default async function ShowPage({ params }: { params: { slug: string } })
             )}
           </div>
         </div>
+      </div>
       </div>
     </main>
   );

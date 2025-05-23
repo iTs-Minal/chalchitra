@@ -24,8 +24,6 @@ export default async function MoviePage({
   );
   const providers = await providersRes.json();
 
-  console.log(providers.results?.US);
-
   return (
     <main className="flex flex-col justify-center w-full h-auto">
       <nav>
@@ -108,7 +106,7 @@ export default async function MoviePage({
               </div>
 
               <div>
-                <MovieActions movieId={movie.id} />
+                <MovieActions tmdbId={movie.id} />
               </div>
             </div>
           </div>
