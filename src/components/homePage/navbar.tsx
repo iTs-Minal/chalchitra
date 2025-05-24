@@ -149,7 +149,7 @@ const Navbar = () => {
                     <li onClick={handleCloseMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
                       Andriod App
                     </li>
-                    <Link href="/dashboard">   <li onClick={handleCloseMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
+                    <Link href="/home/dashboard">   <li onClick={handleCloseMenu} className="p-4 hover:scale-110 hover:text-yellow-400 transition duration-200 cursor-pointer rounded-lg">
                       Dashboard
                     </li></Link>
                   </ul>

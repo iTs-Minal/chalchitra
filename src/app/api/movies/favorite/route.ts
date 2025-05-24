@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {NextResponse} from 'next/server';
 import {auth} from "@clerk/nextjs/server";
@@ -62,6 +63,11 @@ export async function GET() {
           tmdbId: fav.tmdbId,
           title: movie.title,
           poster_path: movie.poster_path,
+          release_date:movie.release_date,
+          vote_average:movie.vote_average,
+          genre:movie.genres.map((g:any) => g.name).join(', '),
+          added_date: new Date().toISOString(),
+           // You can replace this with the actual added date if available
           // add any other fields you want here
         };
       })
