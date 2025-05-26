@@ -9,12 +9,12 @@ export async function POST (req:Request){
 
     if(!userId)return NextResponse.json({error:"Unauthorized"}, {status:401});
 
-    const {tmdbId, isFavorite} = await req.json();
+    const {tmdbId, action} = await req.json();
 
-    if(isFavorite){
+    if(action==="add"){
 
        const exists = await prisma.userMovieData.findFirst({
-        where:{userId,tmdbId,status:"FAVORITE"},
+        where:{userId,tmdbId,status:"WATCHED"},
     });
 
     if(exists){
@@ -23,17 +23,20 @@ export async function POST (req:Request){
 
     const result = await prisma.userMovieData.create({
         data:{
-            userId,tmdbId,status:"FAVORITE",createdAt:new Date(),
+            userId,
+            tmdbId,
+            status:"WATCHED", 
+            createdAt:new Date(),
         },
     });
-    console.log("Created favorite entry:", result);
+    console.log("Created watched entry:", result);
     return NextResponse.json(result);
 }  
-else{
+if(action==="remove"){
     await prisma.userMovieData.deleteMany({
-      where: { userId, tmdbId, status: "FAVORITE" },
+      where: { userId, tmdbId, status: "WATCHED" },
     });
-    return NextResponse.json({ message: "Favorite removed" });
+    return NextResponse.json({ message: "Watched movie removed" });
 }
 }
 
@@ -42,33 +45,31 @@ export async function GET() {
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    // 1. Get favorite movie IDs for the user
-    const favoriteData = await prisma.userMovieData.findMany({
-      where: { userId, status: 'FAVORITE' },
+    // 1. Get watched movie IDs for the user
+    const watchedData = await prisma.userMovieData.findMany({
+      where: { userId, status: 'WATCHED' },
       select: { tmdbId: true, createdAt: true },
     });
 
-    // 2. Fetch movie details from TMDB for each favorite
+    // 2. Fetch movie details from TMDB for each watched movie
     const movies = await Promise.all(
-      favoriteData.map(async (fav:{tmdbId:number; createdAt:Date}) => {
+      watchedData.map(async (wat: { tmdbId : number;  createdAt : Date}) => {
         const res = await fetch(
-          `https://api.themoviedb.org/3/movie/${fav.tmdbId}?api_key=${process.env.TMDB_API_KEY}&language=en-US`
+          `https://api.themoviedb.org/3/movie/${wat.tmdbId}?api_key=${process.env.TMDB_API_KEY}&language=en-US`
         );
         if (!res.ok) {
-          console.error(`Failed to fetch movie with tmdbId: ${fav.tmdbId}`);
+          console.error(`Failed to fetch movie with tmdbId: ${wat.tmdbId}`);
           return null;
         }
         const movie = await res.json();
         return {
-          tmdbId: fav.tmdbId,
+          tmdbId: wat.tmdbId,
           title: movie.title,
           poster_path: movie.poster_path,
-          release_date:movie.release_date,
-          vote_average:movie.vote_average,
-          genre:movie.genres.map((g:any) => g.name).join(', '),
-          added_date: fav.createdAt,
-           // You can replace this with the actual added date if available
-          // add any other fields you want here
+          release_date: movie.release_date,
+          vote_average: movie.vote_average,
+          genre: movie.genres.map((g: any) => g.name).join(', '),
+          added_date: wat.createdAt,
         };
       })
     );
@@ -78,8 +79,8 @@ export async function GET() {
 
     return NextResponse.json(validMovies);
   } catch (error) {
-    console.error('Error fetching favorites:', error);
-    return NextResponse.json({ error: 'Failed to fetch favorites' }, { status: 500 });
+    console.error('Error fetching watched movies:', error);
+    return NextResponse.json({ error: 'Failed to fetch watched movies' }, { status: 500 });
   }
 }
 

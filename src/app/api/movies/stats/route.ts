@@ -10,12 +10,14 @@ export async function GET(){
         return NextResponse.json({error:'Unauthorized'},{status:401});
     }
 
-    const [favorites] = await Promise.all([
+    const [favorites, watched] = await Promise.all([
         prisma.userMovieData.count({where:{userId, status:"FAVORITE"}}),
+        prisma.userMovieData.count({where:{userId, status:"WATCHED"}}),
     ]);
 
     return NextResponse.json({
         favorites,
+        watched,
     });
 
 }

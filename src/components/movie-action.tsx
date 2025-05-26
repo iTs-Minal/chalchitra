@@ -33,7 +33,6 @@ export default function MovieActions({ tmdbId }: { tmdbId: number }) {
   const handleFavoriteClick = async () => {
     const newStatus = !isFavorite;
     setIsFavorite(newStatus); // Optimistic UI update
-
     try {
       const res = await fetch('/api/movies/favorite', {
         method: 'POST',
@@ -51,8 +50,46 @@ export default function MovieActions({ tmdbId }: { tmdbId: number }) {
     }
   };
 
-  if (loading) return <p>Loading...</p>; 
+  useEffect(() => {
+    async function fetchWatched() {
+      try {
+        const res = await fetch('/api/movies/watched');
+        if (!res.ok) throw new Error('Failed to fetch watched movies');
+        const data = await res.json();
 
+        // Check if current movie is in watched
+        const watched = data.some((wat: any) => wat.tmdbId === tmdbId);
+        setIsWatched(watched);
+      } catch (err) {
+        console.error('Error fetching favorites:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchWatched();
+  }, [tmdbId]);
+
+  const handleWatchedClick = async () => {
+    const newStatus = !isWatched;
+    setIsWatched(newStatus); // Optimistic UI update
+    try {
+      const res = await fetch('/api/movies/watched', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tmdbId, action:isWatched?"remove": "add" }),
+      });
+
+      if (!res.ok) throw new Error('Failed to update watched status');
+
+      const data = await res.json();
+      console.log('Watched status updated:', data);
+    } catch (err) {
+      console.error('Failed to update watched status:', err);
+      setIsWatched(!newStatus); // revert UI on error
+    }
+  };
+
+  if (loading) return <p>Loading...</p>;
 
   const baseStyle =
     'w-44 flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium shadow-md transition-all duration-200';
@@ -98,7 +135,7 @@ export default function MovieActions({ tmdbId }: { tmdbId: number }) {
       </button>
 
       <button
-        onClick={() => setIsWatched(!isWatched)}
+        onClick={handleWatchedClick}
         className={`${baseStyle} ${
           isWatched
             ? 'bg-green-500 text-white hover:bg-green-600'

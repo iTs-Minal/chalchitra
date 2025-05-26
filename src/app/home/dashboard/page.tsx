@@ -1,13 +1,16 @@
 import { Sidebar } from './components/sidebar';
 import { StatsHeader } from './components/statsheader';
-import { MovieTable } from './components/movie-table';
-import { Charts } from './components/charts';
+// import { MovieTable } from './components/movie-table';
+// import { Charts } from './components/charts';
 import Navbar from '@/components/homePage/navbar';
+import TableChart from './components/table-chart';
 
 export default function DashboardPage() {
   return (
-    <main className="min-h-screen bg-gray-100 dark:bg-neutral-800 text-gray-900 dark:text-white">
-      <Navbar />
+    <main className="min-h-screen bg-gray-100 dark:bg-neutral-950 text-gray-900 dark:text-white">
+     <div className='flex flex-col items-center justify-center w-full'>
+        <Navbar/>
+      </div>
 
       <div className="flex flex-col md:flex-row">
         {/* Sidebar */}
@@ -18,8 +21,7 @@ export default function DashboardPage() {
         {/* Main Content */}
         <section className="flex-1 p-4 space-y-6">
           <StatsHeader />
-          <MovieTable />
-          <Charts />
+          <TableChart/>
         </section>
       </div>
     </main>

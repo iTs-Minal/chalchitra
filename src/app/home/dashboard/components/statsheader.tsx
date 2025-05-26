@@ -50,6 +50,7 @@ export function StatsHeader() {
     fetchStats();
   }, []);
 
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
       {[
@@ -64,7 +65,7 @@ export function StatsHeader() {
         >
           <div>{iconMap[item.key as keyof Stats]}</div>
           <h3 className="text-base font-semibold">{item.label}</h3>
-          <p className="text-2xl font-bold">{stats[item.key as keyof Stats]}</p>
+          <p className="text-2xl font-bold">{stats[item.key as keyof Stats]||"0"}</p>
         </div>
       ))}
     </div>

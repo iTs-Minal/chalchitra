@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest, { params }: { params: { category: string } }) {
-    const { category } = params;
+    const { category } = await params;
 
     const allowedEndpoints: Record<string, string> = {
         trending: "https://api.themoviedb.org/3/trending/movie/day",
