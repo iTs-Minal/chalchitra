@@ -2,14 +2,18 @@
 'use client';
 import { useState,useEffect } from 'react';
 import { Heart, Star, Eye, ShoppingCart } from 'lucide-react';
+import ActionButtonSkeleton from './skeleton/actionbutton-skeleton';
 
 export default function MovieActions({ tmdbId }: { tmdbId: number }) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isRated, setIsRated] = useState(false);
   const [isWatched, setIsWatched] = useState(false);
-  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [isInWatchlist, setIsInWatchlist] = useState(false);
 
   const [loading, setLoading] = useState(true);
+
+
+//for fetching favorite movies
 
   useEffect(() => {
     async function fetchFavorite() {
@@ -37,7 +41,7 @@ export default function MovieActions({ tmdbId }: { tmdbId: number }) {
       const res = await fetch('/api/movies/favorite', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tmdbId, isFavorite: newStatus }),
+        body: JSON.stringify({ tmdbId, action: isFavorite? "remove": "add" }),
       });
 
       if (!res.ok) throw new Error('Failed to update favorite status');
@@ -50,6 +54,8 @@ export default function MovieActions({ tmdbId }: { tmdbId: number }) {
     }
   };
 
+
+  //for fetching watched movies
   useEffect(() => {
     async function fetchWatched() {
       try {
@@ -89,7 +95,48 @@ export default function MovieActions({ tmdbId }: { tmdbId: number }) {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+
+  //for fetching watchlist movies
+  useEffect(() => {
+    async function fetchWatchlist() {
+      try {
+        const res = await fetch('/api/movies/watchlist');
+        if (!res.ok) throw new Error('Failed to fetch watchlist movies');
+        const data = await res.json();
+
+        // Check if current movie is in watchlist
+        const watchlisted = data.some((wli: any) => wli.tmdbId === tmdbId);
+        setIsInWatchlist(watchlisted);
+      } catch (err) {
+        console.error('Error fetching favorites:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchWatchlist();
+  }, [tmdbId]);
+
+  const handleWatchlistClick = async () => {
+    const newStatus = !isInWatchlist;
+    setIsInWatchlist(newStatus); // Optimistic UI update
+    try {
+      const res = await fetch('/api/movies/watchlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tmdbId, action:isInWatchlist?"remove": "add" }),
+      });
+
+      if (!res.ok) throw new Error('Failed to update watchlist status');
+
+      const data = await res.json();
+      console.log('Watchlist status updated:', data);
+    } catch (err) {
+      console.error('Failed to update watchlist status:', err);
+      setIsInWatchlist(!newStatus); // revert UI on error
+    }
+  };
+
+  if (loading) return <div className="flex flex-wrap gap-4 mt-6"><ActionButtonSkeleton /></div>;
 
   const baseStyle =
     'w-44 flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium shadow-md transition-all duration-200';
@@ -151,19 +198,19 @@ export default function MovieActions({ tmdbId }: { tmdbId: number }) {
       </button>
 
       <button
-        onClick={() => setIsInWishlist(!isInWishlist)}
+        onClick={handleWatchlistClick}
         className={`${baseStyle} ${
-          isInWishlist
+          isInWatchlist
             ? 'bg-blue-500 text-white hover:bg-blue-600'
             : 'bg-zinc-800 text-white hover:bg-zinc-700'
         }`}
       >
         <ShoppingCart
           className={`w-5 h-5 ${
-            isInWishlist ? 'fill-white' : 'fill-transparent'
+            isInWatchlist ? 'fill-white' : 'fill-transparent'
           }`}
         />
-        {isInWishlist ? 'Wishlisted' : 'Add Wishlist'}
+        {isInWatchlist ? 'Watchlisted' : 'Add Watchlist'}
       </button>
     </div>
   );

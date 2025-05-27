@@ -12,21 +12,21 @@ type Stats = {
   favorites: number;
   rated: number;
   watched: number;
-  wishlist: number;
+  watchlist: number;
 };
 
 const cardStyles = {
   favorites: "bg-pink-300 dark:bg-pink-300 text-black dark:text-black",
   rated: "bg-yellow-300 dark:bg-yellow-300 text-black dark:text-black",
   watched: "bg-green-300 dark:bg-green-300 text-black dark:text-black",
-  wishlist: "bg-blue-300 dark:bg-blue-300 text-black dark:text-black",
+  watchlist: "bg-blue-300 dark:bg-blue-300 text-black dark:text-black",
 };
 
 const iconMap = {
   favorites: <Heart className="w-6 h-6" />,
   rated: <Star className="w-6 h-6" />,
   watched: <Eye className="w-6 h-6" />,
-  wishlist: <ShoppingCart className="w-6 h-6" />,
+  watchlist: <ShoppingCart className="w-6 h-6" />,
 };
 
 export function StatsHeader() {
@@ -34,7 +34,7 @@ export function StatsHeader() {
     favorites: 0,
     rated: 0,
     watched: 0,
-    wishlist: 0,
+    watchlist: 0,
   });
 
   useEffect(() => {
@@ -57,14 +57,14 @@ export function StatsHeader() {
         { label: 'Favorites', key: 'favorites' },
         { label: 'Rated', key: 'rated' },
         { label: 'Watched', key: 'watched' },
-        { label: 'Wishlist', key: 'wishlist' },
+        { label: 'Watchlist', key: 'watchlist' },
       ].map((item) => (
         <div
           key={item.key}
           className={`${cardStyles[item.key as keyof Stats]} p-4 rounded-xl shadow flex flex-col items-center justify-center space-y-2`}
         >
           <div>{iconMap[item.key as keyof Stats]}</div>
-          <h3 className="text-base font-semibold">{item.label}</h3>
+          <h3 className="text-xl font-kanit">{item.label}</h3>
           <p className="text-2xl font-bold">{stats[item.key as keyof Stats]||"0"}</p>
         </div>
       ))}

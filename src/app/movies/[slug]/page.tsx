@@ -2,6 +2,7 @@
 
 import Navbar from "@/components/homePage/navbar";
 import MovieActions from "@/components/movie-action";
+import Rating from "@/components/rating";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -266,28 +267,7 @@ export default async function MoviePage({
 
             {/* Rating */}
             <div id="rating" className="max-w-6xl mx-auto mt-16 space-y-6">
-              <h2 className="text-3xl font-semibold">⭐ Rate This Movie</h2>
-              <div className="flex items-center gap-2">
-                {[...Array(5)].map((_, i) => (
-                  <div key={i} className="relative">
-                    <input
-                      type="radio"
-                      name="rating"
-                      id={`star-${i + 1}`}
-                      className="sr-only peer"
-                    />
-                    <label
-                      htmlFor={`star-${i + 1}`}
-                      className="text-3xl cursor-pointer text-gray-400 transition hover:text-yellow-400 peer-checked:text-yellow-400"
-                    >
-                      ★
-                    </label>
-                  </div>
-                ))}
-              </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Hover and click to rate. You can only rate once.
-              </p>
+              <Rating tmdbId={movie.id} />
             </div>
 
             {/* Comments */}

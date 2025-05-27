@@ -171,7 +171,7 @@ export default function TableChart() {
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value as FilterType)}
-            className="appearance-none pr-8 pl-3 py-2 bg-gray-100 dark:bg-zinc-800 border dark:border-zinc-700 rounded text-sm text-gray-800 dark:text-white"
+            className="appearance-none pr-8 pl-3 py-2 font-exo bg-gray-100 dark:bg-zinc-800 border dark:border-zinc-700 rounded text-sm text-gray-800 dark:text-white"
           >
             {dropdownOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -192,12 +192,12 @@ export default function TableChart() {
 <table className="w-full text-sm text-gray-800 dark:text-white border-separate border-spacing-y-1">
   <thead className="bg-gray-200 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 rounded">
     <tr>
-      <th className="p-3 text-left">Name</th>
-      <th className="p-3 text-center">Release Year</th>
-      <th className="p-3 text-center">Added Date</th>
-      <th className="p-3 text-center">Genre</th>
-      <th className="p-3 text-center">Rating</th>
-      <th className="p-3 text-center">Action</th>
+      <th className="p-3 text-left font-kanit">Name</th>
+      <th className="p-3 text-center font-kanit">Release Year</th>
+      <th className="p-3 text-center font-kanit">Added Date</th>
+      <th className="p-3 text-center font-kanit">Genre</th>
+      <th className="p-3 text-center font-kanit">Rating</th>
+      <th className="p-3 text-center font-kanit">Action</th>
     </tr>
   </thead>
   <tbody>
@@ -208,11 +208,13 @@ export default function TableChart() {
   index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-gray-50 dark:bg-zinc-800'
 }`}
       >
-        <td className="p-3 text-left font-medium">{movie.title}</td>
-        <td className="p-3 text-center">{movie.release_date?.slice(0, 4)}</td>
-        <td className="p-3 text-center">{movie.added_date?.slice(0, 10)}</td>
-        <td className="p-3 text-center">{movie.genre?.split(',')[0].trim()}</td>
-        <td className="p-3 text-center">
+        <td className="p-3 text-left font-medium font-outfit">
+           <span className="text-gray-500 dark:text-gray-400 mr-2">{index + 1}.</span>
+          {movie.title}</td>
+        <td className="p-3 text-center text-blue-600 font-exo">{movie.release_date?.slice(0, 4)}</td>
+        <td className="p-3 text-center font-outfit">{movie.added_date?.slice(0, 10)}</td>
+        <td className="p-3 text-center font-exo">{movie.genre?.split(',')[0].trim()}</td>
+        <td className="p-3 text-center ">
           <span className="inline-flex items-center gap-1 text-yellow-600 dark:text-yellow-400 font-semibold">
             ⭐ {movie.vote_average?.toFixed(1)}
           </span>
@@ -258,7 +260,7 @@ export default function TableChart() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
         {/* Genre Pie Chart */}
         <div className="bg-white dark:bg-zinc-900 p-4 rounded shadow">
-          <h3 className="text-center mb-2 text-zinc-800 dark:text-white">
+          <h3 className="text-center mb-2 text-zinc-800 dark:text-white font-kanit">
             Genre Distribution
           </h3>
           <ResponsiveContainer width="100%" height={300}>
@@ -285,7 +287,7 @@ export default function TableChart() {
 
         {/* Added Date Line Chart */}
         <div className="bg-white dark:bg-zinc-900 p-4 rounded shadow">
-          <h3 className="text-center mb-2 text-zinc-800 dark:text-white">
+          <h3 className="text-center mb-2 text-zinc-800 dark:text-white font-kanit">
             {filterToChartMap[filter]} Movies Added Over Time
           </h3>
           <ResponsiveContainer width="100%" height={300}>

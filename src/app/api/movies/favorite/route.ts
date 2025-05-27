@@ -9,9 +9,9 @@ export async function POST (req:Request){
 
     if(!userId)return NextResponse.json({error:"Unauthorized"}, {status:401});
 
-    const {tmdbId, isFavorite} = await req.json();
+    const {tmdbId, action} = await req.json();
 
-    if(isFavorite){
+    if(action==="add"){
 
        const exists = await prisma.userMovieData.findFirst({
         where:{userId,tmdbId,status:"FAVORITE"},
@@ -28,8 +28,7 @@ export async function POST (req:Request){
     });
     console.log("Created favorite entry:", result);
     return NextResponse.json(result);
-}  
-else{
+}  if(action==="remove"){
     await prisma.userMovieData.deleteMany({
       where: { userId, tmdbId, status: "FAVORITE" },
     });

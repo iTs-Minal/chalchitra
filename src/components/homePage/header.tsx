@@ -13,6 +13,7 @@ import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import SliderSkeleton from "../skeleton/slider-skeleton";
 import PlaceSkeleton from "../skeleton/3place-skeleton";
+// import Link from "next/link";
 
 interface Movie {
   id: number;
@@ -47,6 +48,8 @@ const Header = () => {
   const [loading, setLoading] = useState(true);
 
   const [currentIndex, setCurrentIndex] = useState(0);
+
+
 
   const isDragging = useRef(false);
   const startX = useRef(0);
@@ -141,6 +144,7 @@ const Header = () => {
           original_language: movie.original_language,
           release_date: movie.release_date,
         }));
+
         setTimeout(() => {
           setPopularMovies(moviesData);
           setLoading(false); // Or use state based on the category
@@ -192,7 +196,7 @@ const Header = () => {
               </div>
               {/* Play Icon */}{" "}
               <div className="text-yellow-400 sm:order-none order-first">
-                <PlayCircle size={50} className="mx-auto sm:mx-0" />
+               <PlayCircle size={50} className="mx-auto sm:mx-0" />
               </div>{" "}
               {/* Text Info */}
               <div className="flex-grow">
