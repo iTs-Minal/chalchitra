@@ -56,5 +56,5 @@ model UserReview {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, tmdbId], name: "userId_tmdbId")
+  @@unique([userId, tmdbId])
 }

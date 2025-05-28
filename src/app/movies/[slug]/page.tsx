@@ -268,7 +268,7 @@ export default async function MoviePage({
             )}
 
             {/* Rating */}
-            {/* Comments */}
+            {/* Reviewing */}
             {/* User Reviews */}
             <div id="rating" className="max-w-6xl mx-auto mt-16 space-y-6">
               <ReviewForm tmdbId={movie.id} />

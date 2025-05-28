@@ -1,10 +1,9 @@
 // app/api/movies/review/[tmdbId]/route.ts
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { clerkClient } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
 
 export async function GET(_: Request, { params }: { params: { tmdbId: string } }) {
-  const { userId } = await auth();
   const tmdbId = parseInt(params.tmdbId);
 
   const reviews = await prisma.userReview.findMany({
@@ -12,10 +11,19 @@ export async function GET(_: Request, { params }: { params: { tmdbId: string } }
     orderBy: { updatedAt: 'desc' }
   });
 
-  const withCurrentFlag = reviews.map(r => ({
-    ...r,
-    isCurrentUser: r.userId === userId,
-  }));
+  const userIds = reviews.map(r => r.userId);
+  const client = await clerkClient();
+  const users = await client.users.getUserList({ userId: userIds });
 
-  return NextResponse.json(withCurrentFlag);
+
+    const enrichedReviews = reviews.map(review => {
+    const user = users.data.find(u => u.id === review.userId);
+    return {
+      ...review,
+      username: user?.username || user?.firstName || 'Anonymous',
+      imageUrl: user?.imageUrl || '',
+    };
+  });
+
+  return NextResponse.json(enrichedReviews);
 }
