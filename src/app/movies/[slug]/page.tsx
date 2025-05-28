@@ -2,7 +2,8 @@
 
 import Navbar from "@/components/homePage/navbar";
 import MovieActions from "@/components/movie-action";
-import Rating from "@/components/rating";
+import ReviewForm from "@/components/review-form";
+import ReviewList from "@/components/review-list";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -259,6 +260,7 @@ export default async function MoviePage({
                         src={`https://www.youtube.com/embed/${trailer.key}`}
                         allowFullScreen
                         className="rounded-lg"
+                        title={`YouTube trailer for ${movie.title}`}
                       ></iframe>
                     </div>
                   ))}
@@ -266,61 +268,13 @@ export default async function MoviePage({
             )}
 
             {/* Rating */}
-            <div id="rating" className="max-w-6xl mx-auto mt-16 space-y-6">
-              <Rating tmdbId={movie.id} />
-            </div>
-
             {/* Comments */}
-            <div className="max-w-6xl mx-auto mt-16 space-y-6">
-              <h2 className="text-3xl font-semibold mb-2">
-                💬 Leave a Comment
-              </h2>
-
-              <div className="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-4">
-                <textarea
-                  className="w-full resize-none rounded-md p-3 text-black dark:text-white bg-white dark:bg-zinc-900 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  rows={4}
-                  placeholder="Share your thoughts..."
-                />
-                <div className="mt-3 flex justify-between items-center">
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    Be respectful and stay on topic.
-                  </span>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
-                    🚀 Post Comment
-                  </button>
-                </div>
-              </div>
+            {/* User Reviews */}
+            <div id="rating" className="max-w-6xl mx-auto mt-16 space-y-6">
+              <ReviewForm tmdbId={movie.id} />
+              <ReviewList tmdbId={movie.id} />
             </div>
 
-            {/* User Reviews */}
-            {movie.reviews?.results?.length > 0 && (
-              <div className="max-w-6xl mx-auto mt-16 px-4 md:px-6 space-y-8">
-                <h2 className="text-4xl font-bold font-kanit text-white">
-                  📝 User Reviews
-                </h2>
-                <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
-                  {movie.reviews.results.map((review: any) => (
-                    <div
-                      key={review.id}
-                      className="bg-zinc-900 text-white p-6 rounded-xl shadow-lg border border-zinc-700 hover:border-blue-500 transition-all duration-200"
-                    >
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-lg uppercase">
-                          {review.author[0]}
-                        </div>
-                        <h3 className="font-semibold text-lg">
-                          {review.author}
-                        </h3>
-                      </div>
-                      <p className="text-sm text-gray-300 leading-relaxed line-clamp-6">
-                        {review.content}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>

@@ -14,13 +14,13 @@ datasource db {
 }
 
 model UserMovieData {
-  id      String   @id @default(cuid())
-  userId  String
-  tmdbId  Int
-  status  MovieStatus
-  rating  Int?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime @updatedAt 
+  id        String      @id @default(cuid())
+  userId    String
+  tmdbId    Int
+  status    MovieStatus
+  rating    Int?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 }
 
 enum MovieStatus {
@@ -30,17 +30,31 @@ enum MovieStatus {
 }
 
 model UserShowData {
-  id      String   @id @default(cuid())
-  userId  String
-  tmdbId  Int
-  status  ShowStatus
-  rating  Int?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime @updatedAt 
+  id        String     @id @default(cuid())
+  userId    String
+  tmdbId    Int
+  status    ShowStatus
+  rating    Int?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 enum ShowStatus {
   FAVORITE
   WATCHLIST
   WATCHED
+}
+
+model UserReview {
+  id        String   @id @default(cuid())
+  userId    String
+  tmdbId    Int
+  rating    Int
+  content   String   @db.Text
+  likes     Int      @default(0)
+  dislikes  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, tmdbId], name: "userId_tmdbId")
 }
