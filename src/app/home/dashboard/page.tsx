@@ -1,3 +1,4 @@
+
 import { Sidebar } from './components/sidebar';
 import { StatsHeader } from './components/statsheader';
 // import { MovieTable } from './components/movie-table';
@@ -5,7 +6,8 @@ import { StatsHeader } from './components/statsheader';
 import Navbar from '@/components/homePage/navbar';
 import TableChart from './components/table-chart';
 
-export default function DashboardPage() {
+export default function DashboardPage(){
+
   return (
     <main className="min-h-screen bg-gray-100 dark:bg-neutral-950 text-gray-900 dark:text-white">
      <div className='flex flex-col items-center justify-center w-full'>
@@ -21,7 +23,8 @@ export default function DashboardPage() {
         {/* Main Content */}
         <section className="flex-1 p-4 space-y-6">
           <StatsHeader />
-          <TableChart/>
+          {/* Replace '12345' with the actual tmdbId you want to use */}
+          <TableChart />
         </section>
       </div>
     </main>

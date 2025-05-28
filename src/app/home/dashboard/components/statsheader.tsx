@@ -10,21 +10,21 @@ import {
 
 type Stats = {
   favorites: number;
-  rated: number;
+  ratedCount: number;
   watched: number;
   watchlist: number;
 };
 
 const cardStyles = {
   favorites: "bg-pink-300 dark:bg-pink-300 text-black dark:text-black",
-  rated: "bg-yellow-300 dark:bg-yellow-300 text-black dark:text-black",
+  ratedCount: "bg-yellow-300 dark:bg-yellow-300 text-black dark:text-black",
   watched: "bg-green-300 dark:bg-green-300 text-black dark:text-black",
   watchlist: "bg-blue-300 dark:bg-blue-300 text-black dark:text-black",
 };
 
 const iconMap = {
   favorites: <Heart className="w-6 h-6" />,
-  rated: <Star className="w-6 h-6" />,
+  ratedCount: <Star className="w-6 h-6" />,
   watched: <Eye className="w-6 h-6" />,
   watchlist: <ShoppingCart className="w-6 h-6" />,
 };
@@ -32,7 +32,7 @@ const iconMap = {
 export function StatsHeader() {
   const [stats, setStats] = useState<Stats>({
     favorites: 0,
-    rated: 0,
+    ratedCount: 0,
     watched: 0,
     watchlist: 0,
   });
@@ -55,7 +55,7 @@ export function StatsHeader() {
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
       {[
         { label: 'Favorites', key: 'favorites' },
-        { label: 'Rated', key: 'rated' },
+        { label: 'Rated', key: 'ratedCount' },
         { label: 'Watched', key: 'watched' },
         { label: 'Watchlist', key: 'watchlist' },
       ].map((item) => (

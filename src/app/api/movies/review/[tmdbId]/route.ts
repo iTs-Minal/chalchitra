@@ -22,6 +22,7 @@ export async function GET(_: Request, { params }: { params: { tmdbId: string } }
       ...review,
       username: user?.username || user?.firstName || 'Anonymous',
       imageUrl: user?.imageUrl || '',
+      isCurrentUser: review.userId === user?.id,
     };
   });
 

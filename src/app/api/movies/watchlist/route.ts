@@ -50,6 +50,22 @@ export async function GET() {
       select: { tmdbId: true, createdAt: true },
     });
 
+     const tmdbIds = watchlistData.map((wli) => wli.tmdbId);
+        
+            // Step 2: Get reviews for these tmdbIds by the same user
+            const userReviews = await prisma.userReview.findMany({
+              where: {
+                userId,
+                tmdbId: { in: tmdbIds },
+              },
+              select: {
+                tmdbId: true,
+                rating: true,
+              },
+            });
+        
+            const reviewMap = new Map(userReviews.map((r) => [r.tmdbId, r.rating]));
+
     // 2. Fetch movie details from TMDB for each watchlist movie
     const movies = await Promise.all(
       watchlistData.map(async (wli: { tmdbId : number;  createdAt : Date}) => {
@@ -69,6 +85,7 @@ export async function GET() {
           vote_average: movie.vote_average,
           genre: movie.genres.map((g: any) => g.name).join(', '),
           added_date: wli.createdAt,
+          userRating: reviewMap.get(wli.tmdbId) ?? null,
         };
       })
     );

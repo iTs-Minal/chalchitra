@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-export default function ReviewForm({ tmdbId }: { tmdbId: number }) {
+export default function ReviewForm({ tmdbId}: { tmdbId: number; }) {
   const [rating, setRating] = useState<number>(0);
   const [content, setContent] = useState('');
   const [existing, setExisting] = useState(false);
+  const existingRef= useRef(false);
 
   useEffect(() => {
     fetch(`/api/movies/review/${tmdbId}`)
@@ -16,13 +17,15 @@ export default function ReviewForm({ tmdbId }: { tmdbId: number }) {
           setRating(userReview.rating);
           setContent(userReview.content);
           setExisting(true);
+          existingRef.current = true;
         }
       });
   }, [tmdbId]);
 
   const handleSubmit = async () => {
+    console.log(existing);
     const res = await fetch('/api/movies/review', {
-      method: 'POST',
+      method: existingRef.current ? 'PUT' : 'POST',
       body: JSON.stringify({ tmdbId, rating, content }),
       headers: { 'Content-Type': 'application/json' },
     });

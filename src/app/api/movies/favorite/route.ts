@@ -47,9 +47,25 @@ export async function GET() {
       select: { tmdbId: true, createdAt: true },
     });
 
+     const tmdbIds = favoriteData.map((fav) => fav.tmdbId);
+
+    // Step 2: Get reviews for these tmdbIds by the same user
+    const userReviews = await prisma.userReview.findMany({
+      where: {
+        userId,
+        tmdbId: { in: tmdbIds },
+      },
+      select: {
+        tmdbId: true,
+        rating: true,
+      },
+    });
+
+    const reviewMap = new Map(userReviews.map((r) => [r.tmdbId, r.rating]));
+
     // 2. Fetch movie details from TMDB for each favorite
     const movies = await Promise.all(
-      favoriteData.map(async (fav:{tmdbId:number; createdAt:Date}) => {
+      favoriteData.map(async (fav: { tmdbId: number; createdAt: Date}) => {
         const res = await fetch(
           `https://api.themoviedb.org/3/movie/${fav.tmdbId}?api_key=${process.env.TMDB_API_KEY}&language=en-US`
         );
@@ -63,9 +79,10 @@ export async function GET() {
           title: movie.title,
           poster_path: movie.poster_path,
           release_date:movie.release_date,
-          vote_average:movie.vote_average,
-          genre:movie.genres.map((g:any) => g.name).join(', '),
+          vote_average: movie.vote_average,
+          genre: movie.genres.map((g: any) => g.name).join(', '),
           added_date: fav.createdAt,
+          userRating:reviewMap.get(fav.tmdbId) ?? null,
            // You can replace this with the actual added date if available
           // add any other fields you want here
         };

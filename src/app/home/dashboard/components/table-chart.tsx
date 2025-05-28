@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
-import { Trash2, Heart, Star, Eye, ShoppingCart } from "lucide-react";
+import { Trash2, Heart, Eye, ShoppingCart } from "lucide-react";
 import DashboardTableSkeleton from "@/components/skeleton/tablechart-skeleton";
 
 import {
@@ -25,23 +26,19 @@ interface Movie {
   added_date: string;
   genre: string;
   vote_average: number;
-  poster_path:string;
+  poster_path: string;
+  userRating: number;
 }
 
 const ITEMS_PER_PAGE = 10;
 
-type FilterType = "favorite" | "rated" | "watched" | "watchlist";
+type FilterType = "favorite" | "watched" | "watchlist";
 
 const dropdownOptions = [
   {
     label: "Favorites",
     value: "favorite",
     icon: <Heart className="w-4 h-4 text-pink-500" />,
-  },
-  {
-    label: "Rated",
-    value: "rated",
-    icon: <Star className="w-4 h-4 text-yellow-500" />,
   },
   {
     label: "Watched",
@@ -57,7 +54,6 @@ const dropdownOptions = [
 
 const filterToChartMap: Record<FilterType, string> = {
   favorite: "Favorites",
-  rated: "Rated",
   watched: "Watched",
   watchlist: "Watchlist",
 };
@@ -133,7 +129,7 @@ export default function TableChart() {
 
   useEffect(() => {
     fetchMovies();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
   // Pagination
@@ -189,51 +185,70 @@ export default function TableChart() {
       </div>
 
       {/* Table */}
-<table className="w-full text-sm text-gray-800 dark:text-white border-separate border-spacing-y-1">
-  <thead className="bg-gray-200 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 rounded">
-    <tr>
-      <th className="p-3 text-left font-kanit">Name</th>
-      <th className="p-3 text-center font-kanit">Release Year</th>
-      <th className="p-3 text-center font-kanit">Added Date</th>
-      <th className="p-3 text-center font-kanit">Genre</th>
-      <th className="p-3 text-center font-kanit">Rating</th>
-      <th className="p-3 text-center font-kanit">Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    {paginated.map((movie, index) => (
-      <tr
-        key={movie.id}
-        className={`rounded transition-all duration-150 hover:bg-gray-100 dark:hover:bg-zinc-700 ${
-  index % 2 === 0 ? 'bg-white dark:bg-zinc-900' : 'bg-gray-50 dark:bg-zinc-800'
-}`}
-      >
-        <td className="p-3 text-left font-medium font-outfit">
-           <span className="text-gray-500 dark:text-gray-400 mr-2">{index + 1}.</span>
-          {movie.title}</td>
-        <td className="p-3 text-center text-blue-600 font-exo">{movie.release_date?.slice(0, 4)}</td>
-        <td className="p-3 text-center font-outfit">{movie.added_date?.slice(0, 10)}</td>
-        <td className="p-3 text-center font-exo">{movie.genre?.split(',')[0].trim()}</td>
-        <td className="p-3 text-center ">
-          <span className="inline-flex items-center gap-1 text-yellow-600 dark:text-yellow-400 font-semibold">
-            ⭐ {movie.vote_average?.toFixed(1)}
-          </span>
-        </td>
-        <td className="p-3 text-center">
-          <button
-            onClick={() => handleRemove(movie.id)}
-            className="text-red-500 hover:text-red-700 flex items-center gap-1 justify-center font-medium"
-          >
-            <Trash2 className="w-4 h-4" />
-            Remove
-          </button>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-
-
+      <table className="w-full text-sm text-gray-800 dark:text-white border-separate border-spacing-y-1">
+        <thead className="bg-gray-200 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 rounded">
+          <tr>
+            <th className="p-3 text-left font-kanit">Name</th>
+            <th className="p-3 text-center font-kanit">Release Year</th>
+            <th className="p-3 text-center font-kanit">Added Date</th>
+            <th className="p-3 text-center font-kanit">Genre</th>
+            <th className="p-3 text-center font-kanit">Rating (own)</th>
+            <th className="p-3 text-center font-kanit">Rating</th>
+            <th className="p-3 text-center font-kanit">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {paginated.map((movie, index) => (
+            <tr
+              key={movie.id}
+              className={`rounded transition-all duration-150 hover:bg-gray-100 dark:hover:bg-zinc-700 ${
+                index % 2 === 0
+                  ? "bg-white dark:bg-zinc-900"
+                  : "bg-gray-50 dark:bg-zinc-800"
+              }`}
+            >
+              <td className="p-3 text-left font-medium font-outfit">
+                <span className="text-gray-500 dark:text-gray-400 mr-2">
+                  {index + 1}.
+                </span>
+                {movie.title}
+              </td>
+              <td className="p-3 text-center text-blue-600 font-exo">
+                {movie.release_date?.slice(0, 4)}
+              </td>
+              <td className="p-3 text-center font-outfit">
+                {movie.added_date?.slice(0, 10)}
+              </td>
+              <td className="p-3 text-center font-exo">
+                {movie.genre?.split(",")[0].trim()}
+              </td>
+              <td className="p-3 text-center ">
+                {movie.userRating ? (
+                  <span className="inline-flex items-center gap-1 text-yellow-600 dark:text-yellow-400 font-semibold">
+                    ⭐ {movie.userRating.toFixed(1)}
+                  </span>
+                ) : (
+                  <span className="text-gray-400">—</span>
+                )}
+              </td>
+              <td className="p-3 text-center ">
+                <span className="inline-flex items-center gap-1 text-yellow-600 dark:text-yellow-400 font-semibold">
+                  ⭐ {movie.vote_average?.toFixed(1)}
+                </span>
+              </td>
+              <td className="p-3 text-center">
+                <button
+                  onClick={() => handleRemove(movie.id)}
+                  className="text-red-500 hover:text-red-700 flex items-center gap-1 justify-center font-medium"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Remove
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
       {/* Pagination */}
       <div className="flex justify-center gap-4 mt-4">

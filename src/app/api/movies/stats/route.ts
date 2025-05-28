@@ -16,11 +16,18 @@ export async function GET(){
         prisma.userMovieData.count({where:{userId, status:"WATCHLIST"}}),
         
     ]);
+    const ratedCount =await prisma.userReview.count({ where: {
+      userId,
+      rating: {
+        gt: 0, // only count rated movies
+      },
+    },})
 
     return NextResponse.json({
         favorites,
         watched,
         watchlist,
+        ratedCount
     });
 
 }
