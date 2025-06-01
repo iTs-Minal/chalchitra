@@ -13,6 +13,7 @@ export default function ReviewList({ tmdbId }: { tmdbId: number }) {
       .then((data) => setReviews(data));
   }, [tmdbId]);
 
+
   return (
     <div className="mt-10 w-full max-w-3xl space-y-6">
       {reviews.length === 0 ? (

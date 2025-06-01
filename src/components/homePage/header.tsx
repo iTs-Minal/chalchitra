@@ -13,6 +13,7 @@ import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import SliderSkeleton from "../skeleton/slider-skeleton";
 import PlaceSkeleton from "../skeleton/3place-skeleton";
+import Link from "next/link";
 // import Link from "next/link";
 
 interface Movie {
@@ -43,13 +44,11 @@ interface TvShow {
   backdrop_path: string;
 }
 
-const Header = () => {
+const Header = ({type}:{type:'movies' | 'tvshows'}) => {
   const [trendingAll, setTrendingAll] = useState<(Movie | TvShow)[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [currentIndex, setCurrentIndex] = useState(0);
-
-
 
   const isDragging = useRef(false);
   const startX = useRef(0);
@@ -75,7 +74,7 @@ const Header = () => {
     isDragging.current = false;
   };
 
-  const currentMovie = trendingAll[currentIndex];
+  // const currentMovie = trendingAll[currentIndex];
 
   ///-----------------------fetching combined movies for slider-----------------
   const getTrendingAll = async () => {
@@ -122,7 +121,7 @@ const Header = () => {
 
   const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
 
-  const getPopularMovies = (category: string,type:string) => {
+  const getPopularMovies = (category: string, type: string) => {
     setLoading(true);
     fetch(`/api/tmdb/${type}/${category}`)
       .then((res) => res.json())
@@ -155,87 +154,98 @@ const Header = () => {
       );
   };
   useEffect(() => {
-    getPopularMovies("popular","movie");
+    getPopularMovies("popular", "movie");
   }, []);
 
   return (
     <div className="flex flex-col md:flex-row w-full pt-2 bg-zinc-100 dark:bg-neutral-900 px-2 md:gap-2">
-    
       {/* movie slider */}
       <div
         className="w-full h-auto relative max-w-5xl mx-auto overflow-hidden"
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
       >
-        {loading || !trendingAll.length ? (
-          <SliderSkeleton />
-        ) : (
-          <>
-            {/* BACKDROP IMAGE */}
-            <div className="relative w-full h-[500px] sm:h-[450px] xs:h-[350px] rounded-lg overflow-hidden">
-              <Image
-                src={`https://image.tmdb.org/t/p/original${currentMovie.backdrop_path}`}
-                alt={currentMovie.title || currentMovie.name || "Title"}
-                fill
-                className="object-cover w-full h-full"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/90" />
-            </div>
+        {loading ? 
+            <SliderSkeleton />
+        : 
+          trendingAll.map((movie, idx) =>
+            idx === currentIndex ? (
+              (() => {
+                const slug = `${(movie.title || movie.name)
+                  .toLowerCase()
+                  .replace(/[^a-z0-9]+/g, "-")}-${movie.id}`;
+                return (
+                  <React.Fragment key={movie.id}>
+                    {/* BACKDROP IMAGE */}
+                    <div className="relative w-full h-[500px] sm:h-[450px] xs:h-[350px] rounded-lg overflow-hidden">
+                      <Image
+                        src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+                        alt={movie.title || movie.name || "Title"}
+                        fill
+                        className="object-cover w-full h-full"
+                        priority
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/90" />
+                    </div>
 
-            {/* MOVIE INFO */}
-            <div className="absolute bottom-0 w-full p-6 z-10 text-white bg-gradient-to-t from-black/90 to-transparent flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6">
-              <div className="flex-shrink-0 hidden sm:block">
-                <Image
-                  src={`https://image.tmdb.org/t/p/w300${currentMovie.poster_path}`}
-                  alt="poster"
-                  width={120}
-                  height={180}
-                  className="rounded-md shadow-md"
-                />
-              </div>
-              {/* Play Icon */}{" "}
-              <div className="text-yellow-400 sm:order-none order-first">
-               <PlayCircle size={50} className="mx-auto sm:mx-0" />
-              </div>{" "}
-              {/* Text Info */}
-              <div className="flex-grow">
-                <h2 className="text-2xl sm:text-3xl font-bold mb-2">
-                  {currentMovie.title || currentMovie.name}
-                </h2>
-                <div className="flex flex-wrap items-center gap-3 text-sm mb-2">
-                  <span className="flex items-center text-yellow-400">
-                    <Star className="mr-1 fill-yellow-500" size={18} />
-                    {currentMovie.vote_average?.toFixed(1)}
-                  </span>
-                  <span className="bg-gray-700 px-2 py-1 rounded">
-                    {currentMovie.original_language?.toUpperCase()}
-                  </span>
-                  <span className="px-2 py-1 rounded bg-gray-700">
-                    {currentMovie.media_type === "tv"
-                      ? currentMovie.first_air_date?.slice(0, 4)
-                      : currentMovie.release_date?.slice(0, 4)}
-                  </span>
-                </div>
-                <p className="text-sm line-clamp-3">{currentMovie.overview}</p>
-              </div>
-            </div>
+                    {/* MOVIE INFO */}
+                    <div className="absolute bottom-0 w-full p-6 z-10 text-white bg-gradient-to-t from-black/90 to-transparent flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6">
+                      <div className="flex-shrink-0 hidden sm:block">
+                        <Image
+                          src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
+                          alt="poster"
+                          width={120}
+                          height={180}
+                          className="rounded-md shadow-md"
+                        />
+                      </div>
+                      {/* Play Icon */}
+                      <div className="text-yellow-400 sm:order-none order-first">
+                        <Link href={`/${type}/${slug}`}><PlayCircle size={50} className="mx-auto sm:mx-0" /></Link>
+                      </div>
+                      {/* Text Info */}
+                      <div className="flex-grow">
+                        <h2 className="text-2xl sm:text-3xl font-bold mb-2">
+                          {movie.title || movie.name}
+                        </h2>
+                        <div className="flex flex-wrap items-center gap-3 text-sm mb-2">
+                          <span className="flex items-center text-yellow-400">
+                            <Star className="mr-1 fill-yellow-500" size={18} />
+                            {movie.vote_average?.toFixed(1)}
+                          </span>
+                          <span className="bg-gray-700 px-2 py-1 rounded">
+                            {movie.original_language?.toUpperCase()}
+                          </span>
+                          <span className="px-2 py-1 rounded bg-gray-700">
+                            {movie.media_type === "tv"
+                              ? movie.first_air_date?.slice(0, 4)
+                              : movie.release_date?.slice(0, 4)}
+                          </span>
+                        </div>
+                        <p className="text-sm line-clamp-3">
+                          {movie.overview}
+                        </p>
+                      </div>
+                    </div>
 
-            {/* Nav Buttons */}
-            <button
-              onClick={prevMovie}
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white bg-black/50 hover:bg-black/70 p-2 rounded-full z-20"
-            >
-              <MoveLeft />
-            </button>
-            <button
-              onClick={nextMovie}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white bg-black/50 hover:bg-black/70 p-2 rounded-full z-20"
-            >
-              <MoveRight />
-            </button>
-          </>
-        )}
+                    {/* Nav Buttons */}
+                    <button
+                      onClick={prevMovie}
+                      className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white bg-black/50 hover:bg-black/70 p-2 rounded-full z-20"
+                    >
+                      <MoveLeft />
+                    </button>
+                    <button
+                      onClick={nextMovie}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white bg-black/50 hover:bg-black/70 p-2 rounded-full z-20"
+                    >
+                      <MoveRight />
+                    </button>
+                  </React.Fragment>
+                );
+              })()
+            ) : null
+          )}
       </div>
 
       {/* random 3 movies */}
@@ -244,38 +254,42 @@ const Header = () => {
           ? Array.from({ length: 3 })
               .fill(0)
               .map((_, index) => <PlaceSkeleton key={index} />)
-          : popularMovies.map((movie) => (
-              <div
-                className="flex p-3 rounded-lg shadow-sm hover:scale-105 transition duration-100 dark:bg-neutral-900"
-                key={movie.id}
-              >
-                <Image
-                  className="w-24 h-30 object-cover"
-                  src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
-                  // TMDB image URL
-                  alt={movie.title || "Movie title"}
-                  width={80}
-                  height={150}
-                />
-                <div className="ml-4 text-black dark:text-white">
-                  <div className="flex items-center space-x-2 gap-3">
-                    <span className="text-yellow-400 flex items-center">
-                      <Star className="mr-1 fill-yellow-500 text-yellow-500" />{" "}
-                      {movie.vote_average?.toFixed(1) || `N/A`}
-                    </span>
-                    <span className="bg-zinc-800 px-2 py-1 rounded text-white">
-                      {movie.original_language?.toUpperCase()}
-                    </span>
+          : popularMovies.map((movie) => {
+              const slug = `${movie.title
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")}-${movie.id}`;
+              return (
+                <Link href={`/movies/${slug}`} key={movie.id}>
+                  <div className="flex p-3 rounded-lg shadow-sm hover:scale-105 transition duration-100 dark:bg-neutral-900">
+                    <Image
+                      className="w-24 h-30 object-cover"
+                      src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
+                      // TMDB image URL
+                      alt={movie.title || "Movie title"}
+                      width={80}
+                      height={150}
+                    />
+                    <div className="ml-4 text-black dark:text-white">
+                      <div className="flex items-center space-x-2 gap-3">
+                        <span className="text-yellow-400 flex items-center">
+                          <Star className="mr-1 fill-yellow-500 text-yellow-500" />{" "}
+                          {movie.vote_average?.toFixed(1) || `N/A`}
+                        </span>
+                        <span className="bg-zinc-800 px-2 py-1 rounded text-white">
+                          {movie.original_language?.toUpperCase()}
+                        </span>
+                      </div>
+                      <h3 className="text-[18px] font-semibold mt-1 line-clamp-1">
+                        {movie.title || "Movie Title"}
+                      </h3>
+                      <p className="text-[13px] text-gray-900 dark:text-white line-clamp-2">
+                        {movie.overview}
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="text-[18px] font-semibold mt-1 line-clamp-1">
-                    {movie.title || "Movie Title"}
-                  </h3>
-                  <p className="text-[13px] text-gray-900 dark:text-white line-clamp-2">
-                    {movie.overview}
-                  </p>
-                </div>
-              </div>
-            ))}
+                </Link>
+              );
+            })}
       </div>
 
       {/* social */}
@@ -294,7 +308,6 @@ const Header = () => {
           </button>
         ))}
       </div>
-
     </div>
   );
 };

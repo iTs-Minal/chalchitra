@@ -4,11 +4,13 @@ import { useState, useEffect } from "react";
 import { Heart, Star, Eye, ShoppingCart } from "lucide-react";
 import ActionButtonSkeleton from "./skeleton/actionbutton-skeleton";
 
-export default function MovieActions({ tmdbId }: { tmdbId: number }) {
+export default function MovieActions({ tmdbId, type }: { tmdbId: number; type: "movies" | "tvshows" }) {
+
   const [isFavorite, setIsFavorite] = useState(false);
   const [isRated, setIsRated] = useState(false);
   const [isWatched, setIsWatched] = useState(false);
   const [isInWatchlist, setIsInWatchlist] = useState(false);
+
 
   const [loading, setLoading] = useState(true);
 
@@ -17,7 +19,7 @@ export default function MovieActions({ tmdbId }: { tmdbId: number }) {
   useEffect(() => {
     async function fetchFavorite() {
       try {
-        const res = await fetch("/api/movies/favorite");
+        const res = await fetch(`/api/${type}/favorite`);
         if (!res.ok) throw new Error("Failed to fetch favorites");
         const data = await res.json();
 
@@ -31,13 +33,13 @@ export default function MovieActions({ tmdbId }: { tmdbId: number }) {
       }
     }
     fetchFavorite();
-  }, [tmdbId]);
+  }, [tmdbId, type]);
 
   const handleFavoriteClick = async () => {
     const newStatus = !isFavorite;
     setIsFavorite(newStatus); // Optimistic UI update
     try {
-      const res = await fetch("/api/movies/favorite", {
+      const res = await fetch(`/api/${type}/favorite`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tmdbId, action: isFavorite ? "remove" : "add" }),
@@ -57,11 +59,11 @@ export default function MovieActions({ tmdbId }: { tmdbId: number }) {
   useEffect(() => {
     async function fetchWatched() {
       try {
-        const res = await fetch("/api/movies/watched");
-        if (!res.ok) throw new Error("Failed to fetch watched movies");
+        const res = await fetch(`/api/${type}/watched`);
+        if (!res.ok) throw new Error("Failed to fetch watched");
         const data = await res.json();
 
-        // Check if current movie is in watched
+        // Check if current is in watched
         const watched = data.some((wat: any) => wat.tmdbId === tmdbId);
         setIsWatched(watched);
       } catch (err) {
@@ -71,13 +73,13 @@ export default function MovieActions({ tmdbId }: { tmdbId: number }) {
       }
     }
     fetchWatched();
-  }, [tmdbId]);
+  }, [tmdbId, type]);
 
   const handleWatchedClick = async () => {
     const newStatus = !isWatched;
     setIsWatched(newStatus); // Optimistic UI update
     try {
-      const res = await fetch("/api/movies/watched", {
+      const res = await fetch(`/api/${type}/watched`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tmdbId, action: isWatched ? "remove" : "add" }),
@@ -97,11 +99,11 @@ export default function MovieActions({ tmdbId }: { tmdbId: number }) {
   useEffect(() => {
     async function fetchWatchlist() {
       try {
-        const res = await fetch("/api/movies/watchlist");
-        if (!res.ok) throw new Error("Failed to fetch watchlist movies");
+        const res = await fetch(`/api/${type}/watchlist`);
+        if (!res.ok) throw new Error("Failed to fetch watchlist");
         const data = await res.json();
 
-        // Check if current movie is in watchlist
+        // Check if current is in watchlist
         const watchlisted = data.some((wli: any) => wli.tmdbId === tmdbId);
         setIsInWatchlist(watchlisted);
       } catch (err) {
@@ -111,13 +113,13 @@ export default function MovieActions({ tmdbId }: { tmdbId: number }) {
       }
     }
     fetchWatchlist();
-  }, [tmdbId]);
+  }, [tmdbId, type]);
 
   const handleWatchlistClick = async () => {
     const newStatus = !isInWatchlist;
     setIsInWatchlist(newStatus); // Optimistic UI update
     try {
-      const res = await fetch("/api/movies/watchlist", {
+      const res = await fetch(`/api/${type}/watchlist`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -202,7 +204,7 @@ export default function MovieActions({ tmdbId }: { tmdbId: number }) {
       </button>
 
       <button
-        onClick={handleWatchedClick}
+        onClick={() => handleWatchedClick()}
         className={`${baseStyle} ${
           isWatched
             ? "bg-green-500 text-white hover:bg-green-600"
@@ -216,7 +218,7 @@ export default function MovieActions({ tmdbId }: { tmdbId: number }) {
       </button>
 
       <button
-        onClick={handleWatchlistClick}
+        onClick={() => handleWatchlistClick()}
         className={`${baseStyle} ${
           isInWatchlist
             ? "bg-blue-500 text-white hover:bg-blue-600"

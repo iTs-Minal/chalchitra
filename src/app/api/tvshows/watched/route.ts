@@ -13,7 +13,7 @@ export async function POST (req:Request){
 
     if(action==="add"){
 
-       const exists = await prisma.userMovieData.findFirst({
+       const exists = await prisma.userShowData.findFirst({
         where:{userId,tmdbId,status:"WATCHED"},
     });
 
@@ -21,7 +21,7 @@ export async function POST (req:Request){
         return NextResponse.json({message:'already added'});
     }
 
-    const result = await prisma.userMovieData.create({
+    const result = await prisma.userShowData.create({
         data:{
             userId,
             tmdbId,
@@ -33,7 +33,7 @@ export async function POST (req:Request){
     return NextResponse.json(result);
 }  
 if(action==="remove"){
-    await prisma.userMovieData.deleteMany({
+    await prisma.userShowData.deleteMany({
       where: { userId, tmdbId, status: "WATCHED" },
     });
     return NextResponse.json({ message: "Watched movie removed" });
@@ -46,7 +46,7 @@ export async function GET() {
 
   try {
     // 1. Get watched movie IDs for the user
-    const watchedData = await prisma.userMovieData.findMany({
+    const watchedData = await prisma.userShowData.findMany({
       where: { userId, status: 'WATCHED' },
       select: { tmdbId: true, createdAt: true },
     });
@@ -68,24 +68,24 @@ export async function GET() {
         const reviewMap = new Map(userReviews.map((r) => [r.tmdbId, r.rating]));
 
     // 2. Fetch movie details from TMDB for each watched movie
-    const movies = await Promise.all(
+    const shows = await Promise.all(
       watchedData.map(async (wat: { tmdbId : number;  createdAt : Date}) => {
         const res = await fetch(
-          `https://api.themoviedb.org/3/movie/${wat.tmdbId}?api_key=${process.env.TMDB_API_KEY}&language=en-US`
+          `https://api.themoviedb.org/3/tv/${wat.tmdbId}?api_key=${process.env.TMDB_API_KEY}&language=en-US`
         );
         if (!res.ok) {
-          console.error(`Failed to fetch movie with tmdbId: ${wat.tmdbId}`);
+          console.error(`Failed to fetch show with tmdbId: ${wat.tmdbId}`);
           return null;
         }
-        const movie = await res.json();
+        const show = await res.json();
         return {
-          id:movie.id,
+          id: show.id,
           tmdbId: wat.tmdbId,
-          title: movie.title,
-          poster_path: movie.poster_path,
-          release_date: movie.release_date,
-          vote_average: movie.vote_average,
-          genre: movie.genres.map((g: any) => g.name).join(', '),
+          name: show.name,
+          poster_path: show.poster_path,
+          first_air_date: show.first_air_date,
+          vote_average: show.vote_average,
+          genre: show.genres.map((g: any) => g.name).join(', '),
           added_date: wat.createdAt,
           userRating: reviewMap.get(wat.tmdbId) ?? null,
         };
@@ -93,12 +93,12 @@ export async function GET() {
     );
 
     // Filter out failed fetches
-    const validMovies = movies.filter(Boolean);
+    const validShows = shows.filter(Boolean);
 
-    return NextResponse.json(validMovies);
+    return NextResponse.json(validShows);
   } catch (error) {
-    console.error('Error fetching watched movies:', error);
-    return NextResponse.json({ error: 'Failed to fetch watched movies' }, { status: 500 });
+    console.error('Error fetching watched shows:', error);
+    return NextResponse.json({ error: 'Failed to fetch watched shows' }, { status: 500 });
   }
 }
 

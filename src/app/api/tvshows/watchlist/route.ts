@@ -12,7 +12,7 @@ export async function POST (req:Request){
 
     if(action==="add"){
 
-       const exists = await prisma.userMovieData.findFirst({
+       const exists = await prisma.userShowData.findFirst({
         where:{userId,tmdbId,status:"WATCHLIST"},
     });
 
@@ -20,7 +20,7 @@ export async function POST (req:Request){
         return NextResponse.json({message:'already added'});
     }
 
-    const result = await prisma.userMovieData.create({
+    const result = await prisma.userShowData.create({
         data:{
             userId,
             tmdbId,
@@ -32,10 +32,10 @@ export async function POST (req:Request){
     return NextResponse.json(result);
 }  
 if(action==="remove"){
-    await prisma.userMovieData.deleteMany({
+    await prisma.userShowData.deleteMany({
       where: { userId, tmdbId, status: "WATCHLIST" },
     });
-    return NextResponse.json({ message: "WatchList movie removed" });
+    return NextResponse.json({ message: "WatchList show removed" });
 }
 }
 
@@ -44,8 +44,8 @@ export async function GET() {
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    // 1. Get watchlist movie IDs for the user
-    const watchlistData = await prisma.userMovieData.findMany({
+    // 1. Get watchlist show IDs for the user
+    const watchlistData = await prisma.userShowData.findMany({
       where: { userId, status: 'WATCHLIST' },
       select: { tmdbId: true, createdAt: true },
     });
@@ -67,24 +67,24 @@ export async function GET() {
             const reviewMap = new Map(userReviews.map((r) => [r.tmdbId, r.rating]));
 
     // 2. Fetch movie details from TMDB for each watchlist movie
-    const movies = await Promise.all(
+    const shows = await Promise.all(
       watchlistData.map(async (wli: { tmdbId : number;  createdAt : Date}) => {
         const res = await fetch(
-          `https://api.themoviedb.org/3/movie/${wli.tmdbId}?api_key=${process.env.TMDB_API_KEY}&language=en-US`
+          `https://api.themoviedb.org/3/tv/${wli.tmdbId}?api_key=${process.env.TMDB_API_KEY}&language=en-US`
         );
         if (!res.ok) {
-          console.error(`Failed to fetch movie with tmdbId: ${wli.tmdbId}`);
+          console.error(`Failed to fetch show with tmdbId: ${wli.tmdbId}`);
           return null;
         }
-        const movie = await res.json();
+        const show = await res.json();
         return {
-          id: movie.id,
+          id: show.id,
           tmdbId: wli.tmdbId,
-          title: movie.title,
-          poster_path: movie.poster_path,
-          release_date: movie.release_date,
-          vote_average: movie.vote_average,
-          genre: movie.genres.map((g: any) => g.name).join(', '),
+          title: show.name,
+          poster_path: show.poster_path,
+          release_date: show.first_air_date,
+          vote_average: show.vote_average,
+          genre: show.genres.map((g: any) => g.name).join(', '),
           added_date: wli.createdAt,
           userRating: reviewMap.get(wli.tmdbId) ?? null,
         };
@@ -92,12 +92,12 @@ export async function GET() {
     );
 
     // Filter out failed fetches
-    const validMovies = movies.filter(Boolean);
+    const validShows = shows.filter(Boolean);
 
-    return NextResponse.json(validMovies);
+    return NextResponse.json(validShows);
   } catch (error) {
-    console.error('Error fetching watchlist movies:', error);
-    return NextResponse.json({ error: 'Failed to fetch watchlist movies' }, { status: 500 });
+    console.error('Error fetching watchlist shows:', error);
+    return NextResponse.json({ error: 'Failed to fetch watchlist shows' }, { status: 500 });
   }
 }
 

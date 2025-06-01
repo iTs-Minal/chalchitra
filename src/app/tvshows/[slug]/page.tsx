@@ -1,347 +1,250 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Navbar from '@/components/homePage/navbar';
 import MovieActions from '@/components/movie-action';
+import ReviewForm from '@/components/review-form';
+import ReviewList from '@/components/review-list';
 import SeasonEpisodes from '@/components/season-episodes';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
-
-
 export default async function ShowPage({ params }: { params: { slug: string } }) {
   const id = params.slug.split('-').pop();
-  
-  const res = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.TMDB_API_KEY}&append_to_response=videos,images,credits,recommendations,reviews,seasons`);
+
+  const res = await fetch(
+    `https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.TMDB_API_KEY}&append_to_response=videos,images,credits,recommendations,reviews,seasons`
+  );
   if (!res.ok) return notFound();
   const show = await res.json();
 
-    const providersRes = await fetch(
+  console.log(show.credits.cast);
+
+  const providersRes = await fetch(
     `https://api.themoviedb.org/3/tv/${id}/watch/providers?api_key=${process.env.TMDB_API_KEY}`
   );
   const providers = await providersRes.json();
 
-  return (
-   <main className="flex flex-col justify-center w-full h-auto">
-      <nav>
-        <Navbar />
-      </nav>
 
-      {/* ---------- for image -------- */}
-      <div className="relative w-full">
-        {/* --------------image----------- */}
+  async function getGuestStars(tvId: string, seasons: any[]) {
+  const allGuests: Record<number, any> = {};
+
+  for (const season of seasons) {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/tv/${tvId}/season/${season.season_number}?api_key=${process.env.TMDB_API_KEY}`
+    );
+    if (!res.ok) continue;
+    const data = await res.json();
+
+    for (const episode of data.episodes || []) {
+      for (const guest of episode.guest_stars || []) {
+        if (!allGuests[guest.id]) {
+          allGuests[guest.id] = guest;
+        }
+      }
+    }
+  }
+
+  return Object.values(allGuests);
+}
+
+const guestStars = await getGuestStars(show.id, show.seasons);
+
+const mainCast = show.credits?.cast || [];
+const combinedCastMap = new Map();
+
+[...mainCast, ...guestStars].forEach((actor: any) => {
+  if (!combinedCastMap.has(actor.id)) {
+    combinedCastMap.set(actor.id, actor);
+  }
+});
+
+const combinedCast = Array.from(combinedCastMap.values());
+
+console.log(combinedCast);
+
+
+
+
+  return (
+    <main className="w-full min-h-screen bg-black text-white">
+      <Navbar />
+
+      {/* Hero Section */}
+      <section className="relative w-full h-[70vh]">
         <Image
           src={`https://image.tmdb.org/t/p/original${show.poster_path}`}
           alt={show.name}
-          height={500}
-          width={500}
+          layout="fill"
+          objectFit="cover"
+          className="z-0"
           priority
-          className="w-full h-auto object-cover"
         />
-
-        {/* -----------for bg gradient over image-------------- */}
-        <div className="absolute inset-0 h-full w-full bg-gradient-to-b from-black/80 via-black/80 to-black/80" />
-
-        {/* ---------------content over image------------- */}
-
-        <div className="absolute inset-0 h-auto w-full flex flex-col">
-          <div className="flex flex-col md:flex-row justify-center items-center gap-10 pt-10 px-4 md:px-10 w-full">
-            {/* Movie Poster */}
-            <div className="w-full md:w-auto">
-              <Image
-                src={`https://image.tmdb.org/t/p/original${show.poster_path}`}
-                alt={show.name}
-                height={350}
-                width={350}
-                priority
-                className="rounded-lg w-full md:w-[300px] h-auto object-cover mx-auto"
-              />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/80 to-black/90 z-10" />
+        <div className="absolute inset-0 z-20 flex flex-col md:flex-row items-center justify-center gap-10 px-6 md:px-16">
+          <Image
+            src={`https://image.tmdb.org/t/p/original${show.poster_path}`}
+            alt={show.name}
+            height={350}
+            width={250}
+            className="rounded-lg shadow-lg"
+          />
+          <div className="space-y-4 max-w-2xl">
+            <h1 className="text-4xl md:text-5xl font-bold font-lilita">
+              {show.name}
+            </h1>
+            <p className="italic text-gray-300 font-kanit">{show.tagline}</p>
+            <p className="font-exo text-sm sm:text-base">
+              <strong>Overview:</strong> {show.overview}
+            </p>
+            <div className="text-sm text-gray-200 font-outfit space-y-1">
+              <p><strong>First Air Date:</strong> {show.first_air_date}</p>
+              <p><strong>Status:</strong> {show.status}</p>
+              <p><strong>Language:</strong> {show.original_language.toUpperCase()}</p>
+              <p><strong>Genres:</strong> {show.genres.map((g: any) => g.name).join(', ')}</p>
+              <p><strong>Production:</strong> {show.production_companies.map((p: any) => p.name).join(', ')}</p>
             </div>
 
-            {/* Movie Details */}
-            <div className="w-full max-w-3xl space-y-4 text-white">
-              <h1 className="text-3xl sm:text-5xl md:text-4xl lg:text-5xl font-bold font-lilita leading-tight">
-                {show.name}
-              </h1>
-              <p className="text-gray-300 font-kanit text-sm sm:text-base">
-                {show.tagline}
-              </p>
-              <p className="font-exo text-sm sm:text-base">
-                <strong>Overview:</strong> {show.overview}
-              </p>
-
-              <div className="text-sm sm:text-md text-gray-200 space-y-2 font-outfit">
-                <p>
-                  <strong>Release Date:</strong> {show.first_air_date}
-                </p>
-                <p>
-                  <strong>Runtime:</strong> {show.runtime} mins
-                </p>
-                <p>
-                  <strong>Status:</strong> {show.status}
-                </p>
-                <p>
-                  <strong>Original Language:</strong>{" "}
-                  {show.original_language.toUpperCase()}
-                </p>
-                <p>
-                  <strong>Genres:</strong>{" "}
-                  {show.genres.map((g: any) => g.name).join(", ")}
-                </p>
-                <p>
-                  <strong>Production:</strong>{" "}
-                  {show.production_companies
-                    .map((p: any) => p.name)
-                    .join(", ")}
-                </p>
-              {/* </div> */}
-
-              <div>
-                <MovieActions tmdbId={show.id} />
-              </div>
-            </div>
+            <MovieActions tmdbId={show.id} type="tvshows" />
           </div>
+        </div>
+      </section>
 
-          <div className="max-w-6xl mx-auto w-full px-6 py-10 space-y-16 mt-10">
+      {/* Main Content */}
+      <section className="max-w-6xl mx-auto px-6 py-12 space-y-20">
 
+        {/* Episodes */}
+        {show.seasons?.length > 0 && (
+          <div>
+            <h2 className="text-3xl font-kanit font-bold mb-4">📺 Episodes</h2>
+            <SeasonEpisodes tvId={show.id} seasons={show.seasons} />
+          </div>
+        )}
 
-{show.seasons?.length > 0 && (
-  <div className="mt-10">
-    <h2 className="text-4xl font-bold mb-4 font-kanit">📺 Episodes</h2>
-    <SeasonEpisodes tvId={show.id} seasons={show.seasons} />
-  </div>
-)}
-
-            {/* Director Info and Watch Providers */}
-            <div className="max-w-6xl mx-auto w-full px-6 py-10 flex justify-between items-start">
-              {/* Director Info */}
-              {show.created_by?.length > 0 && (
-                <div className="w-1/2 pr-6">
-                  <h2 className="text-4xl font-bold mb-6 font-kanit">
-                    Director:
-                  </h2>
-                  <div className="flex items-center gap-6">
-                    {show.created_by
-                      .map((director: any) => (
-                        <div
-                          key={director.id}
-                          className="flex flex-col items-center space-y-4"
-                        >
-                          <Image
-                            src={
-                              director.profile_path
-                                ? `https://image.tmdb.org/t/p/w300${director.profile_path}`
-                                : "/no-avatar.png"
-                            }
-                            alt={director.name}
-                            width={150}
-                            height={225}
-                            className="rounded-sm"
-                          />
-                          <div className="text-white">
-                            <h3 className="font-medium">{director.name}</h3>
-                            <p className="text-xs text-gray-400">
-                              {director.known_for_department}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Watch Providers */}
-              {providers.results?.US?.flatrate?.length > 0 && (
-                <div className="w-1/2 pl-6">
-                  <h2 className="text-4xl font-bold mb-6">
-                    Available on OTT Platforms:
-                  </h2>
-                  <div className="flex flex-wrap gap-6">
-                    {providers.results.US.flatrate.map((provider: any) => (
-                      <div
-                        key={provider.provider_id}
-                        className="w-24 flex flex-col items-center p-3 rounded-2xl bg-white shadow hover:shadow-lg transition duration-300 ease-in-out"
-                      >
-                        <div className="w-[75px] h-[75px] overflow-hidden rounded-full border border-gray-200 bg-gray-100">
-                          <Image
-                            src={`https://image.tmdb.org/t/p/w200${provider.logo_path}`}
-                            alt={provider.provider_name}
-                            width={75}
-                            height={75}
-                            className="object-contain"
-                          />
-                        </div>
-                        <p className="text-xs mt-2 text-center font-medium text-gray-700">
-                          {provider.provider_name}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Cast Section */}
-            {show.credits?.cast?.length > 0 && (
-              <div>
-                <h2 className="text-4xl font-bold mb-6 font-kanit">Cast:</h2>
-                <div className="flex overflow-x-auto gap-6 pb-4 scroll-smooth">
-                  {show.credits.cast.slice(0, 15).map((actor: any) => (
-                    <div
-                      key={actor.id}
-                      className="flex-shrink-0 w-40 text-center space-y-2"
-                    >
-                      <Image
-                        src={
-                          actor.profile_path
-                            ? `https://image.tmdb.org/t/p/w300${actor.profile_path}`
-                            : "/no-avatar.png"
-                        }
-                        alt={actor.name}
-                        width={150}
-                        height={225}
-                        className="rounded-lg mx-auto"
-                      />
-                      <div className="text-sm font-medium text-white">
-                        {actor.name}
-                      </div>
-                      <div className="text-xs text-gray-400">
-                        {actor.character}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Screenshots */}
-            {show.images?.backdrops?.length > 0 && (
-              <div>
-                <h2 className="text-4xl font-bold mb-6 font-kanit">
-                  Screenshots:
-                </h2>
-                <div className="flex flex-col gap-6">
-                  {show.images.backdrops
-                    .slice(6, 12)
-                    .map((img: any, idx: number) => (
-                      <Image
-                        key={idx}
-                        src={`https://image.tmdb.org/t/p/original${img.file_path}`}
-                        alt={`Screenshot ${idx}`}
-                        width={1200}
-                        height={700}
-                        className="rounded-lg w-full object-cover"
-                      />
-                    ))}
-                </div>
-              </div>
-            )}
-
-            {/* Trailer */}
-            {show.videos?.results?.length > 0 && (
-              <div>
-                <h2 className="text-3xl font-semibold mb-6">
-                  Official Trailer
-                </h2>
-                {show.videos.results
-                  .filter(
-                    (vid: any) =>
-                      vid.type === "Trailer" && vid.site === "YouTube"
-                  )
-                  .slice(0, 1)
-                  .map((trailer: any) => (
-                    <div key={trailer.key} className="w-full aspect-video">
-                      <iframe
-                        width="100%"
-                        height="100%"
-                        src={`https://www.youtube.com/embed/${trailer.key}`}
-                        allowFullScreen
-                        className="rounded-lg"
-                      ></iframe>
-                    </div>
-                  ))}
-              </div>
-            )}
-
-            {/* Rating */}
-            <div id="rating" className="max-w-6xl mx-auto mt-16 space-y-6">
-              <h2 className="text-3xl font-semibold">⭐ Rate This Movie</h2>
-              <div className="flex items-center gap-2">
-                {[...Array(5)].map((_, i) => (
-                  <div key={i} className="relative">
-                    <input
-                      type="radio"
-                      name="rating"
-                      id={`star-${i + 1}`}
-                      className="sr-only peer"
+        {/* Director & Watch Providers */}
+        <div className="flex flex-col md:flex-row gap-10">
+          {show.created_by?.length > 0 && (
+            <div className="w-full md:w-1/2">
+              <h2 className="text-3xl font-bold mb-4 font-kanit">🎬 Director</h2>
+              <div className="flex gap-6 flex-wrap">
+                {show.created_by.map((director: any) => (
+                  <div key={director.id} className="text-center space-y-2">
+                    <Image
+                      src={
+                        director.profile_path
+                          ? `https://image.tmdb.org/t/p/w300${director.profile_path}`
+                          : '/no-avatar.png'
+                      }
+                      alt={director.name}
+                      width={120}
+                      height={180}
+                      className="rounded-lg mx-auto"
                     />
-                    <label
-                      htmlFor={`star-${i + 1}`}
-                      className="text-3xl cursor-pointer text-gray-400 transition hover:text-yellow-400 peer-checked:text-yellow-400"
-                    >
-                      ★
-                    </label>
+                    <div>
+                      <p className="font-semibold">{director.name}</p>
+                      <p className="text-xs text-gray-400">{director.known_for_department}</p>
+                    </div>
                   </div>
                 ))}
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Hover and click to rate. You can only rate once.
-              </p>
             </div>
+          )}
 
-            {/* Comments */}
-            <div className="max-w-6xl mx-auto mt-16 space-y-6">
-              <h2 className="text-3xl font-semibold mb-2">
-                💬 Leave a Comment
-              </h2>
-
-              <div className="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-4">
-                <textarea
-                  className="w-full resize-none rounded-md p-3 text-black dark:text-white bg-white dark:bg-zinc-900 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  rows={4}
-                  placeholder="Share your thoughts..."
-                />
-                <div className="mt-3 flex justify-between items-center">
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    Be respectful and stay on topic.
-                  </span>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
-                    🚀 Post Comment
-                  </button>
-                </div>
+          {providers.results?.US?.flatrate?.length > 0 && (
+            <div className="w-full md:w-1/2">
+              <h2 className="text-3xl font-bold mb-4 font-kanit">📺 Watch On</h2>
+              <div className="flex flex-wrap gap-4">
+                {providers.results.US.flatrate.map((provider: any) => (
+                  <div
+                    key={provider.provider_id}
+                    className="w-24 flex flex-col items-center p-3 rounded-xl bg-white text-black shadow-md"
+                  >
+                    <Image
+                      src={`https://image.tmdb.org/t/p/w200${provider.logo_path}`}
+                      alt={provider.provider_name}
+                      width={60}
+                      height={60}
+                      className="rounded-full"
+                    />
+                    <p className="text-xs text-center mt-2">{provider.provider_name}</p>
+                  </div>
+                ))}
               </div>
             </div>
-
-            {/* User Reviews */}
-            {show.reviews?.results?.length > 0 && (
-              <div className="max-w-6xl mx-auto mt-16 px-4 md:px-6 space-y-8">
-                <h2 className="text-4xl font-bold font-kanit text-white">
-                  📝 User Reviews
-                </h2>
-                <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
-                  {show.reviews.results.map((review: any) => (
-                    <div
-                      key={review.id}
-                      className="bg-zinc-900 text-white p-6 rounded-xl shadow-lg border border-zinc-700 hover:border-blue-500 transition-all duration-200"
-                    >
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-lg uppercase">
-                          {review.author[0]}
-                        </div>
-                        <h3 className="font-semibold text-lg">
-                          {review.author}
-                        </h3>
-                      </div>
-                      <p className="text-sm text-gray-300 leading-relaxed line-clamp-6">
-                        {review.content}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+          )}
         </div>
-      </div>
-      </div>
+
+        {/* Cast */}
+        {combinedCast.length > 0 && (
+          <div>
+            <h2 className="text-3xl font-bold mb-4 font-kanit">🎭 Cast</h2>
+            <div className="flex overflow-x-auto gap-6 pb-4 scroll-smooth">
+              {combinedCast.slice(0, 50).map((actor: any) => (
+                <div key={actor.id} className="w-36 flex-shrink-0 text-center space-y-2">
+                  <Image
+                    src={
+                      actor.profile_path
+                        ? `https://image.tmdb.org/t/p/w300${actor.profile_path}`
+                        : '/no-avatar.png'
+                    }
+                    alt={actor.name}
+                    width={120}
+                    height={180}
+                    className="rounded-lg mx-auto"
+                  />
+                  <p className="text-sm font-medium">{actor.name}</p>
+                  <p className="text-xs text-gray-400">{actor.character}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Screenshots */}
+        {show.images?.backdrops?.length > 0 && (
+          <div>
+            <h2 className="text-3xl font-bold mb-4 font-kanit">🖼️ Screenshots</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {show.images.backdrops.slice(6, 12).map((img: any, idx: number) => (
+                <Image
+                  key={idx}
+                  src={`https://image.tmdb.org/t/p/original${img.file_path}`}
+                  alt={`Screenshot ${idx}`}
+                  width={1200}
+                  height={700}
+                  className="rounded-lg w-full object-cover"
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Trailer */}
+        {show.videos?.results?.length > 0 && (
+          <div>
+            <h2 className="text-3xl font-bold mb-4 font-kanit">🎬 Official Trailer</h2>
+            {show.videos.results
+              .filter((vid: any) => vid.type === 'Trailer' && vid.site === 'YouTube')
+              .slice(0, 1)
+              .map((trailer: any) => (
+                <div key={trailer.key} className="aspect-video w-full rounded-lg overflow-hidden">
+                  <iframe
+                    width="100%"
+                    height="100%"
+                    src={`https://www.youtube.com/embed/${trailer.key}`}
+                    allowFullScreen
+                    className="rounded-lg"
+                  ></iframe>
+                </div>
+              ))}
+          </div>
+        )}
+
+        {/* Reviews */}
+        <div id="rating" className="space-y-6">
+          <h2 className="text-3xl font-bold font-kanit">⭐ Rate & Review</h2>
+          <ReviewForm tmdbId={show.id} />
+          <ReviewList tmdbId={show.id} />
+        </div>
+      </section>
     </main>
   );
 }

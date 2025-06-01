@@ -29,7 +29,7 @@ const iconMap = {
   watchlist: <ShoppingCart className="w-6 h-6" />,
 };
 
-export function StatsHeader() {
+export function StatsHeader({type}: { type: 'movies' | 'tvshows' }) {
   const [stats, setStats] = useState<Stats>({
     favorites: 0,
     ratedCount: 0,
@@ -40,7 +40,7 @@ export function StatsHeader() {
   useEffect(() => {
     async function fetchStats() {
       try {
-        const res = await fetch("/api/movies/stats");
+        const res = await fetch(`/api/${type}/stats`);
         const data = await res.json();
         setStats(data);
       } catch (err) {
@@ -48,7 +48,7 @@ export function StatsHeader() {
       }
     }
     fetchStats();
-  }, []);
+  }, [type]);
 
 
   return (

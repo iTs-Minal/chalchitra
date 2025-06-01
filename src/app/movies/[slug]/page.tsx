@@ -15,7 +15,7 @@ export default async function MoviePage({
   const id = params.slug.split("-").pop();
 
   const res = await fetch(
-    `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.TMDB_API_KEY}&append_to_response=videos,images,credits,recommendations,reviews`
+    `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.TMDB_API_KEY}&append_to_response=videos,images,credits,recommendations`
   );
   if (!res.ok) return notFound();
 
@@ -86,15 +86,15 @@ export default async function MoviePage({
                   <strong>Status:</strong> {movie.status}
                 </p>
                 <p>
-                  <strong>Original Language:</strong>{" "}
+                  <strong>Original Language:</strong>
                   {movie.original_language.toUpperCase()}
                 </p>
                 <p>
-                  <strong>Genres:</strong>{" "}
+                  <strong>Genres:</strong>
                   {movie.genres.map((g: any) => g.name).join(", ")}
                 </p>
                 <p>
-                  <strong>Production:</strong>{" "}
+                  <strong>Production:</strong>
                   {movie.production_companies
                     .map((p: any) => p.name)
                     .join(", ")}
@@ -108,7 +108,7 @@ export default async function MoviePage({
               </div>
 
               <div>
-                <MovieActions tmdbId={movie.id} />
+                <MovieActions tmdbId={movie.id} type="movies" />
               </div>
             </div>
           </div>

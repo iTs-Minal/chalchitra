@@ -16,12 +16,15 @@ import {
   YAxis,
   ResponsiveContainer,
 } from "recharts";
+import Link from "next/link";
 
 const COLORS = ["#f472b6", "#facc15", "#34d399", "#60a5fa"];
 
 interface Movie {
   id: number;
   title: string;
+  name: string;
+  first_air_date: string;
   release_date: string;
   added_date: string;
   genre: string;
@@ -29,6 +32,7 @@ interface Movie {
   poster_path: string;
   userRating: number;
 }
+
 
 const ITEMS_PER_PAGE = 10;
 
@@ -58,7 +62,7 @@ const filterToChartMap: Record<FilterType, string> = {
   watchlist: "Watchlist",
 };
 
-export default function TableChart() {
+export default function TableChart({type}: { type: "movies" | "tvshows" }) {
   const [filter, setFilter] = useState<FilterType>("favorite");
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
@@ -76,12 +80,12 @@ export default function TableChart() {
   const fetchMovies = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/movies/${filter}`);
+      const res = await fetch(`/api/${type}/${filter}`);
       const data = await res.json();
 
       // Sort by added_date desc
       const sorted = data.sort(
-        (a: Movie, b: Movie) =>
+        (a: any, b: any) =>
           new Date(b.added_date).getTime() - new Date(a.added_date).getTime()
       );
       setMovies(sorted);
@@ -90,7 +94,7 @@ export default function TableChart() {
       const genreCount: Record<string, number> = {};
       const monthCount: Record<string, number> = {};
 
-      data.forEach((item: Movie) => {
+      data.forEach((item: any) => {
         const firstGenre = item.genre?.split(",")[0].trim() || "";
 
         if (firstGenre) {
@@ -130,7 +134,7 @@ export default function TableChart() {
   useEffect(() => {
     fetchMovies();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter]);
+  }, [filter, type]);
 
   // Pagination
   const paginated = movies.slice(
@@ -140,16 +144,16 @@ export default function TableChart() {
   const totalPages = Math.ceil(movies.length / ITEMS_PER_PAGE);
 
   // Remove movie from UI (implement API delete here as well)
-  const handleRemove = async (id: number) => {
-    try {
-      // API call to remove movie from database (adjust your API route)
-      await fetch(`/api/movies/${id}`, { method: "DELETE" });
-
-      // Update UI state
-      setMovies((prev) => prev.filter((m) => m.id !== id));
-    } catch (err) {
-      console.error("Failed to remove movie", err);
-    }
+  const handleRemove = async (tmdbId: number) => {
+    await fetch(`/api/${type}/${filter}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tmdbId,
+        status: filter,
+        action: "remove",
+      }),
+    });
   };
 
   if (loading)
@@ -198,55 +202,61 @@ export default function TableChart() {
           </tr>
         </thead>
         <tbody>
-          {paginated.map((movie, index) => (
-            <tr
-              key={movie.id}
-              className={`rounded transition-all duration-150 hover:bg-gray-100 dark:hover:bg-zinc-700 ${
-                index % 2 === 0
-                  ? "bg-white dark:bg-zinc-900"
-                  : "bg-gray-50 dark:bg-zinc-800"
-              }`}
-            >
-              <td className="p-3 text-left font-medium font-outfit">
-                <span className="text-gray-500 dark:text-gray-400 mr-2">
-                  {index + 1}.
-                </span>
-                {movie.title}
-              </td>
-              <td className="p-3 text-center text-blue-600 font-exo">
-                {movie.release_date?.slice(0, 4)}
-              </td>
-              <td className="p-3 text-center font-outfit">
-                {movie.added_date?.slice(0, 10)}
-              </td>
-              <td className="p-3 text-center font-exo">
-                {movie.genre?.split(",")[0].trim()}
-              </td>
-              <td className="p-3 text-center ">
-                {movie.userRating ? (
-                  <span className="inline-flex items-center gap-1 text-yellow-600 dark:text-yellow-400 font-semibold">
-                    ⭐ {movie.userRating.toFixed(1)}
+          {paginated.map((item, index) => {
+            const slug = `${item.title || item.name
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, "-")}-${item.id}`;
+
+            return (
+              <tr
+                key={item.id}
+                className={`rounded transition-all duration-150 hover:bg-gray-100 dark:hover:bg-zinc-700 ${
+                  index % 2 === 0
+                    ? "bg-white dark:bg-zinc-900"
+                    : "bg-gray-50 dark:bg-zinc-800"
+                }`}
+              >
+                <td className="p-3 text-left font-medium font-outfit">
+                  <span className="text-gray-500 dark:text-gray-400 mr-2">
+                    {index + 1}.
                   </span>
-                ) : (
-                  <span className="text-gray-400">—</span>
-                )}
-              </td>
-              <td className="p-3 text-center ">
-                <span className="inline-flex items-center gap-1 text-yellow-600 dark:text-yellow-400 font-semibold">
-                  ⭐ {movie.vote_average?.toFixed(1)}
-                </span>
-              </td>
-              <td className="p-3 text-center">
-                <button
-                  onClick={() => handleRemove(movie.id)}
-                  className="text-red-500 hover:text-red-700 flex items-center gap-1 justify-center font-medium"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  Remove
-                </button>
-              </td>
-            </tr>
-          ))}
+                  <Link href={`/${type}/${slug}`}>{item.title || item.name}</Link>
+                </td>
+                <td className="p-3 text-center text-blue-600 font-exo">
+                  {item.release_date?.slice(0, 4)||item.first_air_date?.slice(0, 4)}
+                </td>
+                <td className="p-3 text-center font-outfit">
+                  {item.added_date?.slice(0, 10)}
+                </td>
+                <td className="p-3 text-center font-exo">
+                  {item.genre?.split(",")[0].trim()}
+                </td>
+                <td className="p-3 text-center ">
+                  {item.userRating ? (
+                    <span className="inline-flex items-center gap-1 text-yellow-600 dark:text-yellow-400 font-semibold">
+                      ⭐ {item.userRating.toFixed(1)}
+                    </span>
+                  ) : (
+                    <span className="text-gray-400">—</span>
+                  )}
+                </td>
+                <td className="p-3 text-center ">
+                  <span className="inline-flex items-center gap-1 text-yellow-600 dark:text-yellow-400 font-semibold">
+                    ⭐ {item.vote_average?.toFixed(1)}
+                  </span>
+                </td>
+                <td className="p-3 text-center">
+                  <button
+                    onClick={() => handleRemove(item.id)}
+                    className="text-red-500 hover:text-red-700 flex items-center gap-1 justify-center font-medium"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Remove
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
@@ -303,7 +313,7 @@ export default function TableChart() {
         {/* Added Date Line Chart */}
         <div className="bg-white dark:bg-zinc-900 p-4 rounded shadow">
           <h3 className="text-center mb-2 text-zinc-800 dark:text-white font-kanit">
-            {filterToChartMap[filter]} Movies Added Over Time
+            {filterToChartMap[filter]} {type} Added Over Time
           </h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={yearData}>
