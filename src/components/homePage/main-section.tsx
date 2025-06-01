@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useEffect, useState } from "react";
 import { TracingBeam } from "../ui/tracing-beam";
@@ -11,7 +12,7 @@ import ShowSkeleton from "../skeleton/show-skeleton";
 interface Movie {
   id: number;
   title: string;
-  name: string;
+  name?: string;
   vote_average?: number;
   poster_path?: string;
   overview: string;
@@ -33,178 +34,116 @@ interface TvShow {
 
 const MainSection = () => {
   const [loading, setLoading] = useState(true);
+  const [selectedType, setSelectedType] = useState("movies");
 
-  // ---------------------Fetching trending movies from TMDB API-------------------------
   const [trendingMovies, setTrendingMovies] = useState<Movie[]>([]);
-
-  const getTrendingMovies = (category: string, type: string) => {
-    setLoading(true);
-    fetch(`/api/tmdb/${type}/${category}`)
-      .then((res) => res.json())
-      .then((json) => {
-        const results = Array.isArray(json.results) ? json.results : [json];
-
-        const moviesData = results.map((movie: Movie) => ({
-          id: movie.id,
-          title: movie.title || "Movie Title",
-          vote_average: movie.vote_average,
-          poster_path: movie.poster_path,
-          overview: movie.overview,
-          original_language: movie.original_language,
-          release_date: movie.release_date,
-          media_type: movie.media_type,
-        }));
-        setTimeout(() => {
-          setTrendingMovies(moviesData);
-          setLoading(false); // Or use state based on the category
-        }, 3000);
-      })
-      .catch((error) =>
-        console.error(`Error fetching ${category} movies:`, error)
-      );
-  };
-  useEffect(() => {
-    getTrendingMovies("trending", "movie");
-  }, []);
-
-  //---------------- Fetching trending shows from TMDB API-----------------------
   const [trendingShows, setTrendingShows] = useState<TvShow[]>([]);
-
-  const getTrendingShows = (category: string, type: string) => {
-    setLoading(true);
-    fetch(`/api/tmdb/${type}/${category}`)
-      .then((res) => res.json())
-      .then((json) => {
-        // Adjust for "latest" (it returns a single object)
-        const results = Array.isArray(json.results) ? json.results : [json];
-
-        const showsData = results.map((show: TvShow) => ({
-          id: show.id,
-          name: show.name || "Show Title",
-          vote_average: show.vote_average,
-          poster_path: show.poster_path,
-          overview: show.overview,
-          original_language: show.original_language,
-          first_air_date: show.first_air_date,
-          media_type: show.media_type,
-        }));
-        setTimeout(() => {
-          setTrendingShows(showsData);
-          setLoading(false); // Or use state based on the category
-        }, 3000);
-      })
-      .catch((error) =>
-        console.error(`Error fetching ${category} shows:`, error)
-      );
-  };
-  useEffect(() => {
-    getTrendingShows("trending", "tv");
-  }, []);
-
-  // -----------------Fetching popular movies from TMDB API----------------------------
   const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
-
-  const getPopularMovies = (category: string, type: string) => {
-    setLoading(true);
-    fetch(`/api/tmdb/${type}/${category}`)
-      .then((res) => res.json())
-      .then((json) => {
-        const results = Array.isArray(json.results) ? json.results : [json];
-
-        const moviesData = results.map((movie: Movie) => ({
-          id: movie.id,
-          title: movie.title || "Movie Title",
-          vote_average: movie.vote_average,
-          poster_path: movie.poster_path,
-          overview: movie.overview,
-          original_language: movie.original_language,
-          release_date: movie.release_date,
-        }));
-        setTimeout(() => {
-          setPopularMovies(moviesData);
-          setLoading(false); // Or use state based on the category
-        }, 3000);
-      })
-      .catch((error) =>
-        console.error(`Error fetching ${category} movies:`, error)
-      );
-  };
-  useEffect(() => {
-    getPopularMovies("popular", "movie"); // Set loading to false after fetching
-  }, []);
-
-  // -----------------Fetching onair from TMDB API---------------------------
-  const [onairShows, setonairShows] = useState<TvShow[]>([]);
-
-  const getonairShows = (category: string, type: string) => {
-    setLoading(true);
-    fetch(`/api/tmdb/${type}/${category}`)
-      .then((res) => res.json())
-      .then((json) => {
-       const results = Array.isArray(json.results) ? json.results : [json];
-
-        const showsData = results.map((show: TvShow) => ({
-          id: show.id,
-          name: show.name || "Movie Title",
-          vote_average: show.vote_average,
-          poster_path: show.poster_path,
-          overview: show.overview,
-          original_language: show.original_language,
-          first_air_date: show.first_air_date,
-        }));
-        setTimeout(() => {
-          setonairShows(showsData);
-          setLoading(false); // Or use state based on the category
-        }, 3000);
-      })
-      .catch((error) =>
-        console.error(`Error fetching ${category} movies:`, error)
-      );
-  };
-  useEffect(() => {
-    getonairShows("on_the_air", "tv");
-  }, []);
-
-  //---------------------- Fetching upcoming movies from TMDb api---------------------
+  const [onairShows, setOnairShows] = useState<TvShow[]>([]);
   const [upcomingMovies, setUpcomingMovies] = useState<Movie[]>([]);
 
-  const getUpcomingMovies = (category: string, type: string) => {
+  const fetchData = async (
+    category: string,
+    type: string,
+    setter: (data: any[]) => void,
+    mapFn: (item: any) => any
+  ) => {
     setLoading(true);
-    fetch(`/api/tmdb/${type}/${category}`)
-      .then((res) => res.json())
-      .then((json) => {
-        const results = Array.isArray(json.results) ? json.results : [json];
-
-        const moviesData = results.map((movie: Movie) => ({
-          id: movie.id,
-          title: movie.title || "Movie Title",
-          vote_average: movie.vote_average,
-          poster_path: movie.poster_path,
-          overview: movie.overview,
-          original_language: movie.original_language,
-          release_date: movie.release_date,
-          media_type: movie.media_type,
-        }));
-        setTimeout(() => {
-          setUpcomingMovies(moviesData);
-          setLoading(false); // Or use state based on the category
-        }, 3000);
-      })
-      .catch((error) =>
-        console.error(`Error fetching ${category} movies:`, error)
-      );
+    try {
+      const res = await fetch(`/api/tmdb/${type}/${category}`);
+      const json = await res.json();
+      const results = Array.isArray(json.results) ? json.results : [json];
+      const data = results.map(mapFn);
+      setTimeout(() => {
+        setter(data);
+        setLoading(false);
+      }, 1000);
+    } catch (error) {
+      console.error(`Error fetching ${category} ${type}:`, error);
+    }
   };
+
   useEffect(() => {
-    getUpcomingMovies("upcoming", "movie");
+    fetchData("trending", "movie", setTrendingMovies, (movie) => ({
+      id: movie.id,
+      title: movie.title || "Movie Title",
+      vote_average: movie.vote_average,
+      poster_path: movie.poster_path,
+      overview: movie.overview,
+      original_language: movie.original_language,
+      release_date: movie.release_date,
+      media_type: movie.media_type,
+    }));
+
+    fetchData("trending", "tv", setTrendingShows, (show) => ({
+      id: show.id,
+      name: show.name || "Show Title",
+      vote_average: show.vote_average,
+      poster_path: show.poster_path,
+      overview: show.overview,
+      original_language: show.original_language,
+      first_air_date: show.first_air_date,
+      media_type: show.media_type,
+    }));
+
+    fetchData("popular", "movie", setPopularMovies, (movie) => ({
+      id: movie.id,
+      title: movie.title || "Movie Title",
+      vote_average: movie.vote_average,
+      poster_path: movie.poster_path,
+      overview: movie.overview,
+      original_language: movie.original_language,
+      release_date: movie.release_date,
+      media_type: "movie",
+    }));
+
+    fetchData("on_the_air", "tv", setOnairShows, (show) => ({
+      id: show.id,
+      name: show.name || "Show Title",
+      vote_average: show.vote_average,
+      poster_path: show.poster_path,
+      overview: show.overview,
+      original_language: show.original_language,
+      first_air_date: show.first_air_date,
+      media_type: "tv",
+    }));
+
+    fetchData("upcoming", "movie", setUpcomingMovies, (movie) => ({
+      id: movie.id,
+      title: movie.title || "Movie Title",
+      vote_average: movie.vote_average,
+      poster_path: movie.poster_path,
+      overview: movie.overview,
+      original_language: movie.original_language,
+      release_date: movie.release_date,
+      media_type: "movie",
+    }));
   }, []);
 
-
-  const [selectedType, setSelectedType] = useState("movies");
+  // const renderSection = (
+  //   title: string,
+  //   items: any[],
+  //   SkeletonComponent: React.FC,
+  //   CardComponent: React.FC<any>,
+  //   keyName: string = "id"
+  // ) => (
+  //   <div className="flex flex-wrap items-center cursor-pointer ml-5">
+  //     {loading
+  //       ? Array.from({ length: 20 }).map((_, i) => (
+  //           <SkeletonComponent key={i} />
+  //         ))
+  //       : items.map((item) => (
+  //           <div key={item[keyName]}>
+  //             <CardComponent {...item} />
+  //           </div>
+  //         ))}
+  //   </div>
+  // );
 
   return (
     <div className="flex flex-col items-center justify-center px-2 mt-5 h-full bg-neutral-100 dark:bg-zinc-950">
-      <div className="flex flex-col w-full items-center mt-5 dark:bg-zinc-950">
-        <p className="text-md font-bold text-black dark:text-white font-kanit">
+      <div className="flex flex-col w-full max-w-7xl items-center mt-5 px-4 md:px-8">
+        <p className="text-sm sm:text-base md:text-lg font-medium text-black dark:text-white font-kanit leading-relaxed text-justify">
           Are you looking for the best site for watching movies online? A site
           that is not only free but also safe? If yes, search no more, you are
           at the right place. Chalchitra allows users to watch thousands of
@@ -221,72 +160,55 @@ const MainSection = () => {
           regarding the site.
         </p>
       </div>
+
       <div className="flex flex-col w-full mt-20 px-2 h-auto bg-zinc-100 dark:bg-neutral-950">
         <TracingBeam className="flex flex-col w-full h-auto">
-          {/* -----trending section----- */}
-          <div className="flex flex-col w-full h-auto cursor-pointer mt-10 bg-zinc-100 dark:bg-zinc-950">
-            <div className="flex gap-6 items-center">
+          {/* Trending Section */}  
+          <div className="flex flex-col w-full h-auto cursor-pointer mt-10 bg-zinc-100 dark:bg-zinc-950 px-4 md:px-8">
+            <div className="flex gap-6 items-center mb-6">
               <IconLine />
               <span className="font-lilita text-3xl">Trending</span>
               <div className="flex gap-4 items-center">
                 <span
                   onClick={() => setSelectedType("movies")}
-                  className={`flex items-center text-sm font-kanit gap-2 text-gray-200 p-1 rounded hover:scale-95 transition duation-300 ${
+                  className={`flex items-center text-sm font-kanit gap-2 text-gray-200 px-2 py-1 rounded hover:scale-95 transition duration-300 ${
                     selectedType === "movies" ? "bg-yellow-500" : "bg-zinc-800"
                   }`}
                 >
-                  {" "}
-                  <span>
-                    <FilmIcon />
-                  </span>
-                  Movies
+                  <FilmIcon /> Movies
                 </span>
                 <span
                   onClick={() => setSelectedType("tvShows")}
-                  className={`flex items-center text-sm font-kanit gap-2 text-gray-200 p-1 rounded hover:scale-95 transition duation-300 ${
+                  className={`flex items-center text-sm font-kanit gap-2 text-gray-200 px-2 py-1 rounded hover:scale-95 transition duration-300 ${
                     selectedType === "tvShows" ? "bg-yellow-500" : "bg-zinc-800"
                   }`}
                 >
-                  <span>
-                    <TvIcon />
-                  </span>{" "}
-                  TV Shows
+                  <TvIcon /> TV
                 </span>
               </div>
             </div>
-            <div className="flex flex-wrap items-center cursor-pointer ml-5">
-              {loading
+
+            {/* Grid Wrapper for Trending Cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {selectedType === "movies"
+                ? loading
+                  ? Array.from({ length: 20 }).map((_, i) => (
+                      <MovieSkeleton key={i} />
+                    ))
+                  : trendingMovies.map((movie) => (
+                      <MovieCard key={movie.id} {...movie} />
+                    ))
+                : loading
                 ? Array.from({ length: 20 }).map((_, i) => (
-                    <MovieSkeleton key={i} />
-                  ))
-                : selectedType === "movies"
-                ? trendingMovies.map((movie) => (
-                    <div key={movie.id}>
-                      <MovieCard
-                        title={movie.title}
-                        vote_average={movie.vote_average}
-                        poster_path={movie.poster_path}
-                        id={movie.id}
-                        release_date={movie.release_date}
-                        media_type={movie.media_type}
-                      />
-                    </div>
+                    <ShowSkeleton key={i} />
                   ))
                 : trendingShows.map((show) => (
-                    <div key={show.id}>
-                      <ShowCard
-                        name={show.name}
-                        vote_average={show.vote_average}
-                        poster_path={show.poster_path}
-                        id={show.id}
-                      />
-                    </div>
+                    <ShowCard key={show.id} {...show} />
                   ))}
             </div>
           </div>
-          {/* -----movies section------- */}
+          {/* Latest Movies */}
           <div className="flex flex-col w-full h-auto mt-20 cursor-pointer bg-zinc-100 dark:bg-zinc-950 px-4 md:px-8">
-            {/* Header */}
             <div className="flex items-center gap-3 mb-6">
               <IconLine />
               <span className="font-lilita text-2xl sm:text-3xl">
@@ -294,85 +216,48 @@ const MainSection = () => {
               </span>
               <FilmIcon />
             </div>
-
-            {/* Movie Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {loading
                 ? Array.from({ length: 20 }).map((_, i) => (
                     <MovieSkeleton key={i} />
                   ))
                 : popularMovies.map((movie) => (
-                    <MovieCard
-                      key={movie.id}
-                      title={movie.title}
-                      vote_average={movie.vote_average}
-                      poster_path={movie.poster_path}
-                      id={movie.id}
-                      release_date={movie.release_date}
-                      media_type={movie.media_type}
-                    />
+                    <MovieCard key={movie.id} {...movie} />
                   ))}
             </div>
           </div>
-          {/* -------tv show section----- */}
-          <div className="flex flex-col mt-20 w-full h-auto cursor-pointer bg-zinc-100 dark:bg-zinc-950">
-            <div className="flex gap-5 items-center">
+
+          {/* Latest TV Shows */}
+          <div className="flex flex-col w-full h-auto mt-20 cursor-pointer bg-zinc-100 dark:bg-zinc-950 px-4 md:px-8">
+            <div className="flex items-center gap-3 mb-6">
               <IconLine />
-              <span className="font-lilita text-3xl">Latest Tv Shows</span>
+              <span className="font-lilita text-2xl sm:text-3xl">Latest TV Shows</span>
               <TvIcon />
             </div>
-            <div className="flex flex-wrap items-center cursor-pointer ml-5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {loading
                 ? Array.from({ length: 20 }).map((_, i) => (
-                    <ShowSkeleton key={i} />
+                    <MovieSkeleton key={i} />
                   ))
                 : onairShows.map((show) => (
-                    <div key={show.id}>
-                      <ShowCard
-                        name={show.name}
-                        vote_average={show.vote_average}
-                        poster_path={show.poster_path}
-                        id={show.id}
-                      />
-                    </div>
+                    <ShowCard key={show.id} {...show} />
                   ))}
             </div>
           </div>
-          {/* ------upcoming section------ */}
-          <div className="flex flex-col w-full h-auto cursor-pointer mt-20 mb-10 bg-zinc-100 dark:bg-zinc-950">
-            <div className="flex gap-5 items-center">
+
+          {/* Upcoming Movies */}
+          <div className="flex flex-col w-full h-auto mt-20 cursor-pointer bg-zinc-100 dark:bg-zinc-950 px-4 md:px-8">
+            <div className="flex items-center gap-3 mb-6">
               <IconLine />
-              <span className="font-lilita text-3xl">Upcoming</span>
-              <div className="flex gap-4 items-center">
-                <span
-                  className={`flex items-center text-sm font-kanit gap-2 text-gray-200 p-1 rounded hover:scale-95 transition duation-300 
-                    bg-yellow-500
-                  `}
-                >
-                  {" "}
-                  <span>
-                    <FilmIcon />
-                  </span>
-                  Movies
-                </span>
-              </div>
+              <span className="font-lilita text-2xl sm:text-3xl">Upcoming</span>
             </div>
-            <div className="flex flex-wrap items-center cursor-pointer ml-5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {loading
                 ? Array.from({ length: 20 }).map((_, i) => (
                     <MovieSkeleton key={i} />
                   ))
                 : upcomingMovies.map((movie) => (
-                    <div key={movie.id}>
-                      <MovieCard
-                        title={movie.title}
-                        vote_average={movie.vote_average}
-                        poster_path={movie.poster_path}
-                        id={movie.id}
-                        release_date={movie.release_date}
-                        media_type={movie.media_type}
-                      />
-                    </div>
+                    <MovieCard key={movie.id} {...movie} />
                   ))}
             </div>
           </div>

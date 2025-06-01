@@ -166,7 +166,7 @@ export default function MovieActions({ tmdbId, type }: { tmdbId: number; type: "
   return (
     <div className="flex flex-wrap gap-4 mt-6">
       <button
-        onClick={handleFavoriteClick}
+        onClick={()=>handleFavoriteClick()}
         className={`${baseStyle} ${
           isFavorite
             ? "bg-pink-600 text-white hover:bg-pink-700"

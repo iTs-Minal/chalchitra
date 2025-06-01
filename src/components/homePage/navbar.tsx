@@ -62,6 +62,7 @@ const Navbar = () => {
     vote_average?:number;
     original_language?:string;
     release_date?:string;
+    media_type?: string;
   }
 
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -84,7 +85,6 @@ const Navbar = () => {
 
  const handleSelect = (name:string)=>{
     router.push(`/search/${encodeURIComponent(name)}/page/1`);
-    setQuery("");
     setSuggestions([]);
   }
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -195,12 +195,11 @@ const Navbar = () => {
         <ul className={`${scrolled?"hidden":" absolute z-10 bg-white top-13 left-53 mt-1 rounded shadow text-black w-140"}`}>
           {suggestions.map((item) => {
             const title = item.title || item.name || 'Unknown Title';
-            const image = item.poster_path
-              ? `https://image.tmdb.org/t/p/original${item.poster_path}`
-              : '/no-image.jpg'; // fallback image if needed
+
             const rating = item.vote_average?.toFixed(1) || 'N/A';
             const language = item.original_language?.toUpperCase() || 'N/A';
             const date = item.release_date?.slice(0, 4) || item.first_air_date?.slice(0, 4) || 'N/A';
+            const media_type = item.media_type;
             return(
             <li
               key={item.id}
@@ -210,18 +209,15 @@ const Navbar = () => {
               }
             >
           <div className="flex flex-row gap-6 py-1 border-b-1 border-black">
-          <Image
-                  src={image}
-                  alt={title}
-                  width={16}
-                  height={20}
-                  className="w-16 h-20 object-cover"
-                />
+
                 <div className="flex-1 gap-2 ">
                   <p className="font-medium font-kanit">{title}</p>
                   <div className="text-sm text-gray-600 mt-1 flex items-center">
                     <span className="pr-4 font-exo flex flex-row items-center gap-1 "><Star className="fill-yellow-500"/> {rating} </span> 
-                     <span className="bg-gray-700 text-white font-exo p-1 rounded-lg text-sm">{language}</span> 
+                    <div className="flex flex-row items-center gap-2">
+                     <span className="bg-gray-700 text-white font-exo p-1 rounded-lg text-sm">{language}</span>
+                      <span className="bg-gray-700 text-white font-exo p-1 rounded-lg text-sm">{media_type}</span> 
+                      </div>
                       <span className="px-4 font-exo">{date}</span>
                   </div>
                 </div> 

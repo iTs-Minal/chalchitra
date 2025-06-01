@@ -14,16 +14,20 @@ import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Footer from "@/components/homePage/footer";
 
 interface Movie {
-  title?: string;
+  title: string;
   id?: number;
   vote_average?: number;
   poster_path?: string;
+  release_date?: string;
+  media_type: string;
 }
 interface TvShow {
-name?: string;
+name: string;
     id?: number;
     vote_average?: number;
     poster_path?: string;
+    first_air_date?: string;
+    media_type: string;
   }
 
 export default function MoviesPage() {
@@ -74,7 +78,7 @@ export default function MoviesPage() {
 
       <div className="flex flex-col w-full h-auto mt-20 px-2 cursor-pointer bg-zinc-100 dark:bg-zinc-950">
         <TracingBeam className="flex flex-col w-full h-auto">
-          <div className="flex gap-5 items-center">
+          <div className="flex gap-5 items-center mb-4">
             <IconLine />
             <span className="font-lilita text-3xl">Top IMDB</span>
             <div className="flex gap-4 items-center">
@@ -103,7 +107,7 @@ export default function MoviesPage() {
               </span>
             </div>
           </div>
-          <div className="flex flex-wrap items-center cursor-pointer ml-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {loading
               ? Array.from({ length: 20 }).map((_, i) => (
                   <MovieSkeleton key={i} />
@@ -116,6 +120,8 @@ export default function MoviesPage() {
                       vote_average={movie.vote_average}
                       poster_path={movie.poster_path}
                       id={movie.id ?? 0}
+                      release_date={movie.release_date}
+                      media_type={movie.media_type}
                     />
                   </div>
                 ))
@@ -126,6 +132,8 @@ export default function MoviesPage() {
                     vote_average={show.vote_average}
                     poster_path={show.poster_path}
                     id={show.id ?? 0}
+                    first_air_date={show.first_air_date}
+                    media_type={show.media_type}
                   />
                 </div>
               ))

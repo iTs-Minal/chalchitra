@@ -36,15 +36,15 @@ export default async function SearchResultsPage({ params }: Params) {
 
       {data.results?.length === 0 && <p>No results found.</p>}
 
-      <div className="flex flex-col w-full h-auto mt-20 px-2 cursor-pointer bg-zinc-100 dark:bg-zinc-950">
+      <div className="flex flex-col w-full h-auto mt-20 cursor-pointer bg-zinc-100 dark:bg-zinc-950 px-4 md:px-8">
         <TracingBeam className="flex flex-col w-full h-auto">
-          <div className="flex gap-5 items-center">
+          <div className="flex items-center gap-3 mb-6">
             <IconLine />
-            <span className="font-lilita text-3xl">
+            <span className="font-lilita text-2xl sm:text-3xl">
               Results for: {decodeURIComponent(query)}
             </span>
           </div>
-          <div className="flex flex-wrap items-center cursor-pointer ml-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {data?.results?.map(
               (item: {
                 id?: number;
@@ -53,48 +53,59 @@ export default async function SearchResultsPage({ params }: Params) {
                 poster_path?: string;
                 backdrop_path?: string;
                 vote_average?: number;
-                media_type?:string;
+                release_date?:string;
+                first_air_date?:string;
+                media_type:string;
               }) => {
                   const title=item.title||item.name;
+                  const date= item.release_date || item.first_air_date;
                   const slug = `${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${item.id}`;
               
                 return(
-                <div
-                  key={item.id}
-                  className="flex flex-col items-center justify-center w-[185px] h-90  bg-neutral-300 dark:bg-zinc-900 mt-5 mx-2"
-                >
-                  <div className="relative flex items-center justify-center w-full h-full object-contain">
-                    <GlowingEffect
-                      spread={60}
-                      glow={true}
-                      disabled={false}
-                      proximity={64}
-                      inactiveZone={0.01}
-                    />
-                    <Image
-                      src={`https://image.tmdb.org/t/p/original${item.poster_path}`}
-                      alt={item.title || "Movie poster"}
-                      width={500}
-                      height={750}
-                      className="w-full h-full object-cover hover:brightness-40"
-                    />
-                    <span className="absolute top-1 left-1 flex items-center gap-1 text-yellow-500 font-bold font-kanit">
-                      <Star className="fill-amber-400" />{" "}
-                      {item.vote_average?.toFixed(1)}
-                    </span>
-                  </div>
-                  <div>
-                    <div className=" flex flex-col items-center justify-center w-full h-full gap-1">
-                      <span className="font-outfit text-md p-1 line-clamp-1">
-                        {item.title || item.name}
-                      </span>
-                     <Link href={item.media_type==="movie"?`/movies/${slug}`:`/tvshows/${slug}`}> <button className="p-2 mb-1 hover:scale-95 bg-zinc-50 dark:text-white dark:bg-zinc-950 flex items-center justify-center rounded-md text-sm">
-                        View Details
-                      </button></Link>
-                    </div>
-                  </div>
-                </div>
-              );
+               <div key={item.id} className="bg-neutral-200 dark:bg-zinc-900 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200 group">
+          {/* Poster */}
+          <div className="relative w-full aspect-[2/3]">
+            <GlowingEffect
+              spread={60}
+              glow
+              disabled={false}
+              proximity={64}
+              inactiveZone={0.01}
+            />
+            <Image
+              src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+              alt={title || "poster"}
+              fill
+              className="object-cover group-hover:brightness-50 transition duration-300"
+              sizes="(max-width: 768px) 100vw, 200px"
+            />
+            <span className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 text-yellow-400 px-2 py-1 rounded-md text-xs sm:text-sm font-kanit z-10">
+              <Star className="w-4 h-4 fill-amber-400" /> {item.vote_average?.toFixed(1)}
+            </span>
+          </div>
+    
+          {/* Info Section */}
+          <div className="flex flex-col justify-between px-3 py-3 h-[110px]">
+            {/* Release date & media type */}
+            <div className="text-sm text-left text-gray-600 dark:text-gray-300 font-kanit mb-1 flex gap-4">
+              {item.media_type && <span className="capitalize">{item.media_type}</span>}
+              {date && <span>  {date?.slice(0,4)}</span>}
+            </div>
+    
+            {/* Title */}
+            <p className="font-outfit text-sm sm:text-base font-semibold text-center line-clamp-1 text-black dark:text-white">
+              {title}
+            </p>
+    
+            {/* Button */}
+            <Link href={`/movies/${slug}`}>
+              <button className="mt-2 w-full py-1.5 text-xs sm:text-sm font-kanit bg-white dark:bg-zinc-800 text-black dark:text-white rounded hover:bg-yellow-500 hover:text-black transition duration-300 hover:scale-95">
+                View Details
+              </button>
+            </Link>
+          </div>
+        </div>
+        );
             }
             )}
           </div>
