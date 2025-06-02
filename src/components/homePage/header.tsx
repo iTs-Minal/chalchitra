@@ -44,7 +44,7 @@ interface TvShow {
   backdrop_path: string;
 }
 
-const Header = ({type}:{type:'movies' | 'tvshows'}) => {
+const Header = () => {
   const [trendingAll, setTrendingAll] = useState<(Movie | TvShow)[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -201,7 +201,7 @@ const Header = ({type}:{type:'movies' | 'tvshows'}) => {
                       </div>
                       {/* Play Icon */}
                       <div className="text-yellow-400 sm:order-none order-first">
-                        <Link href={`/${type}/${slug}`}><PlayCircle size={50} className="mx-auto sm:mx-0" /></Link>
+                        <Link href={`${movie.media_type === "tv" ? "/tvshows" : "/movies"}/${slug}`}><PlayCircle size={50} className="mx-auto sm:mx-0" /></Link>
                       </div>
                       {/* Text Info */}
                       <div className="flex-grow">

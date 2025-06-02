@@ -21,7 +21,6 @@ const SeasonEpisodes = ({ tvId, seasons }: SeasonEpisodesProps) => {
       try {
         const res = await fetch(`/api/season?tvId=${tvId}&seasonNumber=${selectedSeason}`);
         const data = await res.json();
-        console.log(data);
         if (res.ok) {
           setEpisodes(data.episodes || []);
         } else {

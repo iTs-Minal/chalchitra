@@ -1,27 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import ShowCard from "@/components/card/tvshow-card";
 import Navbar from "@/components/homePage/navbar";
-import MovieActions from "@/components/movie-action";
 import ReviewForm from "@/components/review-form";
 import ReviewList from "@/components/review-list";
 import SeasonEpisodes from "@/components/season-episodes";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import ActionButton from "@/components/action-button";
 
 export default async function ShowPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const id = params.slug.split("-").pop();
+  const awaitedParams = await params;
+  const id = awaitedParams.slug.split("-").pop();
 
   const res = await fetch(
     `https://api.themoviedb.org/3/tv/${id}?api_key=${process.env.TMDB_API_KEY}&append_to_response=videos,images,credits,recommendations,reviews,seasons`
   );
   if (!res.ok) return notFound();
   const show = await res.json();
-
-  console.log(show);
 
   const providersRes = await fetch(
     `https://api.themoviedb.org/3/tv/${id}/watch/providers?api_key=${process.env.TMDB_API_KEY}`
@@ -68,7 +67,7 @@ export default async function ShowPage({
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative w-full min-h-[90vh] pt-20 md:pt-24">
+      <section className="relative w-full min-h-[90vh] pt-20 md:pt-5">
         <Image
           src={`https://image.tmdb.org/t/p/original${
             show.backdrop_path || show.poster_path
@@ -123,7 +122,7 @@ export default async function ShowPage({
             </div>
 
             <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
-              <MovieActions tmdbId={show.id} type="tvshows" />
+              <ActionButton tmdbId={show.id} type="tvshows" />
             </div>
           </div>
         </div>
@@ -242,7 +241,7 @@ export default async function ShowPage({
                   <Image
                     key={idx}
                     src={`https://image.tmdb.org/t/p/original${img.file_path}`}
-                    alt={`Screenshot ${idx}`}
+                    alt={"screenshots"}
                     width={1200}
                     height={700}
                     className="rounded-lg w-full object-cover"
@@ -283,8 +282,8 @@ export default async function ShowPage({
         {/* Reviews */}
         <div id="rating" className="space-y-6">
           <h2 className="text-3xl font-bold font-kanit">⭐ Rate & Review</h2>
-          <ReviewForm tmdbId={show.id} />
-          <ReviewList tmdbId={show.id} />
+          <ReviewForm tmdbId={show.id} mediaType="tv"/>
+          <ReviewList tmdbId={show.id} mediaType="tv"/>
         </div>
 
         {show.recommendations?.results?.length > 0 && (

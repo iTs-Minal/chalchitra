@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import MovieCard from "@/components/card/movie-card";
 import Navbar from "@/components/homePage/navbar";
-import MovieActions from "@/components/movie-action";
+import ActionButton from "@/components/action-button";
 import ReviewForm from "@/components/review-form";
 import ReviewList from "@/components/review-list";
 import Image from "next/image";
@@ -12,9 +12,10 @@ import { notFound } from "next/navigation";
 export default async function ShowPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const id = params.slug.split("-").pop();
+  const awaitedParams= await params;
+  const id = awaitedParams.slug.split("-").pop();
 
   const res = await fetch(
     `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.TMDB_API_KEY}&append_to_response=videos,images,credits,recommendations`
@@ -38,7 +39,7 @@ export default async function ShowPage({
           src={`https://image.tmdb.org/t/p/original${
             movie.backdrop_path || movie.poster_path
           }`}
-          alt={movie.name}
+          alt={movie.title}
           layout="fill"
           objectFit="cover"
           className="absolute inset-0 z-0 opacity-40"
@@ -49,7 +50,7 @@ export default async function ShowPage({
         <div className="relative z-20 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center gap-10 px-6 md:px-10">
           <Image
             src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
-            alt={movie.name}
+            alt={movie.title}
             width={300}
             height={500}
             className="rounded-xl shadow-2xl"
@@ -75,7 +76,7 @@ export default async function ShowPage({
             </div>
 
             <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
-              <MovieActions tmdbId={movie.id} type="movies" />
+              <ActionButton tmdbId={movie.id} type="movies" />
             </div>
           </div>
         </div>
@@ -233,8 +234,8 @@ export default async function ShowPage({
         {/* Reviews */}
         <div id="rating" className="space-y-6">
           <h2 className="text-3xl font-bold font-kanit">⭐ Rate & Review</h2>
-          <ReviewForm tmdbId={movie.id} />
-          <ReviewList tmdbId={movie.id} />
+          <ReviewForm tmdbId={movie.id} mediaType="movie"/>
+          <ReviewList tmdbId={movie.id} mediaType="movie"/>
         </div>
 
         {movie.recommendations?.results?.length > 0 && (

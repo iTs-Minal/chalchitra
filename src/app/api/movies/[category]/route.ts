@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest, { params }: { params: { category: string } }) {
-    const { category } = await params;
+export async function GET(request: NextRequest, { params }: { params: Promise<{ category: string }> }) {
+  const awaitedParams = await params;
+    const { category } = awaitedParams;
 
     const allowedEndpoints: Record<string, string> = {
-        trending: "https://api.themoviedb.org/3/trending/movie/day",
+        trending: "https://api.themoviedb.org/3/trending/movie/week",
         top_rated: "https://api.themoviedb.org/3/movie/top_rated",
         upcoming: "https://api.themoviedb.org/3/movie/upcoming",
         now_playing: "https://api.themoviedb.org/3/movie/now_playing",

@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { Heart, Star, Eye, ShoppingCart } from "lucide-react";
 import ActionButtonSkeleton from "./skeleton/actionbutton-skeleton";
+import toast from "react-hot-toast";
 
-export default function MovieActions({ tmdbId, type }: { tmdbId: number; type: "movies" | "tvshows" }) {
+export default function ActionButton({ tmdbId, type }: { tmdbId: number; type: "movies" | "tvshows" }) {
 
   const [isFavorite, setIsFavorite] = useState(false);
   const [isRated, setIsRated] = useState(false);
@@ -37,7 +38,8 @@ export default function MovieActions({ tmdbId, type }: { tmdbId: number; type: "
 
   const handleFavoriteClick = async () => {
     const newStatus = !isFavorite;
-    setIsFavorite(newStatus); // Optimistic UI update
+    setIsFavorite(newStatus); 
+    toast.loading(newStatus ? "Adding to favorites..." : "Removing from favorites...");// Optimistic UI update
     try {
       const res = await fetch(`/api/${type}/favorite`, {
         method: "POST",
@@ -48,8 +50,12 @@ export default function MovieActions({ tmdbId, type }: { tmdbId: number; type: "
       if (!res.ok) throw new Error("Failed to update favorite status");
 
       const data = await res.json();
+      toast.dismiss(); // remove loading
+      toast.success(newStatus ? "Added to favorites!" : "Removed from favorites!");
       console.log("Favorite status updated:", data);
     } catch (err) {
+      toast.dismiss();
+      toast.error("Failed to update favorite status.");
       console.error("Failed to update favorite status:", err);
       setIsFavorite(!newStatus); // revert UI on error
     }
@@ -77,7 +83,8 @@ export default function MovieActions({ tmdbId, type }: { tmdbId: number; type: "
 
   const handleWatchedClick = async () => {
     const newStatus = !isWatched;
-    setIsWatched(newStatus); // Optimistic UI update
+    setIsWatched(newStatus);
+    toast.loading(newStatus ? "Marking as watched..." : "Removing from watched..."); // Optimistic UI update
     try {
       const res = await fetch(`/api/${type}/watched`, {
         method: "POST",
@@ -88,8 +95,12 @@ export default function MovieActions({ tmdbId, type }: { tmdbId: number; type: "
       if (!res.ok) throw new Error("Failed to update watched status");
 
       const data = await res.json();
+        toast.dismiss();
+      toast.success(newStatus ? "Marked as watched!" : "Removed from watched!");
       console.log("Watched status updated:", data);
     } catch (err) {
+       toast.dismiss();
+      toast.error("Failed to update watched status.");
       console.error("Failed to update watched status:", err);
       setIsWatched(!newStatus); // revert UI on error
     }
@@ -117,7 +128,8 @@ export default function MovieActions({ tmdbId, type }: { tmdbId: number; type: "
 
   const handleWatchlistClick = async () => {
     const newStatus = !isInWatchlist;
-    setIsInWatchlist(newStatus); // Optimistic UI update
+    setIsInWatchlist(newStatus);
+    toast.loading(newStatus ? "Adding to watchlist..." : "Removing from watchlist..."); // Optimistic UI update
     try {
       const res = await fetch(`/api/${type}/watchlist`, {
         method: "POST",
@@ -131,8 +143,12 @@ export default function MovieActions({ tmdbId, type }: { tmdbId: number; type: "
       if (!res.ok) throw new Error("Failed to update watchlist status");
 
       const data = await res.json();
+      toast.dismiss();
+      toast.success(newStatus ? "Added to watchlist!" : "Removed from watchlist!");
       console.log("Watchlist status updated:", data);
     } catch (err) {
+      toast.dismiss();
+      toast.error("Failed to update watchlist status.");
       console.error("Failed to update watchlist status:", err);
       setIsInWatchlist(!newStatus); // revert UI on error
     }
@@ -140,18 +156,25 @@ export default function MovieActions({ tmdbId, type }: { tmdbId: number; type: "
 
   //for rated movies
 
-  useEffect(() => {
-    async function checkRated() {
-      const res = await fetch(`/api/movies/review/${tmdbId}`);
-      const reviews = await res.json();
+useEffect(() => {
+  async function checkRated() {
+    const apiUrl =
+      type === 'movies'
+        ? `/api/movies/review/me?tmdbId=${tmdbId}`
+        : `/api/tvshows/review/me?tmdbId=${tmdbId}`;
 
-      const userReview = reviews.find((r: any) => r.isCurrentUser);
-      if (userReview && userReview.rating) {
-        setIsRated(true);
-      }
+    const res = await fetch(apiUrl);
+    const userReview = await res.json();
+
+    if (userReview && userReview.rating) {
+      setIsRated(true);
+    } else {
+      setIsRated(false);
     }
-    checkRated();
-  }, [tmdbId]);
+  }
+
+  checkRated();
+}, [tmdbId, type]);
 
   if (loading)
     return (

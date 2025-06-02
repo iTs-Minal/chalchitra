@@ -1,28 +1,50 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { ThumbsUp, ThumbsDown } from 'lucide-react';
 
-export default function ReviewList({ tmdbId }: { tmdbId: number }) {
-  const [reviews, setReviews] = useState([]);
+interface Review {
+  id: string;
+  userId: string;
+  rating: number;
+  content: string;
+  username: string;
+  imageUrl: string;
+  isCurrentUser?: boolean;
+}
+
+export default function ReviewList({
+  tmdbId,
+  mediaType,
+}: {
+  tmdbId: number;
+  mediaType: 'movie' | 'tv';
+}) {
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   useEffect(() => {
-    fetch(`/api/movies/review/${tmdbId}`)
+    const url =
+      mediaType === 'movie'
+        ? `/api/movies/review/${tmdbId}`
+        : `/api/tvshows/review/${tmdbId}`;
+
+    fetch(url)
       .then((res) => res.json())
       .then((data) => setReviews(data));
-  }, [tmdbId]);
-
+  }, [tmdbId, mediaType]);
 
   return (
     <div className="mt-10 w-full max-w-3xl space-y-6">
       {reviews.length === 0 ? (
         <p className="text-gray-400 text-center">No reviews yet.</p>
       ) : (
-        reviews.map((r: any) => (
-          <div key={r.id} className="bg-zinc-800 p-5 rounded-xl shadow-md text-white flex gap-4 items-start">
+        reviews.map((r) => (
+          <div
+            key={r.id}
+            className="bg-zinc-800 p-5 rounded-xl shadow-md text-white flex gap-4 items-start"
+          >
             <Image
-              src={r.imageUrl}
+              src={r.imageUrl || '/default-user.png'}
               alt="user"
               width={48}
               height={48}

@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { type: string; category: string } }
+  { params }: { params: Promise<{ type: string; category: string }> }
 ) {
-  const { type, category } = params;
+  const awaitedParams= await params;
+  const { type, category } = awaitedParams;
   const page = request.nextUrl.searchParams.get("page") || "1";
 
   const allowedEndpoints: Record<string, Record<string, string>> = {
@@ -13,14 +14,14 @@ export async function GET(
       top_rated: "https://api.themoviedb.org/3/movie/top_rated",
       upcoming: "https://api.themoviedb.org/3/movie/upcoming",
       now_playing: "https://api.themoviedb.org/3/movie/now_playing",
-      trending: "https://api.themoviedb.org/3/trending/movie/day",
+      trending: "https://api.themoviedb.org/3/trending/movie/week",
     },
     tv: {
       popular: "https://api.themoviedb.org/3/tv/popular",
       top_rated: "https://api.themoviedb.org/3/tv/top_rated",
       airing_today: "https://api.themoviedb.org/3/tv/airing_today",
       on_the_air: "https://api.themoviedb.org/3/tv/on_the_air",
-      trending: "https://api.themoviedb.org/3/trending/tv/day",
+      trending: "https://api.themoviedb.org/3/trending/tv/week",
     },
   };
 

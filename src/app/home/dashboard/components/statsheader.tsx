@@ -29,7 +29,7 @@ const iconMap = {
   watchlist: <ShoppingCart className="w-6 h-6" />,
 };
 
-export function StatsHeader({type}: { type: 'movies' | 'tvshows' }) {
+export function StatsHeader({ type }: { type: 'movies' | 'tvshows' }) {
   const [stats, setStats] = useState<Stats>({
     favorites: 0,
     ratedCount: 0,
@@ -50,9 +50,8 @@ export function StatsHeader({type}: { type: 'movies' | 'tvshows' }) {
     fetchStats();
   }, [type]);
 
-
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 w-full">
       {[
         { label: 'Favorites', key: 'favorites' },
         { label: 'Rated', key: 'ratedCount' },
@@ -61,11 +60,11 @@ export function StatsHeader({type}: { type: 'movies' | 'tvshows' }) {
       ].map((item) => (
         <div
           key={item.key}
-          className={`${cardStyles[item.key as keyof Stats]} p-4 rounded-xl shadow flex flex-col items-center justify-center space-y-2`}
+          className={`${cardStyles[item.key as keyof Stats]} p-3 sm:p-4 rounded-xl shadow flex flex-col items-center justify-center space-y-2 transition-transform hover:scale-[1.02]`}
         >
           <div>{iconMap[item.key as keyof Stats]}</div>
-          <h3 className="text-xl font-kanit">{item.label}</h3>
-          <p className="text-2xl font-bold">{stats[item.key as keyof Stats]||"0"}</p>
+          <h3 className="text-base sm:text-xl font-kanit">{item.label}</h3>
+          <p className="text-lg sm:text-2xl font-bold">{stats[item.key as keyof Stats] || "0"}</p>
         </div>
       ))}
     </div>

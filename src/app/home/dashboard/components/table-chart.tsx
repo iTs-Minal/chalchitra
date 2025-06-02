@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
 import { Trash2, Heart, Eye, ShoppingCart } from "lucide-react";
 import DashboardTableSkeleton from "@/components/skeleton/tablechart-skeleton";
+import { toast } from "react-hot-toast";
 
 import {
   PieChart,
@@ -121,6 +123,7 @@ export default function TableChart({type}: { type: "movies" | "tvshows" }) {
           .map(([month, count]) => ({ year: month, count }))
       );
     } catch (err) {
+      toast.error("Failed to fetch data.");
       console.error("Failed to fetch movies:", err);
       setMovies([]);
       setGenreData([]);
@@ -145,15 +148,28 @@ export default function TableChart({type}: { type: "movies" | "tvshows" }) {
 
   // Remove movie from UI (implement API delete here as well)
   const handleRemove = async (tmdbId: number) => {
-    await fetch(`/api/${type}/${filter}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        tmdbId,
-        status: filter,
-        action: "remove",
-      }),
-    });
+    const loadingToast = toast.loading("Removing...");
+
+     try {
+      const res = await fetch(`/api/${type}/${filter}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tmdbId,
+          status: filter,
+          action: "remove",
+        }),
+      });
+
+      if (res.ok) {
+        toast.success("Removed successfully", { id: loadingToast });
+        fetchMovies();
+      } else {
+        throw new Error("Failed to remove");
+      }
+    } catch (err) {
+      toast.error("Error removing item", { id: loadingToast });
+    }
   };
 
   if (loading)
@@ -164,7 +180,7 @@ export default function TableChart({type}: { type: "movies" | "tvshows" }) {
     );
 
   return (
-    <div className="space-y-8 p-4 bg-white dark:bg-zinc-900 rounded shadow">
+     <div className="space-y-8 p-4 bg-white dark:bg-zinc-900 rounded shadow">
       {/* Filter Dropdown */}
       <div className="flex justify-start items-center gap-4">
         <div className="relative">
@@ -184,12 +200,13 @@ export default function TableChart({type}: { type: "movies" | "tvshows" }) {
           </div>
         </div>
         <p className="text-xs text-gray-500 dark:text-gray-400">
-          Showing {paginated.length} of {movies.length} movies
+          Showing {paginated.length} of {movies.length} items
         </p>
       </div>
 
       {/* Table */}
-      <table className="w-full text-sm text-gray-800 dark:text-white border-separate border-spacing-y-1">
+      <div className="overflow-auto w-full">
+      <table className="w-full min-w-[600px] sm:min-w-full text-sm text-gray-800 dark:text-white border-separate border-spacing-y-1">
         <thead className="bg-gray-200 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 rounded">
           <tr>
             <th className="p-3 text-left font-kanit">Name</th>
@@ -203,9 +220,9 @@ export default function TableChart({type}: { type: "movies" | "tvshows" }) {
         </thead>
         <tbody>
           {paginated.map((item, index) => {
-            const slug = `${item.title || item.name
+            const slug = `${item.title || item.name}`
               .toLowerCase()
-              .replace(/[^a-z0-9]+/g, "-")}-${item.id}`;
+              .replace(/[^a-z0-9]+/g, "-") + `-${item.id}`;
 
             return (
               <tr
@@ -223,7 +240,8 @@ export default function TableChart({type}: { type: "movies" | "tvshows" }) {
                   <Link href={`/${type}/${slug}`}>{item.title || item.name}</Link>
                 </td>
                 <td className="p-3 text-center text-blue-600 font-exo">
-                  {item.release_date?.slice(0, 4)||item.first_air_date?.slice(0, 4)}
+                  {item.release_date?.slice(0, 4) ||
+                    item.first_air_date?.slice(0, 4)}
                 </td>
                 <td className="p-3 text-center font-outfit">
                   {item.added_date?.slice(0, 10)}
@@ -259,6 +277,7 @@ export default function TableChart({type}: { type: "movies" | "tvshows" }) {
           })}
         </tbody>
       </table>
+      </div>
 
       {/* Pagination */}
       <div className="flex justify-center gap-4 mt-4">
@@ -283,7 +302,6 @@ export default function TableChart({type}: { type: "movies" | "tvshows" }) {
 
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-        {/* Genre Pie Chart */}
         <div className="bg-white dark:bg-zinc-900 p-4 rounded shadow">
           <h3 className="text-center mb-2 text-zinc-800 dark:text-white font-kanit">
             Genre Distribution
@@ -310,7 +328,6 @@ export default function TableChart({type}: { type: "movies" | "tvshows" }) {
           </ResponsiveContainer>
         </div>
 
-        {/* Added Date Line Chart */}
         <div className="bg-white dark:bg-zinc-900 p-4 rounded shadow">
           <h3 className="text-center mb-2 text-zinc-800 dark:text-white font-kanit">
             {filterToChartMap[filter]} {type} Added Over Time
@@ -321,7 +338,6 @@ export default function TableChart({type}: { type: "movies" | "tvshows" }) {
                 dataKey="year"
                 stroke="#ccc"
                 tickFormatter={(tick) => {
-                  // Format "YYYY-MM" to "MMM YY" for display, e.g. "2025-05" -> "May 25"
                   const [year, month] = tick.split("-");
                   const date = new Date(Number(year), Number(month) - 1);
                   return date.toLocaleString("default", {
@@ -329,7 +345,7 @@ export default function TableChart({type}: { type: "movies" | "tvshows" }) {
                     year: "2-digit",
                   });
                 }}
-                interval={0} // show all ticks
+                interval={0}
                 angle={-45}
                 textAnchor="end"
                 height={60}

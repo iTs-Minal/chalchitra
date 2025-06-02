@@ -1,5 +1,5 @@
 "use client";
-import { SignedIn, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { Menu, Moon, Search, Star, Sun, XCircle } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
@@ -255,6 +255,11 @@ const Navbar = () => {
             }}
           />
         </SignedIn>
+        <SignedOut>
+        <SignInButton>
+          <button className="btn-primary">Sign In</button>
+        </SignInButton>
+      </SignedOut>
       </div>
     </nav>
   );

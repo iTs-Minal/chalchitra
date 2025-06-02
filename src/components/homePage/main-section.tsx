@@ -167,7 +167,7 @@ const MainSection = () => {
           <div className="flex flex-col w-full h-auto cursor-pointer mt-10 bg-zinc-100 dark:bg-zinc-950 px-4 md:px-8">
             <div className="flex gap-6 items-center mb-6">
               <IconLine />
-              <span className="font-lilita text-3xl">Trending</span>
+              <span className="font-lilita text-3xl">Popular This Week</span>
               <div className="flex gap-4 items-center">
                 <span
                   onClick={() => setSelectedType("movies")}

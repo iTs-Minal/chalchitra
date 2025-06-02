@@ -3,6 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkProvider,} from "@clerk/nextjs";
 import { dark } from '@clerk/themes'
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Chalchitra",
@@ -25,6 +26,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
+            <Toaster position="top-right" />
           </ThemeProvider>
         </body>
       </html>

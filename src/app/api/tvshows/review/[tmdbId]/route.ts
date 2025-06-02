@@ -4,8 +4,9 @@ import { NextResponse } from 'next/server';
 import { clerkClient } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
 
-export async function GET(_: Request, { params }: { params: { tmdbId: string } }) {
-  const tmdbId = parseInt(params.tmdbId);
+export async function GET(_: Request, { params }: { params: Promise<{ tmdbId: string }> }) {
+  const awaitedParams = await params;
+  const tmdbId = parseInt(awaitedParams.tmdbId);
 
   const reviews = await prisma.showReview.findMany({
     where: { tmdbId },
