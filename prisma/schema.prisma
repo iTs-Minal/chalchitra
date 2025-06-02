@@ -18,7 +18,7 @@ model UserMovieData {
   userId    String
   tmdbId    Int
   status    MovieStatus
-  rating    Int?
+  rating    Float?
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 }
@@ -34,7 +34,7 @@ model UserShowData {
   userId    String
   tmdbId    Int
   status    ShowStatus
-  rating    Int?
+  rating    Float?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }
@@ -45,11 +45,25 @@ enum ShowStatus {
   WATCHED
 }
 
-model UserReview {
+model MovieReview {
   id        String   @id @default(cuid())
   userId    String
   tmdbId    Int
-  rating    Int
+  rating    Float
+  content   String   @db.Text
+  likes     Int      @default(0)
+  dislikes  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, tmdbId])
+}
+
+model ShowReview {
+  id        String   @id @default(cuid())
+  userId    String
+  tmdbId    Int
+  rating    Float
   content   String   @db.Text
   likes     Int      @default(0)
   dislikes  Int      @default(0)

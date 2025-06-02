@@ -50,7 +50,7 @@ export async function GET() {
     const tmdbIds = favoriteData.map((fav) => fav.tmdbId);
 
     // Step 2: Get reviews for these tmdbIds by the same user
-    const userReviews = await prisma.userReview.findMany({
+    const userReviews = await prisma.movieReview.findMany({
       where: {
         userId,
         tmdbId: { in: tmdbIds },

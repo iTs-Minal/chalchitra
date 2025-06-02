@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { auth } from "@clerk/nextjs/server";
-import { prisma } from "@/lib/prisma";
+import { auth } from '@clerk/nextjs/server';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(req: Request) {
   const { userId } = await auth();
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
   }
 
-  const existing = await prisma.userReview.findFirst({
+  const existing = await prisma.movieReview.findFirst({
     where: {
       userId,
       tmdbId,
@@ -26,9 +26,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Review already exists. Use PUT to edit.' }, { status: 409 });
   }
 
-
-  const review = await prisma.userReview.create({
-
+  const review = await prisma.movieReview.create({
     data: {
       userId,
       tmdbId,
@@ -36,12 +34,10 @@ export async function POST(req: Request) {
       content,
     },
   });
-  return NextResponse.json(review);
 
+  return NextResponse.json(review);
 }
 
-
-//for udating a review
 export async function PUT(req: Request) {
   const { userId } = await auth();
 
@@ -55,9 +51,7 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
   }
 
-
-
-  const updated = await prisma.userReview.update({
+  const updated = await prisma.movieReview.update({
     where: {
       userId_tmdbId: {
         userId,
@@ -70,6 +64,6 @@ export async function PUT(req: Request) {
       updatedAt: new Date(),
     },
   });
-  return NextResponse.json(updated);
 
+  return NextResponse.json(updated);
 }
