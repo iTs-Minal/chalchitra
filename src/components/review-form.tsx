@@ -3,13 +3,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { Star } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useReviewStore } from '@/store/reviewStore';
 
 export default function ReviewForm({
   tmdbId,
   mediaType,
+
 }: {
   tmdbId: number;
   mediaType: 'movie' | 'tv';
+
 }) {
   const [rating, setRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState<number | null>(null);
@@ -17,11 +20,18 @@ export default function ReviewForm({
   const [existing, setExisting] = useState(false);
   const existingRef = useRef(false);
 
+
+  const {triggerRefreshReview}= useReviewStore();
+  const resetSignal = useReviewStore((state)=>state.resetSignal);
+
+
   useEffect(() => {
-    setRating(0);
-    setContent('');
-    setExisting(false);
-    existingRef.current = false;
+
+      setRating(0);
+      setContent('');
+      setExisting(false);
+      existingRef.current = false;
+
 
     const apiUrl =
       mediaType === 'movie'
@@ -38,7 +48,7 @@ export default function ReviewForm({
           existingRef.current = true;
         }
       });
-  }, [tmdbId, mediaType]);
+  }, [tmdbId, mediaType, resetSignal]);
 
   const handleSubmit = async () => {
     if (rating <= 0) {
@@ -60,6 +70,7 @@ toast.error('Please select a rating');
     }
 
    toast.success(existing ? 'Review updated' : 'Review submitted');
+   triggerRefreshReview();
   };
 
  const renderStars = () => {

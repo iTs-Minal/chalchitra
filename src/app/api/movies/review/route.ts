@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
@@ -67,3 +68,33 @@ export async function PUT(req: Request) {
 
   return NextResponse.json(updated);
 }
+
+
+// export async function DELETE(req: Request) {
+//   const { userId } = await auth();
+
+//   if (!userId) {
+//     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+//   }
+
+//   const { tmdbId } = await req.json();
+
+//   if (!tmdbId) {
+//     return NextResponse.json({ error: 'Missing tmdbId' }, { status: 400 });
+//   }
+
+//   try {
+//     await prisma.movieReview.delete({
+//       where: {
+//         userId_tmdbId: {
+//           userId,
+//           tmdbId,
+//         },
+//       },
+//     });
+
+//     return NextResponse.json({ message: 'Review deleted successfully' });
+//   } catch (error) {
+//     return NextResponse.json({ error: 'Review not found or already deleted' }, { status: 404 });
+//   }
+// }

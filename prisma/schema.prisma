@@ -51,8 +51,6 @@ model MovieReview {
   tmdbId    Int
   rating    Float
   content   String   @db.Text
-  likes     Int      @default(0)
-  dislikes  Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -65,10 +63,34 @@ model ShowReview {
   tmdbId    Int
   rating    Float
   content   String   @db.Text
-  likes     Int      @default(0)
-  dislikes  Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([userId, tmdbId])
+}
+
+model MovieReviewReaction {
+  id        String   @id @default(cuid())
+  userId    String
+  reviewId  String
+  isLike    Boolean
+  createdAt DateTime @default(now())
+
+  user   User?         @relation(fields: [userId], references: [id])
+  review MovieReview   @relation(fields: [reviewId], references: [id])
+
+  @@unique([userId, reviewId]) // only one reaction per user per review
+}
+
+model ShowReviewReaction {
+  id        String   @id @default(cuid())
+  userId    String
+  reviewId  String
+  isLike    Boolean
+  createdAt DateTime @default(now())
+
+  user   User?       @relation(fields: [userId], references: [id])
+  review ShowReview  @relation(fields: [reviewId], references: [id])
+
+  @@unique([userId, reviewId])
 }
