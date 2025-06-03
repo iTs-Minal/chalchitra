@@ -45,15 +45,51 @@ export default function ReviewList({
   const refreshReviewSignal = useReviewStore((state) => state.refreshReviewSignal);
 
 
+  
+  // Fetch reaction data for all reviews
+  const fetchAllReactionData = async (reviewIds: string[]) => {
+    try {
+      const baseUrl = mediaType === "movie" ? "/api/movies" : "/api/tvshows";
+      const promises = reviewIds.map(async (reviewId) => {
+        const res = await fetch(`${baseUrl}/review/reaction?reviewId=${reviewId}`);
+        if (res.ok) {
+          const data = await res.json();
+          return { reviewId, data };
+        }
+        return null;
+      });
+
+      const results = await Promise.all(promises);
+      const newReactionData: {[reviewId: string]: ReactionData} = {};
+      
+      results.forEach((result) => {
+        if (result) {
+          newReactionData[result.reviewId] = result.data;
+        }
+      });
+
+      setReactionData(prev => ({ ...prev, ...newReactionData }));
+    } catch (error) {
+      console.error("Error fetching reaction data:", error);
+    }
+  };
+
   useEffect(() => {
-    const url =
+      const url =
       mediaType === "movie"
         ? `/api/movies/review/${tmdbId}`
         : `/api/tvshows/review/${tmdbId}`;
 
     fetch(url)
       .then((res) => res.json())
-      .then((data) => setReviews(data));
+      .then((data) => {
+        setReviews(data);
+        // Fetch reaction data for all reviews after loading reviews
+        if (data && data.length > 0) {
+          const reviewIds = data.map((review: Review) => review.id);
+          fetchAllReactionData(reviewIds);
+        }
+      });
   }, [tmdbId, mediaType, refreshReviewSignal]);
 
 
