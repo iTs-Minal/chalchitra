@@ -54,6 +54,8 @@ model MovieReview {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+   reactions MovieReviewReaction[]
+
   @@unique([userId, tmdbId])
 }
 
@@ -66,6 +68,8 @@ model ShowReview {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  reactions ShowReviewReaction[]
+
   @@unique([userId, tmdbId])
 }
 
@@ -76,8 +80,9 @@ model MovieReviewReaction {
   isLike    Boolean
   createdAt DateTime @default(now())
 
-  user   User?         @relation(fields: [userId], references: [id])
-  review MovieReview   @relation(fields: [reviewId], references: [id])
+
+ 
+    review MovieReview   @relation(fields: [reviewId], references: [id])
 
   @@unique([userId, reviewId]) // only one reaction per user per review
 }
@@ -89,7 +94,7 @@ model ShowReviewReaction {
   isLike    Boolean
   createdAt DateTime @default(now())
 
-  user   User?       @relation(fields: [userId], references: [id])
+
   review ShowReview  @relation(fields: [reviewId], references: [id])
 
   @@unique([userId, reviewId])

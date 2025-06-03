@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -6,6 +6,7 @@ import { ThumbsUp, ThumbsDown } from "lucide-react";
 import toast from "react-hot-toast";
 import ConfirmationModal from "./confirmation-modal";
 import { useReviewStore } from "@/store/reviewStore";
+import { useUser } from "@clerk/nextjs";
 
 interface Review {
   id: string;
@@ -17,6 +18,15 @@ interface Review {
   isCurrentUser?: boolean;
 }
 
+interface ReactionData {
+  likeCount: number;
+  dislikeCount: number;
+  userReaction: {
+    isLike: boolean;
+    createdAt: string;
+  } | null;
+}
+
 export default function ReviewList({
   tmdbId,
   mediaType,
@@ -25,6 +35,9 @@ export default function ReviewList({
   mediaType: "movie" | "tv";
 }) {
   const [reviews, setReviews] = useState<Review[]>([]);
+   const [reactionData, setReactionData] = useState<{[reviewId: string]: ReactionData}>({});
+    const [expandedReviews, setExpandedReviews] = useState<Set<string>>(new Set());
+    const { user } = useUser();
 
 
   //from zustand store
@@ -43,6 +56,8 @@ export default function ReviewList({
       .then((data) => setReviews(data));
   }, [tmdbId, mediaType, refreshReviewSignal]);
 
+
+  //its the modal that popup after clicking on delet button
   const [showModal, setShowModal] = useState(false);
   const [selectedReviewId, setSelectedReviewId] = useState<string | null>(null);
 
@@ -74,51 +89,173 @@ export default function ReviewList({
     setSelectedReviewId(null);
   };
 
+  // it is for fetching the reactions
+
+   const fetchReactionData = async (reviewId: string) => {
+    try {
+      const baseUrl = mediaType === "movie" ? "/api/movies" : "/api/tvshows";
+      const res = await fetch(`${baseUrl}/review/reaction?reviewId=${reviewId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setReactionData(prev => ({
+          ...prev,
+          [reviewId]: data
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching reaction data:", error);
+    }
+  };
+
+  const handleReaction = async (reviewId: string, isLike: boolean) => {
+    if (!user) {
+      toast.error("Please sign in to react to reviews");
+      return;
+    }
+
+    try {
+      const baseUrl = mediaType === "movie" ? "/api/movies" : "/api/tvshows";
+      const res = await fetch(`${baseUrl}/review/reaction`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          reviewId,
+          isLike,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        toast.success(data.message);
+        
+        // Refresh reaction data for this review
+        await fetchReactionData(reviewId);
+      } else {
+        const error = await res.json();
+        toast.error(error.error || "Failed to react");
+      }
+    } catch (error) {
+      console.error("Error handling reaction:", error);
+      toast.error("Something went wrong");
+    }
+  };
+
+  const toggleExpandReview = (reviewId: string) => {
+    setExpandedReviews(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(reviewId)) {
+        newSet.delete(reviewId);
+      } else {
+        newSet.add(reviewId);
+      }
+      return newSet;
+    });
+  };
+
+  const truncateText = (text: string, maxLength: number = 200) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength);
+  };
+
   return (
-    <div className="mt-10 w-full max-w-3xl space-y-6">
+   <div className="mt-10 w-full max-w-3xl space-y-6">
       {reviews.length === 0 ? (
         <p className="text-gray-400 text-center">No reviews yet.</p>
       ) : (
-        reviews.map((r) => (
-          <div
-            key={r.id}
-            className="bg-zinc-800 p-5 rounded-xl shadow-md text-white flex gap-4 items-start"
-          >
-            <Image
-              src={r.imageUrl || "/default-user.png"}
-              alt="user"
-              width={48}
-              height={48}
-              className="rounded-full object-cover border border-zinc-700"
-            />
-            <div className="flex-1">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-semibold text-white">{r.username}</div>
-                  <div className="text-yellow-400">Rating: {r.rating}★</div>
+        reviews.map((r) => {
+          const reactions = reactionData[r.id] || { 
+            likeCount: 0, 
+            dislikeCount: 0, 
+            userReaction: null 
+          };
+          
+          const isExpanded = expandedReviews.has(r.id);
+          const shouldTruncate = r.content.length > 200;
+          const displayContent = shouldTruncate && !isExpanded 
+            ? truncateText(r.content) 
+            : r.content;
+          
+          return (
+            <div
+              key={r.id}
+              className="bg-zinc-800 p-5 rounded-xl shadow-md text-white flex gap-4 items-start"
+            >
+              <Image
+                src={r.imageUrl || "/default-user.png"}
+                alt="user"
+                width={48}
+                height={48}
+                className="rounded-full object-cover border border-zinc-700"
+              />
+              <div className="flex-1 min-w-0 overflow-hidden">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-semibold text-white">{r.username}</div>
+                    <div className="text-yellow-400">Rating: {r.rating}★</div>
+                  </div>
                 </div>
-              </div>
-              <p className="mt-2 text-gray-300">{r.content}</p>
-              <div className="flex gap-4 mt-3 text-gray-500">
-                <button className="flex items-center gap-1 hover:text-green-400 transition">
-                  <ThumbsUp size={16} /> <span className="text-sm">Like</span>
-                </button>
-                <button className="flex items-center gap-1 hover:text-red-400 transition">
-                  <ThumbsDown size={16} />{" "}
-                  <span className="text-sm">Dislike</span>
-                </button>
-                {r.isCurrentUser && (
+                <p className="mt-2 text-gray-300 whitespace-pre-wrap overflow-wrap-anywhere break-words max-w-full">
+                  {displayContent}
+                  {shouldTruncate && !isExpanded && (
+                    <span className="text-gray-400">...</span>
+                  )}
+                </p>
+                {shouldTruncate && (
                   <button
-                    className="ml-auto text-sm text-red-500 hover:underline"
-                    onClick={() => openDeleteModal(r.id)}
+                    onClick={() => toggleExpandReview(r.id)}
+                    className="text-blue-400 hover:text-blue-300 text-sm mt-1 transition-colors"
                   >
-                    Delete
+                    {isExpanded ? 'See less' : 'See more'}
                   </button>
                 )}
+                <div className="flex gap-4 mt-3 text-gray-500">
+                  <button 
+                    className={`flex items-center gap-1 transition disabled:opacity-50 ${
+                      reactions.userReaction?.isLike === true
+                        ? 'text-green-400' 
+                        : 'hover:text-green-400'
+                    }`}
+                    onClick={() => handleReaction(r.id, true)}
+                    disabled={r.isCurrentUser}
+                    title={r.isCurrentUser ? "Cannot react to your own review" : "Like this review"}
+                  >
+                    <ThumbsUp 
+                      size={16} 
+                      fill={reactions.userReaction?.isLike === true ? 'currentColor' : 'none'} 
+                    />
+                    <span className="text-sm">{reactions.likeCount}</span>
+                  </button>
+                  <button 
+                    className={`flex items-center gap-1 transition disabled:opacity-50 ${
+                      reactions.userReaction?.isLike === false
+                        ? 'text-red-400' 
+                        : 'hover:text-red-400'
+                    }`}
+                    onClick={() => handleReaction(r.id, false)}
+                    disabled={r.isCurrentUser}
+                    title={r.isCurrentUser ? "Cannot react to your own review" : "Dislike this review"}
+                  >
+                    <ThumbsDown 
+                      size={16} 
+                      fill={reactions.userReaction?.isLike === false ? 'currentColor' : 'none'} 
+                    />
+                    <span className="text-sm">{reactions.dislikeCount}</span>
+                  </button>
+                  {r.isCurrentUser && (
+                    <button
+                      className="ml-auto text-sm text-red-500 hover:underline"
+                      onClick={() => openDeleteModal(r.id)}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))
+          );
+        })
       )}
       {showModal && (
         <ConfirmationModal
