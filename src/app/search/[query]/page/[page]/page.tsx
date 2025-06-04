@@ -12,8 +12,9 @@ import { notFound } from "next/navigation";
 //   params: { query: string; page: string };
 // };
 
-export default async function SearchResultsPage({ params }: { params: { query: string; page: string } }) {
-  const { query, page } = params;
+export default async function SearchResultsPage({ params }: { params: Promise<{ query: string; page: string }> }) {
+  const awaitedParams = await params;
+  const { query, page } = awaitedParams;
 
   const res = await fetch(
     `https://api.themoviedb.org/3/search/multi?query=${query}&page=${page}&api_key=${process.env.TMDB_API_KEY}`,
